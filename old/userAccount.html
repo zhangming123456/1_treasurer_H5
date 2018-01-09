@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<meta name="format-detection" content="telephone=no,email=no,adress=no"/>
+<title>我的账户</title>
+<link rel="stylesheet" href="css/weui.min.css" />
+<link rel="stylesheet" href="css/usercenter.css" />
+<script>
+    (function () {
+        document.addEventListener('DOMContentLoaded', function () {
+            var html = document.documentElement;
+            var windowWidth = html.clientWidth;
+            html.style.fontSize = windowWidth / 15 + 'px';
+        }, false);
+    })();
+    
+</script>
+</head>
+<body>
+	<div class="nmyaccount">
+		<div class="naccountInfoList clear">
+		<!--
+			<div class="naccountInfoItem">
+				<h3 class="infoTitle">总收入(元)</h3>
+				<p class="infoval" id="balance"></p>
+			</div>-->
+			<div class="naccountInfoItem">
+				<h3 class="infoTitle">可提现(元)</h3>
+				<p class="infoval" id="availableBalance"></p>
+				<p class="serviceTips">*可提现金额已扣除服务费</p>
+			</div>
+		</div>
+		<div class="weui-cells personClassify">
+			<a id="withdramDeposit" href="#" class="weui-cell weui-cell_access">
+				<div class="weui-cell__hd">
+					<img src="images/icon/acc_ico3.png" class="uc_centerico7">
+				</div>
+				<div class="weui-cell__bd">
+					<p>提现</p>
+				</div>
+				<div class="weui-cell__ft">
+				</div>
+			</a>
+			<a id="myBankCard" href="myBankCard.html" class="weui-cell weui-cell_access">
+				<div class="weui-cell__hd">
+					<img src="images/icon/acc_ico2.png" class="uc_centerico8">
+				</div>
+				<div class="weui-cell__bd">
+					<p>银行卡</p>
+				</div>
+				<div class="weui-cell__ft">
+				</div>
+			</a>
+			<a href="incomeList.html" class="weui-cell weui-cell_access">
+				<div class="weui-cell__hd">
+					<img src="images/icon/acc_ico1.png" class="uc_centerico9">
+				</div>
+				<div class="weui-cell__bd">
+					<p>交易明细</p>
+				</div>
+				<div class="weui-cell__ft">
+				</div>
+			</a>
+			<a href="withdramList.html" class="weui-cell weui-cell_access">
+				<div class="weui-cell__hd">
+					<img src="images/icon/acc_ico4.png" class="uc_centerico10">
+				</div>
+				<div class="weui-cell__bd">
+					<p>提现记录</p>
+				</div>
+				<div class="weui-cell__ft">
+				</div>
+			</a>
+		</div>
+	</div>
+	<div class ="commonTips" id="tipInfo"><span></span></div>
+<script type="text/javascript" src="script/jquery-1.11.3.js"></script>
+<script type="text/javascript" src="script/common.js"></script>
+<script type="text/javascript" >
+	$(function(){
+		var resId = getResId("resId");
+		 //获取可提现金额
+		  httpRequest("post","/tradeDetail/findAvailableTotalBalance",{"resId":resId},function(data){
+			 if(data.code==2000){
+				$("#availableBalance").text(parseFloat(data.value).toFixed(2));
+			 }else{
+				showToast(data.message);
+			 }
+		 })
+		 //获取银行卡
+		//var resId = getResId("resId");
+		var shiroUserId = getResId("shiroUserId");
+		httpRequest("post","/tradeAccount/findTradeAccountList",{"resId":resId,"shiroUserId":shiroUserId},function(data){
+			if(data.code == 2000){
+				if( "" != data.value ){
+					var value = data.value;
+					for(var i=0;i<value.length;i++){
+						var content = getStatus(value[i].status);
+						if(value[i].status==0){
+							$("#withdramDeposit").attr("href","withdramDeposit.html");
+						}else{
+							showToast("请确认银行卡状态正常");
+						}
+					}
+				}else{
+					$("#withdramDeposit").attr("href","javascript:void(0);");
+					//showToast("请添加银行卡");
+				}
+	       	 }else{
+	       	 	showToast(data.message);
+	       	 }
+		})
+		//银行卡状态函数
+		function getStatus(status){
+			var content = "";
+			switch (status){
+				case 0:
+					content ="正常";
+					break;	
+				case 1:
+					content ="锁定";
+					break;
+				case 2:
+					content ="待审核";
+					break;
+			}
+			return 	content;
+		}
+		//提现点击
+		$("#withdramDeposit").bind("click",function(){
+			var href = $(this).attr("href");
+			if(href=="javascript:void(0);"){
+				showToast("请添加银行卡");
+			}
+		})
+	})
+</script>
+</body>
+</html>

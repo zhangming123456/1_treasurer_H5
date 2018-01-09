@@ -39,8 +39,8 @@ module.exports = {
         }
         let str = [`{
             path: '/',
-            name:'Home',
-            component: function (resolve) {require(['@/view/Home'], resolve)}}`]
+            name:'Me',
+            component: function (resolve) {require(['@/view/Me'], resolve)}}`]
         list.forEach(one => {
           let filename = one
           let path = `/${toDash(one)}`

@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<meta name="format-detection" content="telephone=no,email=no,adress=no"/>
+<title>首页</title>
+<link rel="stylesheet" type="text/css" href="css/setting.css" />
+
+<link rel="stylesheet" type="text/css" href="css/bootstrap.min.css" />
+
+<link rel="stylesheet" type="text/css" href="css/common.css" />
+
+
+<style type="text/css">
+
+</style>
+</head>
+<body>
+<!-- 页面头部 -->
+<section>
+  <div class="navigation-bar"> <a href="JavaScript:history.go(-1)" class="z-01"></a> <span>提现详情</span> <a href="#" class="z-02"></a> </div>
+</section>
+<!-- 中间内容 -->
+<div class="m-wrapper">
+  <div class="wrapper   ">
+    <div class="login-password">
+      <div class="container-fluid">
+         <!-- <div class="personal">
+		  <div class="personalout"> <div class="plist"> <span class="picon10"></span><span class="ptit">消费</span><span class="status">交易成功</span> </div> </div>
+		  <div class="personal-list"> 
+			<div class="plist"> <span class="picon11"></span><span class="ptit">付款金额</span><span class="status">￥180.00</span></div> 
+		  </div>
+		  
+			<div class="c-detailinfo">
+			<dl>
+			  <dt>订单编号</dt>
+			  <dd>TF20178019002</dd>
+			</dl>
+			<dl>
+			  <dt>操作员</dt>
+			  <dd>牧歌</dd>
+			</dl>
+			<dl>
+			  <dt>订单类型</dt>
+			  <dd>外卖/堂食</dd>
+			</dl>
+			<dl>
+			  <dt>收入来源</dt>
+			  <dd>消费/充值 </dd>
+			</dl>
+			<dl>
+			  <dt>付款时间</dt>
+			  <dd>2017-06-29  20:00</dd>
+			</dl>
+			<dl>
+			  <dt>付款码</dt>
+			  <dd>TF20178019002 </dd>
+			</dl>
+		  </div>
+  
+	   </div> -->
+       
+       
+         <div class="index-list-wrap" id="list">
+		  </div>
+        
+      </div>
+    </div>
+  </div>
+</div>
+<input type="hidden" value="" id="id" /><!-- 临时定义 -->
+
+<!-- 页面底部 -->
+<nav class="footer border_t" id="footer"> <a href="index.html" class="" id="jx"><span></span>首页</a> <a href="list.html" id="lc" ><span></span>报表</a> <a href="#" id="jk" class=""><span></span>借款</a> <a href="usercenter.html" id="cf" class="nav_on"><span></span>我的账户</a> </nav>
+
+<script type="text/javascript" src="script/jquery-1.11.3.js"></script>
+<script type="text/javascript" src="script/common.js"></script>
+</body>
+</html>
+
+<script type="text/javascript" >
+$(function(){
+	$("#id").val(GetQueryString("id"));
+	
+	httpRequest("post","/tradeCash/findTradeCashDetailList",{"id":$("#id").val()},function(data){
+		if(data.code == 2000){
+			if( "" != data.value ){
+				var value=data.value;
+				for(var i=0;i<value.length;i++){
+					var status = '';//0处理中 1成功 2失败  3待确认//wangzi
+					if(0 == value[i].status){
+						status = '处理中';
+					}else if(1 == value[i].status){
+						status = '成功';
+					}else if(2 == value[i].status){
+						status = '失败';
+					}else if(3 == value[i].status){
+						status = '待确认';
+					}
+					var html = '<div class="index-pad"> <a href="#" class="index-list index-che">'+
+								  '<div class="list-tit clear"> <span class="fl tit-name"><i></i><strong>转出到银行卡</strong></span></div>'+
+								  '<div class="list-main">'+
+									'<div class="main-l"> <span class="per">'+status+'</span></div>'+
+									'<div class="main-l"> '+new Date(value[i].createTime).Format("yyyy-MM-dd hh:mm:ss");+'<i>'+status+'</i></div>'+
+								  '</div>'+
+								  '</a>'+ 
+							  	'</div>';
+					 $("#list").append(html);   
+				}
+			}       		 
+       	 }else{
+       		 alert(data.message);
+       	 }
+	})
+})
+</script>

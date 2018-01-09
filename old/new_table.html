@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html style="height:100%;">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+    <meta name="format-detection" content="telephone=no,email=no,adress=no"/>
+    <title>桌台选择</title>
+    <link rel="stylesheet" type="text/css" href="css/usercenter.css"/>
+    <link rel="stylesheet" href="./js/lib/mui/css/mui.min.css">
+    <link rel="stylesheet" href="./js/lib/iconFont/iconfont.css">
+    <link rel="stylesheet" type="text/css" href="./pages/table/new_table.css"/>
+    <script>
+        (function () {
+            document.addEventListener('DOMContentLoaded', function () {
+                var html = document.documentElement;
+                var windowWidth = html.clientWidth;
+                html.style.fontSize = windowWidth / 15 + 'px';
+            }, false);
+        })();
+    </script>
+</head>
+<body>
+<h2 class="tableHead">
+    <i class="azm-icon iconfont icon-tubiaozhizuomoban"></i>
+    <button>绑定店铺</button>
+</h2>
+<div class="tableLayout">
+    <div class="tableLeft mui-scroll-wrapper">
+        <ul class="mui-scroll" id="tableLeft">
+            <!--<li class="selected">你好</li>-->
+            <!--<li>你好</li>-->
+        </ul>
+    </div>
+    <div class="tableRight mui-scroll-wrapper">
+        <div class="mui-scroll" id="tableRight">
+            <!--<ul class="tableConItem selected">-->
+            <!--<li class="tableInfo">-->
+            <!--<header>-->
+            <!--<h3>名称：C4</h3>-->
+            <!--<p>桌台编号&nbsp;&nbsp;<span>46534654654654654</span></p>-->
+            <!--</header>-->
+            <!--<section>-->
+            <!--<p>二维码编号1：<span>46534654654654654</span></p>-->
+            <!--<p>二维码编号2：<span>46534654654654654</span></p>-->
+            <!--</section>-->
+            <!--<footer class="clear">-->
+            <!--<div class="btn-item fl">-->
+            <!--<button>绑定</button>-->
+            <!--</div>-->
+            <!--<div class="btn-item fl">-->
+            <!--<button>绑定</button>-->
+            <!--</div>-->
+            <!--</footer>-->
+            <!--</li>-->
+            <!--</ul>-->
+        </div>
+    </div>
+</div>
+<input class="result-qrcode" id="result-qrcode" value="" hidden/>
+</body>
+</html>
+<script type="text/javascript" src="script/jquery-1.11.3.js"></script>
+<script src="./js/lib/mui/js/mui.min.js"></script>
+<script src="./js/lib/template-native.js"></script>
+<script src="script/qrcode.lib.min.js"></script>
+<script type="text/javascript" src="script/common.js"></script>
+<script src="script/qrcode.js"></script>
+<script src="script/jweixin-1.2.0.js"></script>
+<script src="pages/table/new_table.js"></script>
+<script type="text/template" id="tableTabTemplate">
+    <% for(var i = 0; i < list.length; i++){ %>
+    <li class="<%= i==0 ? 'selected': '' %>"><%= list[i].subareaName %></li>
+    <% } %>
+</script>
+<script type="text/template" id="tableConItemTemplate">
+    <% for(var i = 0; i < list.length; i++){ %>
+    <ul class="tableConItem <%= i==3 ? 'selected': '' %>">
+        <% var item = list[i].tableList; %>
+        <% for(var j = 0; j < item.length; j++){ %>
+        <li class="tableInfo">
+            <header>
+                <h3>名称：<%= item[j].name %></h3>
+                <p>桌台编号&nbsp;&nbsp;<span><%= item[j].tableNo %></span></p>
+            </header>
+            <% var temp = item[j].qrTableList; %>
+            <pre><%= item[j] %></pre>
+            <section>
+                <% if (!temp) { %>
+                <p>二维码编号1：<span></span></p>
+                <p>二维码编号2：<span></span></p>
+                <% } else { %>
+                <% if (temp[0].serialNumber) { %>
+                <p>二维码编号1：<span></span></p>
+                <% } else { %>
+                <p>二维码编号1：<span><%= temp[0].serialNumber %></span></p>
+                <% } %>
+                <% if (temp[1].serialNumber) { %>
+                <p>二维码编号2：<span></span></p>
+                <% } else { %>
+                <p>二维码编号2：<span><%= temp[1].serialNumber %></span></p>
+                <% } %>
+                <% } %>
+            </section>
+            <footer class="clear">
+                <% if (temp && temp[0].serialNumber) { %>
+                <div class="btn-item fl" data-tableid="<%=item[j].id%>">
+                    <button>绑定1</button>
+                </div>
+                <% } else { %>
+                <div class="btn-item fl" data-tableid="<%=temp[0].id%>">
+                    <button>解绑2</button>
+                </div>
+                <% } %>
+                <% if (temp && temp[1].serialNumber) { %>
+                <div class="btn-item fl" data-tableid="<%=item[j].id%>">
+                    <button>绑定2</button>
+                </div>
+                <% } else { %>
+                <div class="btn-item fl" data-tableid="<%=temp[1].id%>">
+                    <button>解绑2</button>
+                </div>
+                <% } %>
+            </footer>
+        </li>
+        <% } %>
+    </ul>
+    <% } %>
+</script>
+<script type="text/javascript">
+    var _table = new Table();
+    _table.rendering(function () {
+        var tableId, id, flag = true,
+            oldId = $("#result-qrcode").val(), isBinded = true;
+        mui('.mui-scroll-wrapper').scroll({
+            scrollY: true, //是否竖向滚动
+            scrollX: false, //是否横向滚动
+            startX: 0, //初始化时滚动至x
+            startY: 0, //初始化时滚动至y
+            indicators: true, //是否显示滚动条
+            deceleration: 0.0006, //阻尼系数,系数越小滑动越灵敏
+            bounce: true //是否启用回弹
+        });
+        $('.tableLeft').on('click', 'a', function () {
+            mui('.tableRight').scroll().scrollTo(0, 0, 100);
+        });
+        /**
+         * 绑定桌台
+         */
+        $('#tableRight').on("click", ".qr-btn", function () {
+            flag = true;
+            tableId = $(this).closest(".tableInfo").attr("data-tableid");
+            var binded = $(this).hasClass('binded');
+            if (_table.isWeixin && !binded) {
+                wx.scanQRCode({
+                    needResult: 1, // 默认为0，扫描结果由微信处理，1则直接返回扫描结果，
+                    scanType: ["qrCode", "barCode"], // 可以指定扫二维码还是一维码，默认二者都有
+                    success: function (res) {
+                        var result = res.resultStr; // 当needResult 为 1 时，扫码返回的结果
+                        id = result;
+                        bindQRcode();
+                    },
+                    fail: function (res) {
+                        console.log(res);
+
+                    }
+                });
+
+            } else if (binded) {
+                mui.confirm('解绑桌台', '是否解绑桌台', ['是', '否'], function (res) {
+                    if (res.index === 0) {
+                        unBindQRcode();
+                    } else {
+                    }
+                });
+            }
+        });
+        /**
+         * 绑定店铺
+         */
+        $('#tableTop-right').on('click', '.qr-btn', function () {
+            flag = false;
+            tableId = '';
+            var binded = $(this).hasClass('binded');
+            if (_table.isWeixin && !binded) {
+
+                wx.scanQRCode({
+                    needResult: 1, // 默认为0，扫描结果由微信处理，1则直接返回扫描结果，
+                    scanType: ["qrCode", "barCode"], // 可以指定扫二维码还是一维码，默认二者都有
+                    success: function (res) {
+                        var result = res.resultStr; // 当needResult 为 1 时，扫码返回的结果
+                        id = result;
+
+                        bindQRcode();
+                    },
+                    fail: function (res) {
+
+                    }
+                });
+            } else if (binded) {
+                mui.confirm('解绑店铺', '是否解绑店铺', ['是', '否'], function (res) {
+                    if (res.index === 0) {
+                        unBindQRcode();
+                    } else {
+
+                    }
+                });
+            }
+        });
+        /**
+         * 非微信客户端绑定桌台
+         */
+        $(".result-qrcode").bind("blur", function () {
+            id = $("#result-qrcode").val();
+            bindQRcode();
+        });
+
+        /**
+         * 绑定二维码函数
+         */
+        function bindQRcode() {
+            if (!isBinded) {
+                return;
+            }
+            isBinded = false;
+            if (id && id.length === 0) {
+                isBinded = true;
+                return;
+            }
+            var data = {
+                resId: _table.resId,
+                id: id,
+                tableId: tableId,
+                handleId: _table.handleId,
+                type: 0
+            };
+            if (!flag) {
+                delete data.tableId;
+                data.type = 1;
+            }
+
+            httpRequest("post", "/qrtable/bindQRcode", data, function (data) {
+                if (data.returnStatus) {
+                    if (flag) {
+                        $(".qr-btn.selected").addClass("binded").text("解绑");
+                    } else {
+                        $('.tableTop-right').find('.qr-btn').addClass("binded").text("解绑");
+                    }
+                } else {
+                }
+            }, function (res) {
+                mui.toast(res.message);
+                var index = $('#tableLeft > a.selected').index();
+                _table.refresh(index);
+                isBinded = true;
+            });
+            id = '';
+        }
+
+        /**
+         * 解绑
+         */
+        function unBindQRcode() {
+            var data = {
+                resId: _table.resId,
+                tableId: tableId,
+                handleId: _table.handleId,
+                type: 0
+            };
+            if (!isBinded) {
+                return;
+            }
+            isBinded = false;
+            if (!flag) {
+                delete data.tableId;
+                data.type = 1
+            }
+            httpRequest("post", "/qrtable/unBoundQRcode", data, function (data) {
+                if (data.returnStatus) {
+                    if (flag) {
+                        $(".qr-btn.selected").addClass("binded").text("绑定");
+                    } else {
+                        $('.tableTop-right').find('.qr-btn').addClass("binded").text("绑定");
+                    }
+                } else {
+                }
+            }, function (res) {
+                mui.toast(res.message);
+                var index = $('#tableLeft > a.selected').index();
+                _table.refresh(index);
+                isBinded = true;
+            });
+
+            id = '';
+        }
+    });
+</script>

@@ -10,12 +10,14 @@
           <flow-state is-done state="3" title="完善员工资料并保存"></flow-state>
         </flow>
       </flexbox-item>
-      <flexbox-item class="azm-img-box" :span="3/4" style="margin-top: -55px;">
+      <flexbox-item class="azm-img-box" :span="3/4">
         <img src="../assets/mePage.jpg" alt="" class="azm-img">
       </flexbox-item>
     </flexbox>
     <footer>
-      <x-button type="primary" class="azm-font-cell" :show-loading="isSubmit" style="border-radius:99px;">立即扫描
+      <x-button type="primary" class="azm-font-cell" :show-loading="isSubmit" style="border-radius:99px;"
+                @click.native="scanQRCode">
+        立即扫描
       </x-button>
     </footer>
   </div>
@@ -51,7 +53,69 @@
         e.cancelBubble = true
       },
       routerLink (path, params) {
-        this.$router.push({path, params})
+        this.$router.push({path, query: params})
+      },
+      scanQRCode () {
+        let that = this,
+          data = {}
+        if (that.$device.isWechat) {
+          that.$wechat.scanQRCode({
+            needResult: 1, // 默认为0，扫描结果由微信处理，1则直接返回扫描结果，
+            scanType: ['qrCode', 'barCode'], // 可以指定扫二维码还是一维码，默认二者都有
+            success: function (res) {
+              var result = res.resultStr // 当needResult 为 1 时，扫码返回的结果
+              data = that.$azm.querystring.parse(result)
+              if (data.shiroUserId) {
+                that.$vux.loading.show({text: 'Loading'})
+
+                that.$store.dispatch('ApiService.judgmentShop', data).then(
+                  (rsp) => {
+                    if (!rsp.data.returnStatus && rsp.data.code == 2000) {
+                      that.routerLink('/me-staff-info', {
+                        shiro_user_id: data.shiroUserId,
+                        isBindResUser: 1,
+                        type: 2
+                      })
+                    } else {
+                      that.$toast(rsp.data.message)
+                    }
+                    that.$vux.loading.hide()
+                  }
+                )
+              } else {
+                that.$vux.toast.text('用户ID为空')
+              }
+            },
+            fail (rsp) {
+              that.$toast('网络开小差了，请稍后再试~')
+              // console.log(rsp)
+              // let result = 'shiroUserId=ad5e63f3a1f84f89b834e121a0f71a04&resId=&type=',
+              //   data = that.$azm.querystring.parse(result)
+              // debugger
+              // if (data.shiroUserId) {
+              //   that.$vux.loading.show({text: 'Loading'})
+              //   that.$store.dispatch('ApiService.judgmentShop', data).then(
+              //     (rsp) => {
+              //       if (!rsp.data.returnStatus && rsp.data.code == 2000) {
+              //         that.routerLink('/me-staff-info', {
+              //           shiro_user_id: data.shiroUserId,
+              //           isBindResUser: 1,
+              //           type: 2
+              //         })
+              //       } else {
+              //         that.$toast(rsp.data.message)
+              //       }
+              //       that.$vux.loading.hide()
+              //     }
+              //   )
+              // } else {
+              //   that.$vux.toast.text('用户ID为空')
+              // }
+            }
+          })
+        } else {
+          that.$toast('请进入一号掌柜微信公众号使用哦~')
+        }
       },
       onShow () {},
       onHide () {},
@@ -77,6 +141,9 @@
       }
       box-sizing: border-box;
       padding: 10px 80px;
+    }
+    .azm-img-box {
+      margin-top: -55px;
     }
   }
 </style>

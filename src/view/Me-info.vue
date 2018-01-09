@@ -22,6 +22,11 @@
     <group title="所在企业" class="group">
       <cell class="group_item" :title="userInfo.res_name" :value="userInfo.trueName"></cell>
     </group>
+    <group title="" class="group btn-footer">
+      <cell class="group_item" @click.native="logOut">
+        <p slot="after-title" class="text-center">退出账户</p>
+      </cell>
+    </group>
   </div>
 </template>
 
@@ -68,7 +73,7 @@
             value: 2
           }
         ],
-        imagesUrl: that.azm_config.imageUrl
+        imagesUrl: that.$azm.config.imageUrl
       }
     },
     created () {
@@ -78,11 +83,10 @@
     },
     methods: {
       openImg (e, position) {
-        console.log(e)
         try {
           let url = window.document.querySelector('#qrcodeImg img').src
           if (url) {
-            this.Vant_ImagePreview([
+            this.$vant.ImagePreview([
               url
             ], typeof position === 'number' ? position : 0)
           }
@@ -93,7 +97,11 @@
         e.cancelBubble = true
       },
       routerLink (path, params) {
-        this.$router.push({path, params})
+        this.$router.push({path, query: params})
+      },
+      logOut () {
+        this.$store.dispatch('logOut')
+        this.routerLink('/login')
       },
       sexFormat (value, name) {
         let v = Number(value[0])
@@ -161,6 +169,9 @@
 <style scoped lang='less'>
   .me_info_page {
     .group {
+      &.btn-footer {
+        margin-top: 50px;
+      }
       .weui-cells__title {
         font-size: 14px;
       }

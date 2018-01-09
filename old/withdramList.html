@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+    <meta name="format-detection" content="telephone=no,email=no,adress=no"/>
+    <title>提现记录</title>
+    <link rel="stylesheet" href="css/weui.min.css"/>
+    <link rel="stylesheet" href="css/withdram.css"/>
+    <link rel="stylesheet" href="css/mescroll.min.css"/>
+    <style type="text/css">
+        #withdramList {
+            position: absolute;
+            margin: auto;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            right: 0;
+        }
+
+        .mescroll {
+            height: auto;
+        }
+    </style>
+</head>
+<body>
+
+<!-- 中间内容 -->
+<div class="withdramList mescroll" id="withdramList">
+    <ul class="incomeList myScrollbar" id="incomeList">
+
+    </ul>
+</div>
+<script type="text/javascript" src="script/jquery-1.11.3.js"></script>
+<script type="text/javascript" src="script/common.js"></script>
+<script type="text/javascript" src="script/mescroll.min.js"></script>
+<script type="text/javascript">
+    $(function () {
+        var resId = getResId("resId");
+        var dataList = [], pageNum = 1, pageSize = 10, totalSize = 0;
+        var downFlag = true;
+        var downCallback = function (a) {
+            if (!downFlag) {
+                return;
+            }
+            downFlag = false;
+            pageNum = 1;
+            dataList = [];
+            var page = {
+                num: pageNum,
+                size: pageSize
+            };
+            if (a.optUp.isLock) {
+                meScroll.lockUpScroll(false);
+                meScroll.resetUpScroll(false);
+                downFlag = true;
+            } else {
+                getFindTradeCashList(page, function (data) {
+                    if (data.code == 2000) {
+                        $("#incomeList").empty();
+                        dataList[pageNum - 1] = data.value;
+                        createDom();
+                        setTimeout(function () {
+                            meScroll.endSuccess();
+                        }, 1000);
+                    } else {
+                        meScroll.endErr();
+                    }
+                }, function () {
+                    downFlag = true;
+                });
+            }
+        };
+        var upFlag = true;
+        var upCallback = function (page) {
+            if (!upFlag) {
+                return;
+            }
+            upFlag = false;
+            pageNum = page.num;
+            getFindTradeCashList(page, function (data) {
+                if (data.code == 2000) {
+                    dataList[pageNum - 1] = data.value;
+//                mescroll.endBySize(data.value.length, totalSize);
+                    $(".mescroll-upwarp").css({display: 'block'});
+                    setTimeout(function () {
+                        createDom();
+                        meScroll.endSuccess(data.value.length, data.value.length == page.size);
+                    }, 1000);
+                } else {
+                    meScroll.endErr();
+                }
+            }, function () {
+                upFlag = true;
+            });
+        };
+        var meScroll = new MeScroll('withdramList',
+            {
+                down: {
+                    auto: false,
+                    callback: downCallback //下拉刷新的回调
+                },
+                up: {
+                    auto: true,
+                    toTop: {
+                        src: './images/toTop-icon.png',
+                        offset: 20,
+                        warpClass: "mescroll-totop",
+                        showClass: "mescroll-fade-in",
+                        hideClass: "mescroll-fade-out",
+                        duration: 300
+                    },
+                    htmlNodata: '<p class="upwarp-nodata">-------------- 我是有底线的 --------------</p>',
+                    callback: upCallback //上拉加载的回调
+                }
+            }
+        );
+
+        function getFindTradeCashList(page, cb, reject) {
+            httpRequest("post", "/tradeCash/findTradeCashList",
+                {
+                    "resId": resId,
+                    pageNum: page.num,
+                    pageSize: page.size
+                },
+                function (data) {
+                    cb && cb(data);
+                    if (data.code != 2000) {
+                        showToast(data.message);
+                    }
+                }, reject);
+        }
+
+        function createDom() {
+            var incomeList = $("#incomeList");
+            var value = [];
+            totalSize = 0;
+            var ul = document.createElement('ul');
+            for (var j = 0; j < dataList.length; j++) {
+                totalSize += dataList[j].length;
+                value = dataList[j];
+                for (var i = 0; i < value.length; i++) {
+                    var status = '';//0处理中 1成功 2失败  3待确认//wangzi
+                    if (0 == value[i].status) {
+                        status = '<p class="withdrawstate red">处理中</p>';
+                    } else if (1 == value[i].status) {
+                        status = '<p class="withdrawstate">交易成功</p>';
+                    } else if (2 == value[i].status) {
+                        status = '<p class="withdrawstate red">交易失败</p>';
+                    } else if (3 == value[i].status) {
+                        status = '<p class="withdrawstate red">待确认</p>';
+                    }
+                    var html = '<li><a href="withdramDetail.html?id=' + value[i].id + '" class="withdramItem clear">'
+                        + '<div class="fl"> <h3 class="withdrawtitle">转出到银行卡</h3>'
+                        + '<p class="withdrawtime">' + new Date(value[i].createTime).Format("yyyy-MM-dd hh:mm:ss") + '</p></div>'
+                        + '<i class="moreIco"></i>'
+                        + '<div class="fr wid55">'
+                        + '<h3 class="withdrawprice">' + parseFloat(value[i].amount).toFixed(2) + '</h3>'
+                        + status
+                        + '</div></a></li>';
+                    $(ul).append(html);
+                }
+            }
+            if (totalSize > 0) {
+                incomeList.html($(ul).html());
+            } else {
+                $('.mescroll-upwarp').css({visibility: 'visible'}).html('<p class="upwarp-nodata">-------------- 暂无更多数据 --------------</p>');
+            }
+        }
+    })
+</script>
+</body>
+</html>

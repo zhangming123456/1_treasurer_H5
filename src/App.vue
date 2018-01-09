@@ -1,8 +1,15 @@
 <template>
   <div id="app">
     <loading v-model="isLoading"></loading>
+    <van-nav-bar fixed class="navBar" :title="navBarTitle" v-if="!transferObj.isTabbar && !transferObj.navBarHide"
+                 left-text="返回"
+                 :right-text="navBarBtn.rightText"
+                 left-arrow
+                 @click-left="onClickLeft"
+                 @click-right="onClickRight"></van-nav-bar>
+    <div class="navBar" v-if="!transferObj.isTabbar && !transferObj.navBarHide"></div>
     <router-view @transfer='transferFun'></router-view>
-    <tabbar v-if="transferObj.isTabbar">
+    <tabbar v-if="transferObj.isTabbar&&false">
       <tabbar-item :selected="transferObj.tabbarLink === 'home'" link="/">
         <img slot="icon" src="../assets/icon/nav_form.png">
         <img slot="icon-active" src="../assets/icon/nav_form_active.png">
@@ -31,9 +38,11 @@
   import { Tabbar, TabbarItem, Loading } from 'vux'
   import { mapState } from 'vuex'
   import util from 'libs/util'
+  import VanNavBar from 'vant/packages/nav-bar/index'
 
   export default {
     components: {
+      VanNavBar,
       Tabbar,
       TabbarItem,
       Loading
@@ -45,121 +54,44 @@
         transferObj: {
           isTabbar: false,
           tabbarLink: 'home',
-          backgroundColor: '#FFF'
+          backgroundColor: '#FFF',
+          navBarHide: false
         }
       }
     },
     computed: {
       ...mapState({
-        isLoading: state => state.vux.isLoading
+        isLoading: state => state.vux.isLoading,
+        navBarTitle: state => state.vux.title,
+        navBarBtn: state => state.vux.navBarBtn,
       })
     },
     created () {
-      let wx = this.$wechat,
-        store = this.$store,
-        config = this.azm_config
-      console.log(this, '---------')
-      this.$store.commit('ApiService.toLogin')
-      if (util.isEmptyValue(this.$store.state.ApiService.loginInfo)) {
-        /**
-         * -------------------------- 微信分享 ----------------------
-         * 请不要直接复制下面代码
-         */
-        if (util.is_wechat_client()) {
-          wx.ready(() => {
-            wx.onMenuShareAppMessage({
-              title: 'VUX', // 分享标题
-              desc: '基于 WeUI 和 Vue 的移动端 UI 组件库',
-              link: 'https://vux.li?x-page=wechat_share_message',
-              imgUrl: 'https://static.vux.li/logo_520.png'
-            })
 
-            wx.onMenuShareTimeline({
-              title: 'VUX', // 分享标题
-              desc: '基于 WeUI 和 Vue 的移动端 UI 组件库',
-              link: 'https://vux.li?x-page=wechat_share_timeline',
-              imgUrl: 'https://static.vux.li/logo_520.png'
-            })
-          })
-          const jsApiList = [
-            'checkJsApi',
-            'onMenuShareTimeline',
-            'onMenuShareAppMessage',
-            'onMenuShareQQ',
-            'onMenuShareWeibo',
-            'onMenuShareQZone',
-            'hideMenuItems',
-            'showMenuItems',
-            'hideAllNonBaseMenuItem',
-            'showAllNonBaseMenuItem',
-            'translateVoice',
-            'startRecord',
-            'stopRecord',
-            'onVoiceRecordEnd',
-            'playVoice',
-            'onVoicePlayEnd',
-            'pauseVoice',
-            'stopVoice',
-            'uploadVoice',
-            'downloadVoice',
-            'chooseImage',
-            'previewImage',
-            'uploadImage',
-            'downloadImage',
-            'getNetworkType',
-            'openLocation',
-            'getLocation',
-            'hideOptionMenu',
-            'showOptionMenu',
-            'closeWindow',
-            'scanQRCode',
-            'chooseWXPay',
-            'openProductSpecificView',
-            'addCard',
-            'chooseCard',
-            'openCard'
-          ]
-          let url = window.location.href.split('#')[0],
-            debug = false
-          if (process.env.NODE_ENV !== 'production') {
-            url = config.host + '/H5'
-            debug = true
-          }
-          store.dispatch('ApiService.wxScanQRcode', {url}).then(
-            (rsp) => {
-              if (2000 == rsp.data.code && util.isEmptyValue(rsp.data.value)) {
-                let data = rsp.data.value
-                wx.config({
-                  debug,
-                  appId: data.appId,
-                  timestamp: data.timestamp,
-                  nonceStr: data.nonceStr,
-                  signature: data.signature,
-                  jsApiList
-                })
-              }
-            },
-            (rsp) => {
-
-            }
-          )
-        }
-      } else {
-        this.$vux.alert.show({
-          title: '提示',
-          content: '用户未登录',
-          onShow () {
-//            _this.$router.go('baidu.com')
-          },
-          onHide () {
-//            _this.$router.go(-1) // 没有token值 用户未登录跳回上一个页面
-          }
-        })
-      }
     },
     methods: {
       transferFun (a) {
         this.transferObj = a
+      },
+      onScroll (e) {
+        console.log(e)
+      },
+      routerLink (path, params) {
+        this.$router.push({path, query: params})
+      },
+      onClickLeft () {
+        if (this.navBarBtn.clickLeft) {
+          this.navBarBtn.clickLeft()
+        } else {
+          this.$router.go(-1)
+        }
+      },
+      onClickRight () {
+        if (this.navBarBtn.clickRight) {
+          this.navBarBtn.clickRight()
+        } else {
+
+        }
       }
     }
   }
@@ -173,9 +105,25 @@
   @import '~vux/src/styles/close.less';
   @import '~vant/lib/vant-css/index.css';
 
+  body {
+    position: relative;
+    > div {
+      position: relative;
+    }
+  }
+
+  .vux-confirm .weui-dialog {
+    position: fixed !important;
+  }
+
   #app {
     width: 100%;
     height: 100%;
+    .navBar {
+      z-index: 1000;
+      height: 46px;
+      line-height: 46px;
+    }
     .weui-tabbar {
       position: fixed;
     }

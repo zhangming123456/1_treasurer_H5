@@ -1,0 +1,118 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<meta name="format-detection" content="telephone=no,email=no,adress=no"/>
+<title>账单详情</title>
+<link rel="stylesheet" type="text/css" href="css/common.css" />
+
+</head>
+<body style="background: #fff;">
+
+<!-- 中间内容 -->
+	<div class="wrapper">
+		<div class = "bankinfo">
+			<div class="icon">
+				<img id="payType" src="images/u888.png"/>
+			</div>
+			<div class="leftinfo">
+				<strong id ="status"></strong>
+			</div>
+			<div class="rightinfo">
+				<span>交易成功</span>
+			</div>
+		</div>
+		<div class="line"></div>
+		<div class = "bankinfo palymoney">
+			<div class="leftinfo">
+				<span>付款金额</span>
+			</div>
+			<div class="rightinfo">
+				<strong id = "pay_money"></strong>
+			</div>
+		</div>
+		<div class="custominfo">
+			<ul>
+				<li>
+					<span class = "name">订单编号</span>
+					<span class = "num" id = "order_no"></span>
+				</li>
+				<li>
+					<span class = "name">操作员</span>
+					<span class = "num" id = "user_name"></span>
+				</li>
+				<li>
+					<span class = "name">订单类型</span>
+					<span class = "num" id = "consumer_type"></span>
+				</li>
+				<li>
+					<span class = "name">收入来源</span>
+					<span class = "num" id ="typeTwo"></span>
+				</li>
+				<li>
+					<span class = "name">付款时间</span>
+					<span class = "num" id ="pay_time"></span>
+				</li>
+			</ul>
+		</div>
+		<div class ="messagebox" id = "tipinfo">
+	      	<span></span>
+	    </div>
+	</div>
+<script type="text/javascript" src="script/jquery-1.11.3.js"></script>
+<script type="text/javascript" src="script/common.js"></script>
+</body>
+</html>
+<script type="text/javascript" >
+$(function(){
+	var resId = getResId("resId");
+	httpRequest("post","/tradeDetail/findTradeDetailByOrder",{"resId":resId,"orderNo":GetQueryString("orderNo"),"type":GetQueryString("type")},function(data){
+		if(data.code == 2000){
+			if( null != data.value ){
+				var status = '';
+				if(data.value.status==0){
+					status="待入账";
+				}else if(data.value.status==1){
+					status="已入账";
+				}else if(data.value.status==2){
+					status="已结算";
+				}else if(data.value.status==3){
+					status="已退款";
+				}
+				var consumer_type ="";
+				if(data.value.consumer_type==0){
+					consumer_type="堂食";
+				}else if(data.value.consumer_type==1){
+					consumer_type="快餐";
+				}else if(data.value.consumer_type==2){
+					consumer_type="外卖";
+				}
+				
+				if(data.value.pay_type==4){
+					$("#payType").attr("src","images/u922.png");
+				}else if(data.value.pay_type==2){
+					$("#payType").attr("src","images/u888.png");
+				}
+				if(data.value.source==1){
+					$("#typeTwo").text("充值");
+					$(".custominfo ul li").eq(2).hide();
+				}else if(data.value.source==0){
+					$("#typeTwo").text("消费");
+				}
+				$("#status").text(status);
+				$("#pay_money").text(data.value.pay_money);
+				$("#order_no").text(data.value.order_no);
+				$("#user_name").text(data.value.user_name);
+				$("#consumer_type").text(consumer_type);
+				$("#pay_time").text(datetimeFormat(data.value.pay_time));
+			}       		 
+       	 }else{
+       		 $("#tipinfo").css("visibility","visible").find("span").html(data.message);
+       	 }
+	})
+})
+
+ 
+</script>
+

@@ -1,0 +1,876 @@
+html {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    _background-image: url(n1othing.txt);
+}
+
+body,
+div,
+span,
+object,
+iframe,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+blockquote,
+pre,
+a,
+abbr,
+acronym,
+address,
+code,
+del,
+dfn,
+em,
+img,
+q,
+dl,
+dt,
+dd,
+ol,
+ul,
+li,
+fieldset,
+form,
+label,
+legend,
+caption,
+tbody,
+tfoot,
+thead,
+article,
+aside,
+dialog,
+figure,
+footer,
+header,
+hgroup,
+nav,
+section {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    font-size: 100%;
+    vertical-align: baseline;
+}
+
+ol,
+ul,
+li {
+    list-style: none;
+}
+
+body {
+    line-height: 1.5;
+    background: white;
+    font-family: 'Microsoft Yahei', Arial, Helvetica, sans-serif;
+    font-size: 12px;
+    color: #333;
+}
+
+table,
+tr,
+th,
+td {
+    border-collapse: collapse;
+    margin: 0;
+    padding: 0;
+    font-size: 100%;
+    vertical-align: baseline;
+}
+
+caption,
+th,
+td {
+    text-align: left;
+    font-weight: normal;
+    float: none !important;
+}
+
+table,
+th,
+td,
+select,
+img,
+input,
+object {
+    vertical-align: middle;
+}
+
+:focus {
+    outline: 0;
+}
+
+input,
+select {
+    margin: 0;
+}
+
+a {
+    color: #005EA7;
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: none;
+}
+
+p,
+a,
+td {
+    word-wrap: break-word;
+    word-break: break-all;
+}
+
+img {
+    border: none;
+    vertical-align: top;
+}
+
+textarea {
+    resize: none;
+    border: 1px solid #ccc;
+}
+
+textarea:hover {
+    border-color: #ccc;
+}
+
+dfn {
+    font-style: normal;
+    font-family: Arial;
+}
+
+.layout {
+    padding: 0 15px;
+    overflow: hidden;
+}
+
+.tipinfo {
+    font-size: 12px;
+    color: #ff0000;
+    line-height: 120%;
+}
+
+.commonTips {
+    visibility: hidden;
+    padding: 10px 20px;
+    background: rgba(0, 0, 0, 0.8);
+    font-size: 14px;
+    color: #fff;
+    line-height: 120%;
+    text-align: center;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    border-radius: 25px;
+    white-space: nowrap;
+    z-index: 99;
+}
+
+.btnBox {
+    text-align: center;
+}
+
+.btn {
+    border-radius: 25px;
+    padding: 0 30px;
+    min-width: 140px;
+    height: 40px;
+    line-height: 40px;
+    text-align: center;
+    display: inline-block;
+    vertical-align: middle;
+    font-size: 18px;
+}
+
+.btn.blue {
+    color: #fff;
+    background: #34c9e1;
+}
+
+.rec_btn {
+    border-radius: 3px;
+    height: 1.8rem;
+    line-height: 1.8rem;
+    text-align: center;
+    display: inline-block;
+    vertical-align: middle;
+    font-size: 0.6rem;
+}
+
+.rec_btn.all_btn {
+    width: 100%;
+}
+
+.rec_btn.blue {
+    color: #fff;
+    background: #34c9e1;
+}
+
+.fl {
+    float: left;
+}
+
+.fr {
+    float: right;
+}
+
+/**
+ * 循环初始字体大小:
+ *     @end   : 结束字体大小(数字),必须输;
+ *     @begin : 开始字体大小(数字),可以省略;
+ *     @un    : 字体单位(字符串),可以省略;
+ *     例子   : .base-fonts(28);
+ */
+/**
+ * 循环初始默认样式:
+ *     @name  : 样式前缀名,必须输;
+ *    @style : 设置样式,必须输;
+ *    @end   : 结束样式,必须输;
+ *    @begin : 开始样式,可以省略;
+ *    @mult  : 循环累加倍数,可以省略;
+ *     @un    : 字体单位(字符串),可以省略;
+ *     例子   : .base-styles(mb,margin-bottom,30,5);
+ */
+/* 强制折行 */
+/**
+ * css3动画,只能写在调用页面,配合.css3( @style,@frames )使用;
+ * 例子 :  
+ * .keyframes(starts,{
+        0% {transform:rotate(0deg)}
+        100%{transform:rotate(360deg)}
+    });
+    .className{.css3(animation,starts 8s linear infinite .3s );}
+ */
+/* 默认浮动 */
+.fl {
+    float: left;
+}
+
+.fr {
+    float: right;
+}
+
+.clear {
+    *zoom: 1;
+}
+
+.clear:after {
+    content: "";
+    display: block;
+    height: 0;
+    clear: both;
+    visibility: hidden;
+    overflow: hidden;
+}
+
+/* 显示隐藏 */
+.hide {
+    display: none;
+}
+
+.show {
+    display: block;
+}
+
+/* 文本方向 */
+.tal {
+    text-align: left;
+}
+
+.tar {
+    text-align: right;
+}
+
+.tac {
+    text-align: center;
+}
+
+/* 截取 */
+.over {
+    overflow: hidden;
+}
+
+.ofv {
+    overflow: visible !important;
+}
+
+/* 定位 */
+.abs {
+    position: absolute;
+}
+
+.rel {
+    position: relative;
+}
+
+/* 鼠标手势 */
+.cursor {
+    cursor: pointer;
+}
+
+.def {
+    cursor: default;
+}
+
+/* 。。。。 */
+.ellipsis {
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+
+/* 强制折行 */
+.break-word {
+    word-break: break-all;
+    /*支持IE，chrome，FF不支持*/
+}
+
+/*****个人中心*****/
+.userInfoWrapper {
+    padding: 1.28rem 0.84rem 1.5rem 2rem;
+    border-bottom: 1px solid #e3e9f3;
+}
+
+.userInfoWrapper > a {
+    font-size: 0;
+}
+
+.userInfoWrapper .userHead {
+    width: 2.8rem;
+    height: 2.8rem;
+    border-radius: 50%;
+    overflow: hidden;
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.userInfoWrapper .personInfo {
+    padding-left: 1.5rem;
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.userInfoWrapper .personInfo .username {
+    font-size: 0.6rem;
+    color: #34c9e1;
+    line-height: 100%;
+    padding-bottom: 0.3rem;
+}
+
+.userInfoWrapper .personInfo .usershopname {
+    font-size: 0.48rem;
+    color: #96a0b2;
+    line-height: 100%;
+}
+
+.userInfoWrapper .moreIco {
+    float: right;
+    margin-top: 1.1rem;
+    width: 0.28rem;
+    height: 0.5rem;
+    background-image: url(../images/icon/enter.png);
+    background-repeat: no-repeat;
+    background-size: 100%;
+    background-position: center;
+}
+
+.personClassify {
+    margin-top: 0;
+}
+
+.personClassify:before {
+    border: none;
+}
+
+.personClassify .weui-cell__bd p {
+    font-size: 0.52rem;
+}
+
+.personClassify .weui-cell__ft {
+    padding-right: 0.84rem;
+    font-size: 0.48rem;
+}
+
+.personClassify .weui-cell__hd img {
+    vertical-align: middle;
+    padding: 0 0.7rem 0 0.3rem;
+}
+
+.personClassify .weui-cell__hd img.uc_centerico1 {
+    width: 0.66rem;
+}
+
+.personClassify .weui-cell__hd img.uc_centerico2 {
+    width: 0.64rem;
+}
+
+.personClassify .weui-cell__hd img.uc_centerico3 {
+    width: 0.58rem;
+}
+
+.personClassify .weui-cell__hd img.uc_centerico4 {
+    width: 0.66rem;
+}
+
+.personClassify .weui-cell__hd img.uc_centerico5 {
+    width: 0.68rem;
+}
+
+.personClassify .weui-cell__hd img.uc_centerico6 {
+    width: 0.68rem;
+}
+
+.personClassify .weui-cell__hd img.uc_centerico7 {
+    width: 0.7rem;
+}
+
+.personClassify .weui-cell__hd img.uc_centerico8 {
+    width: 0.8rem;
+}
+
+.personClassify .weui-cell__hd img.uc_centerico9 {
+    width: 0.76rem;
+}
+
+.personClassify .weui-cell__hd img.uc_centerico10 {
+    width: 0.68rem;
+}
+
+/*************我的账户*************/
+.myaccountInfo {
+    margin: 0.6rem 0;
+    padding: 0 0.4rem;
+    background: #34c9e1;
+    border-radius: 5px;
+    box-shadow: 0 0.3rem 0.48rem rgba(51, 185, 207, 0.3);
+}
+
+.myaccountInfo .serviceTips {
+    font-size: 0.48rem;
+    text-align: center;
+    line-height: 1.48rem;
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.myaccountInfo .accountInfoList {
+    padding: 0.9rem 0 0.76rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.5);
+}
+
+.myaccountInfo .accountInfoList .accountInfoItem {
+    float: left;
+    width: 50%;
+    box-sizing: border-box;
+    padding-left: 0.7rem;
+}
+
+.myaccountInfo .accountInfoList .accountInfoItem h3 {
+    font-size: 0.48rem;
+    color: #fff;
+    line-height: 100%;
+    padding-bottom: 0.5rem;
+}
+
+.myaccountInfo .accountInfoList .accountInfoItem p {
+    font-size: 0.96rem;
+    color: #fff;
+    line-height: 100%;
+}
+
+.accountFunc {
+    padding-top: 1.5rem;
+}
+
+.accountFunc li {
+    float: left;
+    width: 25%;
+    text-align: center;
+}
+
+.accountFunc li a {
+    display: block;
+    font-size: 0.48rem;
+    color: #282e3a;
+    line-height: 120%;
+    padding-top: 1.4rem;
+    background-repeat: no-repeat;
+    background-position: center top;
+}
+
+.accountFunc li a.withdram {
+    background-image: url(../images/icon/acc_ico3.png);
+    background-size: 0.84rem 0.8rem;
+}
+
+.accountFunc li a.bankcord {
+    background-image: url(../images/icon/acc_ico2.png);
+    background-size: 1.02rem 0.7rem;
+}
+
+.accountFunc li a.dealdetail {
+    background-image: url(../images/icon/acc_ico1.png);
+    background-size: 0.96rem 0.96rem;
+}
+
+.accountFunc li a.withlist {
+    background-image: url(../images/icon/acc_ico4.png);
+    background-size: 0.84rem 0.84rem;
+}
+
+.nmyaccount {
+    height: 100%;
+    background: #f5f7fa;
+}
+
+.nmyaccount .naccountInfoList {
+    padding: 0.9rem 0 0.7rem;
+    background: #fff;
+    margin-bottom: 0.32rem;
+}
+
+.nmyaccount .naccountInfoList .naccountInfoItem {
+    float: left;
+    width: 100%;
+}
+
+.nmyaccount .naccountInfoList .naccountInfoItem .infoTitle {
+    font-size: 0.48rem;
+    color: #979fb2;
+    line-height: 120%;
+    padding-bottom: 0.4rem;
+    text-align: center;
+}
+
+.nmyaccount .naccountInfoList .naccountInfoItem .infoval {
+    font-size: 0.96rem;
+    color: #f07d74;
+    line-height: 100%;
+    text-align: center;
+}
+
+.nmyaccount .naccountInfoList .naccountInfoItem .serviceTips {
+    font-size: 0.4rem;
+    color: rgba(151, 159, 178, 0.6);
+    line-height: 100%;
+    text-align: center;
+    padding-top: 0.3rem;
+}
+
+.nmyaccount .naccountInfoList .naccountInfoItem:first-child {
+    position: relative;
+}
+
+.nmyaccount .naccountInfoList .naccountInfoItem:first-child:after {
+    content: "";
+    position: absolute;
+    right: 0;
+    top: 0.7rem;
+    width: 1px;
+    height: 1rem;
+    background: #f3f4f5;
+}
+
+.nmyaccount .naccountInfoList .naccountInfoItem:first-child .infoval {
+    color: #34c9e1;
+}
+
+/****************收入明细****************/
+.dataBar {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    height: 40px;
+    background: #f2f2f2;
+    text-align: center;
+    z-index: 9;
+}
+
+.dataBar .rendezvous-input {
+    text-align: center;
+}
+
+.dataBar .rendezvous-popup {
+    left: 50%;
+    margin-left: -8rem;
+}
+
+.dataBar .rendezvous-input-date {
+    width: 30%;
+    height: 100%;
+    border: none;
+    background: none;
+    text-align: center;
+    color: #999999;
+    height: 40px;
+}
+
+.dataBar #chooseData {
+    border: none;
+    width: 25%;
+    height: 100%;
+    text-align: center;
+    background: none;
+}
+
+.dataBar ins {
+    display: inline-block;
+    vertical-align: middle;
+    width: 30px;
+    height: 30px;
+}
+
+.dataBar ins.leftBtn {
+    background: url(../images/u10.png) no-repeat center;
+    background-size: 100%;
+}
+
+.dataBar ins.rightBtn {
+    background: url(../images/u34.png) no-repeat center;
+    background-size: 100%;
+}
+
+.mescroll {
+    position: fixed;
+    top: 40px;
+    bottom: 0;
+    height: auto;
+}
+
+.incomeList {
+    background: #fff;
+}
+
+.incomeList .incomeItem {
+    padding: 15px;
+    border-bottom: 1px solid #ccc;
+    display: flex;
+    display: -webkit-flex;
+    position: relative;
+}
+
+.incomeList .incomeItem:active {
+    background: #eee;
+}
+
+.incomeList .incomeItem .incomeInfo {
+    flex: 1;
+    padding-left: 15px;
+}
+
+.incomeList .incomeItem .incomeInfo h3 {
+    font-size: 14px;
+    color: #4a4a4a;
+    line-height: 120%;
+    padding-bottom: 10px;
+}
+
+.incomeList .incomeItem .incomeInfo p {
+    font-size: 14px;
+    color: #999999;
+    line-height: 120%;
+}
+
+.incomeList .incomeItem ins {
+    position: absolute;
+    right: 25px;
+    top: 50%;
+    width: 7px;
+    height: 13px;
+    background: url(../images/icon/enter.png) no-repeat center;
+    background-size: cover;
+    margin-top: -12px;
+}
+
+.incomeDetail .incomeTotal {
+    padding: 1rem 0 0;
+    text-align: center;
+    margin-bottom: 1rem;
+}
+
+.incomeDetail .incomeTotal h2 {
+    font-size: 0.92rem;
+    color: #333;
+    line-height: 120%;
+    padding-bottom: 0.4rem;
+}
+
+.incomeDetail .incomeTotal p {
+    font-size: 0.72rem;
+    color: #999999;
+    line-height: 100%;
+}
+
+.incomeDetail .perch {
+    display: block;
+    width: 100%;
+    height: 0.4rem;
+    background: #f2f2f2;
+}
+
+.incomeDetail .incomeInfo {
+    padding: 0.8rem 0;
+}
+
+.incomeDetail .incomeInfo .incomeOrder {
+    border-top: 1px solid #cccccc;
+    padding-top: 0.4rem;
+}
+
+.incomeDetail .incomeInfo .incomeInfoItem {
+    padding-bottom: 0.7rem;
+    padding-left: 5%;
+    font-size: 0.48rem;
+    color: #999999;
+    line-height: 100%;
+}
+
+.incomeDetail .incomeInfo .incomeInfoItem span {
+    display: inline-block;
+    vertical-align: middle;
+    width: 25%;
+}
+
+.incomeDetail .incomeInfo .incomeInfoItem p {
+    display: inline-block;
+    vertical-align: middle;
+}
+
+/************桌台选择************/
+.tableHead {
+    padding: 0.6rem 0;
+    text-align: center;
+    font-size: 0.68rem;
+    color: #282e3a;
+    font-weight: 100;
+    border-bottom: 1px solid #aab0ca;
+}
+
+.tableTop {
+    height: 2rem;
+    background: #f7f9fa;
+}
+
+.tableTop > div {
+    display: Block;
+    height: 100%;
+    line-height: 2rem;
+    font-size: 0.52rem;
+    color: #282e3a;
+    box-sizing: border-box;
+}
+
+.tableTop > div.tableTop-left {
+    width: 30%;
+    float: left;
+    padding-left: 15px;
+}
+
+.tableTop > div.tableTop-right {
+    float: right;
+    width: 70%;
+    border-bottom: 1px solid #f1f3f4;
+    overflow: hidden;
+    text-align: center;
+    height: 100%;
+}
+
+.tableLayout {
+    width: 100%;
+    overflow: hidden;
+    position: absolute;
+    margin: auto;
+    left: 0;
+    top: 4.32rem;
+    right: 0;
+    bottom: 0;
+}
+
+.tableLayout .tableLeft {
+    float: left;
+    width: 30%;
+    height: 100%;
+    position: absolute;
+    background: #f7f9fa;
+}
+
+.tableLayout .tableLeft a {
+    display: Block;
+    height: 2rem;
+    text-indent: 15px;
+    font-size: 0.52rem;
+    color: #282e3a;
+    line-height: 2rem;
+}
+
+.tableLayout .tableLeft a:active,
+.tableLayout .tableLeft a.selected {
+    background: #fff;
+    color: #34c9e1;
+    border-right: 3px solid #34c9e1;
+}
+
+.tableLayout .tableRight {
+    overflow: hidden;
+    margin-left: 33%;
+    width: 67%;
+}
+
+.tableLayout .tableRight .tableConItem {
+    display: none;
+}
+
+.tableLayout .tableRight .tableConItem.selected {
+    display: Block;
+}
+
+.tableLayout .tableRight .tableConItem .qr-btn {
+    position: absolute;
+    right: 0;
+    top: 0;
+    height: 100%;
+    width: 1.8rem;
+    padding: 0 0.6rem;
+    background: #34c9e1;
+    color: #fff;
+    display: flex;
+    justify-content: center;
+    align-items: Center;
+}
+
+.tableLayout .tableRight .tableConItem .qr-btn input {
+    display: none;
+}
+
+.tableLayout .tableRight .tableConItem .qr-btn.binded {
+    background: #fff;
+    color: #282e3a;
+    margin-top: 1px;
+}
+
+.tableLayout .tableRight .tableConItem .tableInfo {
+    position: relative;
+    padding: 0.6rem 0 0.3rem;
+    border-bottom: 1px solid #f1f3f4;
+}
+
+.tableLayout .tableRight .tableConItem .tableInfo p {
+    text-indent: 10px;
+    font-size: 0.48rem;
+    color: #282e3a;
+    padding-bottom: 0.3rem;
+}
+
+.tableLayout .tableRight .tableConItem .tableInfo p span {
+    display: inline-block;
+    vertical-align: middle;
+    color: #96a0b2;
+    min-width: 3rem;
+}

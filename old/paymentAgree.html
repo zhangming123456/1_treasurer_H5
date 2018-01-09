@@ -1,0 +1,257 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>第三方移动支付协议</title>
+<meta name="keywords" content="阳光易贷" />
+<meta name="description" content="阳光易贷" />
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no, minimal-ui" />
+<meta content="yes" name="apple-mobile-web-app-capable" />
+<meta content="black" name="apple-mobile-web-app-status-bar-style" />
+<meta content="telephone=no" name="format-detection" />
+<meta name="apple-mobile-web-app-capable" content="yes" /><!-- 删除苹果默认的工具栏和菜单栏 -->
+<meta name="apple-mobile-web-app-status-bar-style" content="black" /><!-- 设置苹果工具栏颜色 -->
+<meta name="format-detection" content="telphone=no, email=no" /><!-- 忽略页面中的数字识别为电话，忽略email识别 -->
+<link rel="apple-touch-icon-precomposed" href="images/logo57.png"/>
+<link rel="apple-touch-icon-precomposed" sizes="57x57" href="images/logo57.png"/>
+<link rel="apple-touch-icon-precomposed" sizes="72x72" href="images/logo72.png">
+<link rel="apple-touch-icon-precomposed" sizes="114x114" href="images/logo144.png"/>
+<link rel="icon" href="images/logo57.png">
+<style type="text/css">
+a:active{star:expression(this.onFocus=this.blur());}
+a:focus,button:focus{outline:none; -moz-outline:none;}
+:focus{outline:none;}
+/*Reset Css*/
+body,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,pre,form,fieldset,input,textarea,p,blockquote,th,td,img,area,param{margin:0; padding:0;}
+html,body{height:100%;}
+select{*behavior: url("select.htc")/*tpa=http://www.17sucai.com/preview/46577/2017-03-15/old/select.htc*/;}/*IE6,IE7select*/
+ol,ul{padding-left:0; list-style-type:none; list-style:none;}
+img{border:none; display:inline-block; vertical-align:middle;}
+th{font-style:normal;font-weight:normal;}
+h1,h2,h3,h4,h5,h6{font-size:100%; font-weight:normal;}
+address, caption, cite, code, dfn, em, th, var,strong {font-style:normal;font-weight:normal;}
+input{display:inline-block;vertical-align:middle;}
+fieldset{border:none;}
+legend{display:none;}
+body{font-family:\5FAE\8F6F\96C5\9ED1,arial,sans-serif;color:#333; -webkit-text-size-adjust:none;/*Google Chrome*/font-size:14px; line-height:20px;}
+
+.mb-30{margin-bottom:30px;}
+.mb-20{margin-bottom:20px;}
+.mb-10{margin-bottom:10px;}
+.mt-30{margin-top:30px;}
+.mt-20{margin-top:20px;}
+.mt-10{margin-top:10px;}
+.title-1{line-height:30px; font-size:20px; text-align:left; margin-bottom:20px;}
+.title-2{line-height:30px; font-size:18px; font-weight:600;}
+.number{height:24px; text-align:right; padding-right:10%; margin-bottom:30px;}
+.instr{height:24px;}
+
+.xy-main{width:90%; margin:40px auto 10px;}
+.table{border-collapse: collapse; width:100%;}
+.table td,.table th{border:1px solid #333; text-align:center; height:30px; line-height:30px;}
+.table th{font-weight:bold;}
+.table-2{border-collapse: collapse; width:100%;}
+.table-2 td,.table-2 th{border:1px solid #333; padding:8px 10px;}
+.table-2 td{text-align:left;}
+.table-2 th{text-align:left; font-weight:normal;}
+.legalPerson li{height:24px;}
+.legalPerson-2 li{height:40px; line-height:40px;}
+.xian{display:inline-block; width:80px; height:20px; vertical-align:middle; border-bottom:1px solid #333;}
+.xian-2{display:inline-block; width:40px; height:20px; vertical-align:middle; border-bottom:1px solid #333;}
+.instr-2 li.no-1 p{text-indent:28px; margin-bottom:10px;}
+.instr-2 li{height:auto !important; height:24px; min-height:24px; margin-bottom:10px;}
+.instr-2 li.no-2 p{margin-bottom:10px;}
+.blackfont{font-family: 微软雅黑;    font-weight: bold;}
+input{border:none;border-bottom:1px solid #000;}
+table{width:100%;border:1px solid #ccc;}
+th,td{word-wrap: break-word;    height: 32px;font-family: 'sans-serif';font-size: 16px;vertical-align: middle;white-space: normal;color: #000000; 
+	   border: 1px solid #999;    text-align: left;margin:0;padding:0;}
+</style>
+</head>
+
+<body>
+<!-- 注册协议更改09.23 by sunyang -->
+<div class="clearfix xy-main">
+	<h1 class="title-1">第三方移动支付商户服务协议</h1>
+ <p style="font-family:sans-serif;font-size: 20px;padding-bottom:10px; font-weight: bold;">第三方移动支付商户服务协议</p>
+<p style="font-family: 微软雅黑;color: #222222;font-weight: bold;">特别提示：<br/>
+本协议由深圳市珍乐科技有限公司和你共同签订，具有合同法律效力。<br/>
+请你务必审慎阅读并充分理解各条款内容，特别是免除或者限制责任的条款、争议解决和法律适用条款。免除或者限制责任的条款可能以加粗字体显示，你应重点阅读。除非你已阅读并接受本协议所有条款，否则你无权使用本服务。你使用本服务即视为你已阅读并同意本协议的约束。如你对本协议有任何疑问的，应向客服咨询。</p>
+
+<p>甲方：深圳市珍乐科技有限公司<br/>
+乙方：<input id="username" />                          <br/>  
+甲方作为软件服务商，通过<span class="blackfont">连连银通电子支付有限公司</span>（具备国家许可的支付牌照） 为乙方提供第三方移动支付服务。乙方作为移动应用和移动产品的服务提供商，同意在其人民币第三方移动支付业务中使用甲方所提供的服务。现经双方磋商，本着平等互利、优势互补、共同发展的原则，就具体合作事宜达成如下协议：<br/>
+一、概念定义<br/>
+本协议及其附件中出现的下列概念，除另有约定外，按以下定义理解：<br/>
+1、第三方移动支付服务：甲方为消费者提供微信支付、支付宝钱包支付等主流移动渠道资金结算服务，支付方式包括移动应用支付、微信小程序支付和线下扫码支付。<br/>
+2、退款：消费者付款成功后，乙方因缺货、无法运货、重复订单等原因不能为消费者提供产品或服务时，可提出退款申请，将消费者支付的款项退回消费者的支付银行卡中。<br/>
+3、商户系统：甲方提供给签约乙方使用的系统平台，乙方可在此平台上进行交易查询、结算查询等。<br/>
+4、商户号及商户密码：甲方提供给签约乙方使用的，用于识别签约商家，并且登陆商户系统所使用的商户号及登陆密码。<br/>
+5、连连支付：即连连银通电子支付有限公司，微信支付、支付宝钱包支付的服务提供商。<br/>
+二、服务内容及资费标准<br/>
+1、甲方通过连连支付向乙方提供第三方移动支付服务。<br/>
+2、乙方享受甲方提供的服务，随乙方每笔交易结算时，向甲方支付约定的交易手续费，由甲方在该笔交易结算资金中直接扣取。双方就提供的服务内容及手续费约定如下：</p>
+<table cellspacing="0" cellpadding="0">
+	<thead>
+		<tr>
+			<th>开通业务类型</th>
+			<th>支付模式</th>
+			<th>手续费率</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<td rowspan="4">微信支付</td>
+			<td>线下扫码付</td>
+			<td id="td1" style="text-align:center;">（0.60）%</td>
+		</tr>
+		<tr>
+			<td>线下小额付</td>
+			<td id="td2" style="text-align:center;">（0.60）%</td>
+		</tr>
+		<tr>
+			<td>微信公众账号支付</td>
+			<td style="text-align:center;">(1)%</td>
+		</tr>
+		<tr>
+			<td>微信小程序支付</td>
+			<td id="td5" style="text-align:center;">（1.00）%</td>
+		</tr>
+		<tr>
+			<td rowspan="2">支付宝钱包支付</td>
+			<td>线下扫码付</td>
+			<td id="td3" style="text-align:center;">（0.60）%</td>
+		</tr>
+		<tr>
+			<td>线下小额支付</td>
+			<td id="td4" style="text-align:center;">（0.60）%</td>
+		</tr>
+	</tbody>
+</table>
+<p>
+三、手续费结算方式<br/>
+1、甲方将乙方交易款划付至乙方指定以下银行账户并实时扣收手续费：<br/>
+（1）乙方指定银行账户信息如下：<br/>
+户名：
+账号：
+开户行：
+若乙方因各种原因变更银行账号时，需及时向甲方提供盖有公司公章的变更通知。因乙方银行账号变更但未及时通知甲方导致增加的额外成本或损失，由乙方承担。因乙方变更银行账号或指定收款单位而造成的任何损失均由乙方承担。<br/>
+（2）甲方向乙方实时扣收“现金管理服务之网上特约商户交易手续费” <br/>
+2、甲方按照每笔订单金额计算手续费，双方认可因小数点后两位进位而导致手续费存在微小误差，以甲方数据为准。<br/>
+四、甲方权利义务<br/>
+1、甲方向乙方提供商户系统及登录系统的商户号、商户密码。准确、实时地处理乙方发来的支付请求，并将处理结果及时、安全、保密地传递给乙方。甲方对其支付服务平台的支付接入系统中信息传递过程的安全、保密、实时性负责，承担且仅承担因此项原因造成的经济损失。因不可抗力原因造成损失时，甲方免除本条款所述责任，但向乙方提供书面证明资料并协助乙方寻求补救办法。<br/>
+2、负责为乙方提供支付信息查询功能。其中交易数据甲方须保存六个月。超过六个月以上的数据查询，如数据缺失的，甲方不承担责任。<br/>
+3、负责受理涉及甲方商户系统运转问题出现的投诉并解决相应纠纷。<br/>
+4、为乙方提供优质高效服务，在正常工作时间内，对乙方反映的问题，甲方在两个工作日内作出响应。<br/>
+5、甲方有权根据系统升级等需要暂时中止提供第三方移动支付服务，一般应提前告知乙方，并预告恢复日期。甲方有权自行决定对支付平台的功能和服务进行改动和升级，但对改进服务事项，应提前公示。<br/>
+6、乙方违反国家法律法规，或有下列情形之一的，所产生的不良影响及所有损失由乙方承担，甲方有权立即中止支付结算服务或终止协议，并有权追偿因这些情形所导致的甲方损失：<br/>
+（1）单独或与他方串通盗窃、诈骗资金；<br/>
+（2）身份证明、企业登记资料、行政许可证、业务范围等与实际不符或虚假的；<br/>
+（3）无理拒绝通过甲方支付平台而发生的成功交易；<br/>
+（4）乙方交易中存在过多的交易纠纷或过大的交易风险、且经双方友好协商无法解决；<br/>
+（5）乙方没有提供真实有效的联系方式，无法与乙方取得联系，无法及时得到反馈；<br/>
+（6）司法机关、金融监管机构、发卡行、中国银联出具的要求中止或终止对乙方的支付结算的书面通知；<br/>
+（7）故意诋毁或损害甲方支付平台声誉的；<br/>
+（8）违反《互联网信息服务管理办法》第十五条规定的，具体内容如下：<br/>
+互联网信息服务提供者不得制作、复制、发布、传播含有下列内容的信息：<br/>
+　　a.反对宪法所确定的基本原则的；<br/>
+　　b.危害国家安全，泄露国家秘密，颠覆国家政权，破坏国家统一的；<br/>
+　　c.损害国家荣誉和利益的；<br/>
+　　d.煽动民族仇恨、民族歧视，破坏民族团结的；<br/>
+　　e.破坏国家宗教政策，宣扬邪教和封建迷信的；<br/>
+　　f.散布谣言，扰乱社会秩序，破坏社会稳定的；<br/>
+　　g.散布淫秽、色情、赌博、暴力、凶杀、恐怖或者教唆犯罪的；<br/>
+　　h.侮辱或者诽谤他人，侵害他人合法权益的；<br/>
+　　i.含有法律、行政法规禁止的其他内容的。<br/>
+(9 )如乙方需和商户系统进行系统对接，在乙方未向甲方提供《上线测试报告》而直接上线的，并产生不良影响。<br/>
+7、甲方有权在乙方因业务或联络方式变更、终止而未及时通知甲方的情况下中止本协议，并对客户提出的退款请求（在此款未结算给乙方的情况下）进行处理，将客户在乙方网站已支付成功的订单款项转回客户的支付银行卡中。<br/>
+8、甲方有权拒绝支付或追索乙方违反国家法律法规或本协议约定的有关款项。<br/>
+五、乙方权利义务<br/>
+1、乙方在使用甲方提供的支付平台的过程中，发现任何故障或其他不能正常使用的情况，可以随时致电甲方要求修复。甲方在收到乙方通知后应在72小时内及时进行修复以恢复正常服务功能，尽最大限度减少对乙方业务活动造成的不利影响。若甲方未能在72小时内恢复正常服务，则乙方可在甲方不能提供正常服务的期间内使用第三方的支付平台。<br/>
+2、乙方有权根据协议约定查询、下载、存档订单交易数据，同时应尽保密义务。<br/>
+3、乙方应每日进行资金账户的核对与清算，若发现交易异常应及时通知甲方。<br/>
+4、乙方在网上发布的信息和从事的商务活动，须严格遵守国家的法律法规及政府有关部门的管理规定，具备从事该商务活动所应具备的全部资质条件，依法办理了相应的行政许可手续及备案手续，独自承担与此相应的责任。<br/>
+5、乙方应如实向甲方提供基本业务情况说明及相关法律证明；承担由于其所提供的资质材料不完整、不准确、不真实等情况而导致的经济和法律方面的责任。<br/>
+6、乙方应在其网站、移动端及扫码机器页面上如实描述甲方支付业务，乙方不得采用技术手段或其它非法手段截获客户的银行卡信息、代客户提交订单及进行支付，乙方必须在乙方网站引导客户到甲方支付平台亲自提交订单及进行支付，否则甲方保留终止为乙方提供第三方移动支付服务并追索损失的权利。<br/>
+7、乙方应及时处理乙方商业活动中的各项纠纷,如：佣金纠纷、客户的消费投诉，货物品质、价格及售后服务纠纷等。甲方可提供相关协助。由于乙方原因造成乙方所提供服务引起的一切客户投诉或引起的法律上的责任，由乙方负责或追究有关方面的责任，与甲方无关。<br/>
+8、若乙方发运实物给客户的，应当要求客户收到货物后在收货单上签字确认，并妥善保留该收货单据。当出现客户拒付或否认交易等纠纷时，乙方应积极配合甲方及相关银行、中国银联、司法机关、金融监管机构等的调查工作，及时准确地提供相关交易信息和上述收货单据。否则，乙方应自行承担由此造成的一切损失。<br/>
+9、乙方终止服务或业务发生变更，应提前一个月书面通知甲方，否则造成损失由乙方负责。乙方如遇迁址、停业、联系人（联系电话）、经营范围等商户资料信息变更，应由乙方提前通知甲方，若由于乙方未及时通知甲方导致的一切投诉和纠纷，均由乙方负责处理。<br/>
+10、甲方提供给乙方的商户号及商户密码是乙方进入甲方提供的商户后台的唯一有效凭证，乙方应妥善保管其商户号及商户密码。乙方在任何情况下不应将商户密码以任何方式提供给包括自称是甲方工作人员在内的任何人。因乙方商户号和商户密码保管及使用不当造成的损失，责任由乙方承担。对于商户密码的遗失、被盗情况，乙方须立即告知甲方，并按照甲方规定办理密码重置手续。<br/>
+11、在服务有效期内，若第三方移动支付时发生技术性障碍，影响实时支付，乙方应积极合作，配合甲方及相关第三方(如发卡行、第三方支付有限公司、电信等)查明原因，以求妥善处理。
+<br/>
+12、乙方保证所提供订单信息的合法性、真实性、准确性和完整性。如因订单的真实性、准确性、完整性有误或乙方错误操作等原因而造成甲方或买方（用户）损失的，由乙方承担责任。乙方应向甲方同步交易相关信息，包括但不限于商品或服务名称、金额、商户编号、商户名称、商户简称、客服电话、经营类目、商户识别号等。乙方应妥善保留有关交易数据和凭证，上述交易数据和凭证应自交易发生之日起至少保留五年。乙方应在接到甲方提出的查询通知及调取凭证的要求后，将原有相关单据提供给甲方；如乙方在甲方指定期限内无法提供或怠于提供，由此给甲方和买方(用户)造成的损失和责任均由乙方承担。<br/>
+13、乙方在使用本合同约定产品/服务的过程中，若买方（用户）向甲方或财付通合作银行主张拒付、银行卡被盗、非本人交易的，乙方承诺其将积极按本合同约定的要求提供相关凭证，具体凭证由甲方视具体行业及案件情况而定，经甲乙双方核查认定该用户是否为恶意拒付，以保障甲乙双方权益。<br/>
+14、在单个自然月中，若买方（用户）发起的累计银行卡拒付金额或银行卡盗卡、非本人交易等主张涉及的金额合计达到人民币5000元或超过自本合同生效之日起累计交易流量的万分之一的，乙方应加强监控或采取有关补救措施，并向甲方通报交易异常的原因和具体补救措施实施情况。<br/>
+六、双方声明<br/>
+1、对于因甲方原因给乙方造成的直接损失，甲方应负赔偿责任；乙方应对甲方采取的减少损失的措施予以积极协助，对甲方及相关银行或公安部门发现的他人假冒客户名义购物事件的相关调查，乙方要给予积极配合，采取暂缓发货，暂时冻结客户在乙方的账户等积极措施。<br/>
+2、对于因乙方原因给甲方造成的直接损失，乙方应负赔偿责任，甲方应对乙方采取的减少损失的措施予以积极协助。<br/>
+3、如乙方不符合连连支付的相关准入要求，如存在包括但不限于乙方有套现、欺诈、洗钱等违法违规的嫌疑或存在其他财付通拒绝准入的情形，甲方自收到连连支付通知之时起有权单方面暂停或终止向乙方提供本协议约定的第三方移动支付服务。乙方无条件不可撤销的同意甲方拥有该项权利，并承诺承担因此引起的一切经济及法律后果。<br/>
+4、乙方应采取有效措施妥善保存好甲方为乙方设立的商户号及密码，不得以任何形式将其提供给他人使用，也不得以任何形式将其对外泄露。乙方商户号是甲方用以确认乙方身份的凭证，乙方应对乙方商户号下的一切操作行为独立担责。乙方负责对乙方商户号的密码进行管理和维护，其设置的密码信息不应过于简单并应定期更改，以防止被非法使用。<br/>
+5、鉴于目前网络支付技术及国内、国际电子商务环境均尚未成熟，其电子商务立法以及信用体制还不完善，在这种情况下乙方作为商户在开展电子商务业务时存在一定的风险性。包括但不限于犯罪侵权导致的坏账、客户拒付等。乙方明确认知该风险的存在并愿意承担此种风险可能带来的损失。<br/>
+6、甲、乙双方应保证各自计算机系统及相关程序的安全，并承诺自身计算机系统及相关程序中不存在“后门”、“程序炸弹”、“数据盗窃”等威胁对方信息系统安全的功能。<br/>
+七、保密条款<br/>
+双方在合作期内获得的信息及本合同和附件内容均为保密信息，保密信息包括但不限于交易手续费率及支付方式、结算方式、接口技术、安全协议及证书等，任何一方均应当对保密信息严格保密，且仅为本合作之目的使用，未经对方事先书面同意，不得向任何第三方透露保密信息，否则视为违约；守约方除有权主张违约金及损失外还有权终止合同。本条不因本合同的终止而终止。<br/>
+八、退款处理<br/>
+对于交易过程中出现的、由于乙方原因包括但不限于缺货、无法运货、质量问题等等，造成退款处理的情况，按以下规定处理。<br/>
+1、乙方按本协议约定通过商户后台向甲方提交退款申请。<br/>
+2、乙方向甲方提出退款请求时，乙方在甲方账户中应有足够退款的账存资金，或者乙方须按要求退款的金额将款项转账至甲方账户，甲方收到该款项后向客户做出退款处理。否则造成的一切后果均由乙方承担。<br/>
+3、乙方无条件不可撤销的授权甲方可依据乙方退款请求主动扣划乙方在甲方任意账户资金，办理退款。甲方的扣款行为引起的一切后果均由乙方承担。<br/>
+4、退款时甲方不再另收取手续费。<br/>
+5、扣款过程中已收取的手续费不退还，此费用由乙方承担。<br/>
+6、甲方不介入乙方与其客户之间的退款纠纷。<br/>
+九、不可抗力<br/>
+1、不可抗力指双方在订立合同时不能预见、对其发生和后果不能避免且不能克服的事件。鉴于网络所具有之特殊性质，不可抗力亦应包括黑客攻击、计算机病毒发作、发卡行掉单、电信部门技术调整及线路故障、行业政策调整导致之影响、因政府管制而造成的暂时性关闭等在内的任何影响网络正常经营之情形。<br/>
+2、若由于不可抗力致使一方未能全部或部分履行本协议，应及时书面通知另一方并出具相关证明，则本协议内受影响之条款可在不能履行之期间及受影响之范围内中止履行。<br/>
+3、因不可抗力或者其他意外事件，使得本合同的履行不可能、不必要或者无意义的，双方可以协商解除本合同。<br/>
+十、违约责任<br/>
+1、甲方违约，乙方有权要求甲方赔偿实际损失及主张实际损失的费用。<br/>
+2、乙方违约，甲方有权停止为乙方提供支付结算服务，并要求乙方赔偿实际损失及主张实际损失的费用。<br/>
+3、主张实际损失的费用包括但不限于：诉讼费、律师费、差旅费以及其他有关费用。<br/>
+4、不可抗力原因导致的违约，双方互不负赔偿责任，但对怠于履行通知义务所导致的对方的损失不能免责。<br/>
+5、任何一方没有行使其权利或没有就对方的违约行为采取任何行动，不应被视为是对权利的放弃或对追究违约责任或义务的放弃。所有放弃均应以书面形式做出。<br/>
+十一、法律适用及争议解决<br/>
+1、本合同及为本合同目的所签订的所有协议的订立、解释、履行、效力等均适用中华人民共和国法律。<br/>
+2、如果本合同任何条款根据现行法律被确定为无效或无法实施，本合同的其他所有条款将继续有效。此种情况下，双方将以有效的约定替换该约定，且该有效约定应尽可能接近原约定和本合同相应的精神和宗旨。<br/>
+3、后继立法除其本身有明确规定外，对本协议不具有溯及力。<br/>
+4、本合同及为本合同目的所签订的所有协议的争议均由双方协商解决，协商不成的，向甲方所在地之仲裁委员会申请仲裁。<br/>
+十二、合同期限<br/>
+1、本协议自双方授权代表签字盖章之日起生效，有效期一年。<br/>
+2、在本协议期满前30日内，双方无书面异议的，协议期限自动延长一个合作周期，即一年，延长期限自本协议约定的到期日的次日起算。依此类推。<br/>
+十三、变更与终止<br/>
+1、本合同及附件未尽事宜由甲、乙双方友好协商后，以书面形式加以补充。<br/>
+2、除双方协商一致并以书面形式做出，任何单方变更或解除均为违约。<br/>
+十四、其他条款<br/>
+1、双方联系人及联系方式<br/>
+甲方联系人及联系电话： 0755-32914310<br/>
+甲方联系地址：深圳市龙华区尚美时代大厦<br/>
+乙方联系人及联系电话：<span id="phone"></span><br/>
+乙方联系地址：<span id="adress"></span><br/>
+</p>
+
+    
+</div>
+<script type="text/javascript" src="script/jquery-1.11.3.js"></script>
+<script type="text/javascript" src="script/common.js"></script>
+<script type="text/javascript">
+$(function(){
+	var resId = getResId("resId");
+	httpRequest("post","/tradeDetail/paymentAgree",{"resId":resId,},function(data){
+		if(data.code == 2000){
+			var value = data.value;
+			if( null != value ){
+				$("#username").val(value.name);
+				$("#td1,#td2,#td3,#td4").text("("+value.commissionProportion*100+")"+"%");
+				$("#td5").text("("+value.microcodeCommissionProportion*100+")"+"%");
+				$("#phone").text(value.true_name+","+value.mobile);
+				$("#adress").text(value.businessAddress);
+			}else{
+				//showToast("暂无数据");
+			}
+		}else{
+
+		}
+	})
+})
+</script>
+</body>
+</html>

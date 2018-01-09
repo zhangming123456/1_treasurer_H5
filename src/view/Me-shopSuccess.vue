@@ -8,14 +8,16 @@
     <footer>
       <van-row v-if="type == 2">
         <van-col span="12" class="azm-btn">
-          <x-button type="primary" class="azm-font-cell" :show-loading="isSubmit" link="/me-shop-info">继续开店</x-button>
+          <x-button type="primary" class="azm-font-cell" link="/me-shop-info">继续开店</x-button>
         </van-col>
         <van-col span="12" class="azm-btn">
-          <x-button class="azm-font-cell" :show-loading="isSubmit" @click.native="go(-1)">返回</x-button>
+          <x-button class="azm-font-cell" @click.native="go(-1)">返回</x-button>
         </van-col>
       </van-row>
       <div v-else>
-        <x-button type="primary" class="azm-font-cell" :show-loading="isSubmit" link="/me-staff-admin">管理员工</x-button>
+        <x-button type="primary" class="azm-font-cell" :show-loading="btnManageStaff_isLoading"
+                  @click.native="btnManageStaff">管理员工
+        </x-button>
       </div>
     </footer>
   </div>
@@ -27,6 +29,7 @@
   } from 'vux'
   import VanRow from 'vant/packages/row/index'
   import VanCol from 'vant/packages/col/index'
+  import { mapState } from 'vuex'
 
   export default {
     directives: {},
@@ -48,8 +51,15 @@
           tabbarLink: 'me-wizard'
         },
         isSubmit: false,
-        type: 0
+        type: 0,
+        btnManageStaff_isLoading: false
       }
+    },
+    computed: {
+      ...mapState({
+        shiroUserId: state => state.ApiService.shiroUserId,
+        resId: state => state.ApiService.resId
+      })
     },
     created () {
       this.$emit('transfer', this.transferObj)
@@ -60,7 +70,7 @@
     },
     methods: {
       go (n) {
-        if (this.azm_util.isNumber(n)) {
+        if (this.$azm.util.isNumber(n)) {
           this.$router.back(n)
         }
       },
@@ -69,7 +79,11 @@
         e.cancelBubble = true
       },
       routerLink (path, params) {
-        this.$router.push({path, params})
+        this.$router.push({path, query: params})
+      },
+      btnManageStaff () {
+        let that = this
+        that.routerLink('/me-staff-admin')
       },
       onShow () {},
       onHide () {},

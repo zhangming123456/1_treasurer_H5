@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<meta name="format-detection" content="telephone=no,email=no,adress=no"/>
+<title>首页</title>
+<link rel="stylesheet" type="text/css" href="css/common.css" />
+<script type="text/javascript" src="script/jquery-1.11.3.js"></script>
+<script type="text/javascript" src="script/common.js"></script>
+<script type="text/javascript" src="script/column.js"></script>
+</head>
+<body>
+<!--浮动-->
+<div class="dropMask"></div>
+<div class="dragBtn"></div>
+<div class="dropBox">
+  <div class="dropSkin"></div>
+  <ul class="dropList">
+    <li class="nth-child_1"> <a href="#" class="dropIco"></a>
+      <p>首页</p>
+    </li>
+    <li class="nth-child_2"> <a href="#" class="dropIco"></a>
+      <p>投资</p>
+    </li>
+    <li class="nth-child_3"> <a href="#" class="dropIco"></a>
+      <p>个人中心</p>
+    </li>
+    <li class="nth-child_4"> <a href="#" class="dropIco"></a>
+      <p>注册</p>
+    </li>
+    <li class="nth-child_5"> <a href="#" class="dropIco"></a>
+      <p>登录</p>
+    </li>
+  </ul>
+</div>
+<script src="script/index.js"></script>
+<script src="script/jquery-ui.min.js"></script>
+<!-- 页面头部 -->
+<section>
+  <div class="navigation-bar"> <a href="#" class="z-01"></a> <span>第三方开户</span> <a href="#" class="z-02"></a> </div>
+</section>
+<!-- 中间内容 -->
+<div class="main">
+  <div class="personal-msg"> 您还未开通用乾多多第三方资金托管账户，开通后您才能进行充值或提现操作！<br>
+    阳光易贷已经启用乾多多的第三方资金托管，阳光易贷平台无法接触到投资人的资金，从而帮助投资人的资金安全。 </div>
+  <div class="usesr-form" style="margin-top:10px;">
+    <h3>请输入您的身份证信息</h3>
+    <form  method="post" action="" class="reg-form" >
+      <input id="unLoginForm:realname" type="text" name="" value="朱超有" class="txt" maxlength="26"  placeholder="请输入您的真实姓名" disabled="disabled" >
+      <div id="realnameErrorDiv"></div>
+      <input type="text" name="" value="340823198910293323" class="txt" maxlength="26"  placeholder="请输入您的身份证信息" disabled="disabled" >
+      <div id="idCardErrorDiv"></div>
+      <input type="text" name="" value="15055100139" class="txt" maxlength="26" disabled="disabled" placeholder="请输入手机号">
+      <div id="mobileNumberErrorDiv"></div>
+      <div class="msg-yzm">
+        <input type="text" name="" class="txt txt-yzm" maxlength="6" placeholder="请输入验证码">
+        <span id="sendCode" class="yzm yzm-red"><a href="#" style="color: white;" class="hqyzm">发送验证码</a> </span> <span id="sendCodeGrey" style="display:none;" class="yzm"> <a href="javascript:void(0);" id="sendAuthCodeBtn1" class="hqyzmAfter" style="cursor:default;">免费获取校验码</a> </span> </div>
+      <div class="clear"></div>
+      <div id="authCodeErrorDiv" class="error-reg" style="margin-top: 5px;"></div>
+      <div class="clear"></div>
+      <div> </div>
+      <input type="submit" name="" value="开户" style="border:none;" class="btn-formlogin">
+    </form>
+  </div>
+</div>
+<!-- 页面底部 -->
+<nav class="footer border_t" id="footer"> <a href="#" class="" id="jx"><span></span>精选</a> <a href="#" id="lc" class="nav_on"><span></span>理财</a> <a href="#" id="jk" class=""><span></span>借款</a> <a href="#" id="cf" class=""><span></span>我的财富</a> </nav>
+</body>
+</html>

@@ -18,21 +18,23 @@
     </div>
     <div class="azm-cell-list">
       <group class="azm-cell-list-group">
-        <cell is-link link="/me-my-applications" title="我的应用" class="azm-cell">
-          <i slot="icon" class="iconfont icon-05 azm-icon azm-icon-34c9e1"></i>
-        </cell>
-        <cell is-link title="我的账号" class="azm-cell">
-          <i slot="icon" class="iconfont icon-zuanshi azm-icon azm-icon-f86162"></i>
+        <cell is-link title="我的账户" class="azm-cell" @click.native="judg('/me/userAccount')">
+          <i slot="icon" class="iconfont icon-diamond azm-icon azm-icon-f86162"></i>
           <div>收银账号设置</div>
         </cell>
+        <cell is-link title="我的应用" class="azm-cell" @click.native="judg('/me/applications')">
+          <i slot="icon" class="iconfont icon-05 azm-icon azm-icon_bold azm-icon-34c9e1"></i>
+        </cell>
+        <cell is-link title="绑定桌台" class="azm-cell"
+              @click.native="judg('me/boundTable')">
+          <i slot="icon" class="iconfont icon-bangding azm-icon azm-icon-ae94eb"></i>
+        </cell>
         <!--link="/me-shop"-->
-        <cell is-link title="商家开店" class="azm-cell" @click.native="judgmentShop($event)">
+        <cell is-link title="商家开店" class="azm-cell" @click.native="judgmentShop($event)"
+              :is-loading="isLoadingJudgmentShop">
           <i slot="icon" class="iconfont icon-shangjia azm-icon azm-icon-41a3fb"></i>
         </cell>
-        <cell is-link title="商家开店" link="/me-shop" class="azm-cell">
-          <i slot="icon" class="iconfont icon-shangjia azm-icon azm-icon-41a3fb"></i>
-        </cell>
-        <cell is-link title="修改密码" class="azm-cell">
+        <cell is-link title="修改密码" class="azm-cell" link="/me/changePwd">
           <i slot="icon" class="iconfont icon-mima azm-icon azm-icon-ac92eb"></i>
         </cell>
         <cell is-link title="联系客服" class="azm-cell" link="/me-contact-service">
@@ -64,7 +66,6 @@
     },
     data () {
       let that = this
-      console.log(that.$store.state.ApiService.findResUserData)
       return {
         socketService: null,
         msg: 'Hello World!',
@@ -73,7 +74,8 @@
           isTabbar: true,
           tabbarLink: 'me'
         },
-        imagesUrl: that.azm_config.imageUrl,
+        imagesUrl: that.$azm.config.imageUrl,
+        isLoadingJudgmentShop: false
       }
     },
     computed: {
@@ -85,17 +87,17 @@
       })
     },
     created () {
+      console.log(this.$route, '______________')
       this.$emit('transfer', this.transferObj)
       this.$store.commit('setNavigationBarTitle', {title: '个人中心'})
       this.getUserInfo()
     },
     methods: {
       openImg (e, position) {
-        console.log(e)
         try {
           let url = window.document.querySelector('#qrcodeImg img').src
           if (url) {
-            this.Vant_ImagePreview([
+            this.$vant.ImagePreview([
               url
             ], typeof position === 'number' ? position : 0)
           }
@@ -115,30 +117,41 @@
           shiroUserId: that.shiroUserId
         }).then(cb)
       },
+      judg (path) {
+        let that = this
+        if (this.resId) {
+          this.routerLink(path)
+        } else {
+          this.$vux.confirm.show({
+            title: '确认操作',
+            content: '你暂时未开店，请先填写信息进行开店',
+            confirmText: '开店',
+            cancelText: '取消',
+            onShow () {
+            },
+            onHide () {
+            },
+            onCancel () {},
+            onConfirm () {
+              that.routerLink('/me-shop-info')
+            }
+          })
+        }
+      },
       judgmentShop () {
         let that = this
+        that.isLoadingJudgmentShopL = true
         that.getUserInfo(
           () => {
+            that.isLoadingJudgmentShopL = false
             try {
               let type = that.userInfo.type
-              type = 2
               if (1 == type) {
-                that.$wechat.scanQRCode({
-                  needResult: 1, // 默认为0，扫描结果由微信处理，1则直接返回扫描结果，
-                  scanType: ['qrCode', 'barCode'], // 可以指定扫二维码还是一维码，默认二者都有
-                  success (res) {
-                    var result = res.resultStr // 当needResult 为 1 时，扫码返回的结果
-                    console.log(result, '成功')
-
-                  },
-                  fail (res) {
-                    console.log(res, '失败')
-                  }
-                })
+                that.routerLink('/me-shop-success', {type})
               } else if (2 == type) {
                 that.routerLink('/me-shop-success', {type})
               } else {
-
+                that.routerLink('/me-shop-info')
               }
             } catch (e) {
 
@@ -222,7 +235,10 @@
         width: 35px;
         height: 30px;
         line-height: 30px;
-        font-size: 17px;
+        font-size: 15px;
+        font-weight: 500;
+      }
+      .azm-icon_bold {
         font-weight: bold;
       }
       .azm-icon-34c9e1 {
@@ -242,6 +258,9 @@
       }
       .azm-icon-48cfae {
         color: #48cfae;
+      }
+      .azm-icon-ae94eb {
+        color: #ae94eb;
       }
     }
   }

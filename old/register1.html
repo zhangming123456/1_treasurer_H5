@@ -1,0 +1,114 @@
+﻿<!DOCTYPE html>
+<html>
+  <head>
+    <title>注册验证码</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+    <meta name="apple-mobile-web-app-capable" content="yes"/>
+    <link rel="stylesheet" href="css/common.css" />
+
+  </head>
+  <body>
+    <div class="wrapper">
+      <!--<div class= "title">
+      	<a href="JavaScript:history.go(-1)"><img src="images/u106.png" alt="" /></a>
+      	<span>注册验证码</span>
+      </div>-->
+      <div class ="imgbox">
+      	<img src="images/logo.png" alt="" />
+      </div>
+     <div class ="messagebox" id = "tipInfo">
+      	<span></span>
+      </div>
+      <div class ="telephonebox">
+      	<p>验证码已发送至：<span id="mobile"></span></p>
+      </div>
+	    <div class="register">
+	      <form action="">
+	      	<div class="inputwrap">
+	      		<div class="m-field">
+		          <div class="iconHeader"><img src="images/register.png"></div>
+		          <input id="authCode" name="authCode" type="password" maxlength="26"  placeholder="请输入验证码">
+		        </div>
+		        <div class="waittime" >
+		        	<input value="获取验证码" type="button" id = "getCode"/>
+		        </div>
+	      	</div>
+	       	<div class="btn">
+	         	<input id="sendCode" type="button" value="确定" >
+	        </div>
+	      </form>
+  		</div>
+		</div>
+<div class ="commonTips" id="tipInfo"><span></span></div>
+	    <script type="text/javascript" src="script/jquery-1.11.3.js"></script>
+		<script type="text/javascript" src="script/common.js"></script>
+		<script>
+			$(function(){
+				 var clock = '';
+				 var nums = 60;
+				 var btn;
+				 function sendCode(thisBtn)
+				 { 
+					 btn = thisBtn;
+					 btn.attr("disabled", true); //将按钮置为不可点击
+					 btn.val('重新获取'+nums+'s') ;
+					 clock = setInterval(doLoop, 1000); //一秒执行一次
+				 }
+				 function doLoop()
+				 {
+					 nums--;
+					 if(nums > 0){
+					  btn.val('重新获取'+nums+'s');
+					 }else{
+					  clearInterval(clock); //清除js定时器
+					  btn.attr("disabled", false);
+					  btn.val('重新获取');
+					  nums = 60; //重置时间
+					 }
+				 }
+
+				 sendCode($("#getCode"));
+				//检验验证码是否为空
+				var mobile = GetQueryString("mobile");
+				if("" != mobile){
+						$("#mobile").text(mobile);
+				}
+				// 重获验证码
+				$("#getCode").click(function(){
+						httpRequest("get","/sms/getSmsCode",{mobile:mobile,msgTemp:"SMS_DEFAULT_CONTENT"},function(data){
+							if(data.code == 2000){
+									sendCode($("#getCode"));
+									showToast(data.message);
+					      	 }else{
+					      	 	 showToast(data.message);
+					      	 }
+						})
+				});
+				//验证码输入验证
+				$("#sendCode").click(function(){
+					var autoCode = $("#authCode").val().trim();
+					if(autoCode==""){
+						showToast("验证码不能为空");
+						return;
+					}
+					var code = checkRegCode(autoCode);
+					if(code){
+						showToast(code);
+						return;
+					}
+					httpRequest("get","/sms/checkSmsCodeByMobile",{mobile:mobile,code:autoCode,msgTemp:"SMS_DEFAULT_CONTENT"},function(data){
+						if(data.code == 2000){
+		          		   	window.location ="register2.html?mobile="+mobile;
+		          		   	$("#authCode").val("");
+		          	 	}else{
+		          	 		showToast(data.message);
+		          	 		$("#getCode").html("重新发送");
+		          	 	}
+				 	})
+				});
+			})
+		</script>
+  </body>
+</html>

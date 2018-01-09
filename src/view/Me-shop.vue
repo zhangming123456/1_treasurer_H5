@@ -79,7 +79,7 @@
         e.cancelBubble = true
       },
       routerLink (path, params) {
-        this.$router.push({path, params})
+        this.$router.push({path, query: params})
       },
       onShow () {},
       onHide () {},

@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+    <meta name="format-detection" content="telephone=no,email=no,adress=no"/>
+    <title>注册</title>
+    <link rel="stylesheet" href="css/weui.min.css"/>
+    <link rel="stylesheet" type="text/css" href="css/common.css"/>
+
+</head>
+<body>
+<div class="wrapper">
+    <div class="imgbox">
+        <img src="images/logo.png" alt=""/>
+    </div>
+    <div class="messagebox" id="tipInfo">
+        <span></span>
+    </div>
+    <div class="register">
+        <form action="">
+            <div class="m-field">
+                <div class="iconHeader"><img src="images/mobilephone.png"></div>
+                <input id="mobileNumber" type="number" maxlength="13" placeholder="请输入手机号">
+                <div class="iconEnd"><img src="images/delete.png"></div>
+            </div>
+            <label for="weuiAgree" class="weui-agree" style="margin-top: 53px">
+                <input type="checkbox" id="weuiAgree" class="weui-agree__checkbox">
+                <span class="weui-agree__text">同意<a href="useragree.html" style="color:#eee;" class="weui-agree__text">《1号掌柜服务条款》</a></span>
+            </label>
+            <div class="btn" style="margin-top: 13px">
+                <input id="sendCode" type="button" value="获取验证码">
+            </div>
+        </form>
+    </div>
+</div>
+<script type="text/javascript" src="script/jquery-1.11.3.js"></script>
+<script type="text/javascript" src="script/common.js"></script>
+<script src="https://cdn.bootcss.com/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
+<script type="text/javascript">
+    $(function () {
+        //验证手机号是否注册
+        $("#sendCode").click(function () {
+            var number = checkPhoneNumber($("#mobileNumber").val().trim());
+            if ("" == $("#mobileNumber").val().trim()) {
+                showToast("手机号不能为空");
+                return;
+            } else if (number) {
+                showToast(number);
+                return;
+            } else if ($('#weuiAgree').not(':checked').length == 1) {
+                showToast("请勾选同意服务条款");
+                return;
+            } else {
+                httpRequest("get", "/user/checkMobile", {mobile: $("#mobileNumber").val().trim()}, function (data) {
+                    if (data.code == 2000) {
+                        httpRequest("get", "/sms/getSmsCode", {
+                            mobile: $("#mobileNumber").val().trim(),
+                            msgTemp: "SMS_DEFAULT_CONTENT"
+                        }, function (data) {
+                            if (data.code == 2000) {
+                                window.location = "register1.html?mobile=" + $("#mobileNumber").val();
+                                $("#mobileNumber").val("");
+                            } else {
+                                showToast(data.message);
+                            }
+                        })
+                    } else {
+                        showToast(data.message);
+                    }
+                })
+            }
+
+
+        });
+    });
+</script>
+</body>
+</html>

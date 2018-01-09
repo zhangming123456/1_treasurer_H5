@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+    <meta name="format-detection" content="telephone=no,email=no,adress=no"/>
+    <title>个人中心</title>
+    <link rel="stylesheet" href="css/weui.min.css"/>
+    <link rel="stylesheet" href="css/usercenter.css"/>
+    <script>
+        (function () {
+            document.addEventListener('DOMContentLoaded', function () {
+                var html = document.documentElement;
+                var windowWidth = html.clientWidth;
+                html.style.fontSize = windowWidth / 15 + 'px';
+            }, false);
+        })();
+
+    </script>
+</head>
+<body>
+<div class="userInfoWrapper">
+    <a href="javascript:void(0);">
+        <img src="images/userhead.png" class="userHead">
+        <div class="personInfo">
+            <h2 class="username" id="username"></h2>
+            <p class="usershopname" id="resname"></p>
+        </div>
+        <i class="moreIco"></i>
+    </a>
+</div>
+<div class="weui-cells personClassify">
+    <a href="javascript:void(0);" class="weui-cell weui-cell_access" id="userAccount">
+        <div class="weui-cell__hd">
+            <img src="images/icon/uc_ico1.png" class="uc_centerico1">
+        </div>
+        <div class="weui-cell__bd">
+            <p>我的账户</p>
+        </div>
+        <div class="weui-cell__ft">
+        </div>
+    </a>
+    <a href="javascript:void(0);" class="weui-cell weui-cell_access" id="modifyUserPassword">
+        <div class="weui-cell__hd">
+            <img src="images/icon/uc_ico2.png" class="uc_centerico2">
+        </div>
+        <div class="weui-cell__bd">
+            <p>修改密码</p>
+        </div>
+        <div class="weui-cell__ft">
+        </div>
+    </a>
+    <a href="./pages/table/new_table.html" class="weui-cell weui-cell_access" id="bindTable">
+        <div class="weui-cell__hd">
+            <img src="images/icon/uc_ico7.png" class="uc_centerico7">
+        </div>
+        <div class="weui-cell__bd">
+            <p>绑定桌台</p>
+        </div>
+        <div class="weui-cell__ft">
+        </div>
+    </a>
+    <a href="javascript:void(0);" class="weui-cell weui-cell_access">
+        <div class="weui-cell__hd">
+            <img src="images/icon/uc_ico3.png" class="uc_centerico3">
+        </div>
+
+        <div class="weui-cell__bd">
+            <p>订单记录</p>
+        </div>
+        <div class="weui-cell__ft">
+        </div>
+    </a>
+    <a href="javascript:void(0);" class="weui-cell weui-cell_access">
+        <div class="weui-cell__hd">
+            <img src="images/icon/uc_ico4.png" class="uc_centerico4">
+        </div>
+        <div class="weui-cell__bd">
+            <p>优惠券</p>
+        </div>
+        <div class="weui-cell__ft">
+        </div>
+    </a>
+    <a href="javascript:void(0);" class="weui-cell weui-cell_access">
+        <div class="weui-cell__hd">
+            <img src="images/icon/uc_ico5.png" class="uc_centerico5">
+        </div>
+        <div class="weui-cell__bd">
+            <p>联系客服</p>
+        </div>
+        <div class="weui-cell__ft">
+        </div>
+    </a>
+    <a href="javascript:void(0);" class="weui-cell weui-cell_access">
+        <div class="weui-cell__hd">
+            <img src="images/icon/uc_ico6.png" class="uc_centerico6">
+        </div>
+        <div class="weui-cell__bd">
+            <p>我的应用</p>
+        </div>
+        <div class="weui-cell__ft">
+        </div>
+    </a>
+
+</div>
+<div class="commonTips" id="tipInfo"><span></span></div>
+<script type="text/javascript" src="script/jquery-1.11.3.js"></script>
+<script type="text/javascript" src="script/common.js"></script>
+<script type="text/javascript">
+    $(function () {
+        var mobile = GetQueryString("mobile");
+        $("#userAccount").click(function () {
+
+            var resId = getResId("resId");
+            if (resId != "undefined") {
+                var shiroUserId = getResId("shiroUserId");
+                httpRequest("post", "/tradeAccount/findTradeAccountList", {
+                    "resId": resId,
+                    "shiroUserId": shiroUserId
+                }, function (data) {
+                    if (data.code == 4221) {
+                        showToast("无权限查看");
+                    } else {
+                        window.location = "userAccount.html";
+                    }
+                })
+
+            } else {
+                showToast("请绑定餐厅");
+            }
+        })
+        $("#modifyUserPassword").click(function () {
+            window.location = "modifyUserPassword.html?mobile=" + mobile;
+        })
+
+        //暂未开通功能
+        $(".personClassify a:gt(2)").bind("click", function () {
+            showToast("功能暂未开通,敬请期待！");
+        })
+        var username = getCookie("username");
+        var resname = getCookie("resname");
+        var phonenum = getCookie("phonenum");
+        if (username != "undefined") {
+            $("#username").text(username);
+        } else {
+            $("#username").text(phonenum);
+        }
+        if (resname != "undefined") {
+            $("#resname").text(resname);
+        } else {
+            $("#resname").text();
+        }
+
+    });
+</script>
+</body>
+</html>

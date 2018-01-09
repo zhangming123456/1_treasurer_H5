@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<meta name="format-detection" content="telephone=no,email=no,adress=no"/>
+<title>首页</title>
+<link rel="stylesheet" type="text/css" href="css/setting.css" />
+
+<link rel="stylesheet" type="text/css" href="css/bootstrap.min.css" />
+
+
+</head>
+<body>
+<!-- 页面头部 -->
+<section>
+  <div class="navigation-bar"> <a href="JavaScript:history.go(-1)" class="z-01"></a> <span>添加提现账号</span> <a href="#" class="z-02"></a> </div>
+</section>
+<!-- 中间内容 -->
+<div class="m-wrapper">
+  <div class="wrapper">
+    <div class="login-password">
+      <div class="container-fluid">
+        <form class="set-password" id="set-password" onSubmit="return false;">
+        <input type="hidden" value="0000000055dd15670155ddd056ef0121" id="resId" />
+        <input type="hidden" value="" id="id" />
+        <div class="row">
+          <div class="form-group">
+               <label class="col-sm-4 control-label">账户类型：</label>
+                    <div class="col-sm-5">
+                     <select  name="type" id="type" class='form-control'>
+                        <option value=""></option>
+                        <option value="0">个人账号</option>
+                        <option value="1">公司账号</option>
+                      </select>
+                </div>
+          </div>
+             </div>
+          <div class="form-group">
+            <label class="col-sm-4 control-label">开户银行：</label>
+                    <div class="col-sm-5">
+                    <!-- <input type="input" class="form-control input-lg" id="accountType" name="accountType" tabindex="3" placeholder="开户银行"> -->
+                    <select  name="type" id="accountType" class='form-control'>
+                        <option value=""></option>
+                      </select>
+                </div>
+          </div>
+          <div class="form-group">
+            <label class="col-sm-4 control-label">账户名：</label>
+                    <div class="col-sm-5">
+                    <input type="input" class="form-control input-lg" id="name" name="name" tabindex="3" placeholder="账户名">
+                </div>
+          </div>
+          <div class="form-group">
+            <label class="col-sm-4 control-label">银行账号：</label>
+                    <div class="col-sm-5">
+                    <input type="input" class="form-control input-lg" id="account" name="account" tabindex="3" placeholder="银行账号">
+                </div>
+          </div>
+           <div class="form-group">
+            <label class="col-sm-4 control-label">身份证：</label>
+                    <div class="col-sm-5">
+                    <input type="input" class="form-control input-lg" id="idCard" name="idCard" tabindex="3" placeholder="身份证">
+                </div>
+          </div>
+          <div class="form-group">
+            <label class="col-sm-4 control-label">开户银行地址：</label>
+                    <div class="col-sm-5">
+                    <input type="input" class="form-control input-lg" id="accountAddress" name="accountAddress" tabindex="3" placeholder="开户银行地址">
+                </div>
+          </div>
+          <div class="form-group">
+            <button type="button" id="save" class="waves-button form-control login-button input-lg waves-effect waves-effect" tabindex="4" data-dismiss="modal" >确定</button>
+            <!-- Modal -->
+          </div>
+
+        </form>
+        <div>
+          <p class="text-center ui-fs-12 text-nowrap"> 注：请填写真实信息才能提现。</p>
+
+        <p class="text-center ui-fs-12 text-nowrap"> 仅支持储蓄卡，不支持信用卡。</p>
+
+        <p class="text-center ui-fs-12 text-nowrap"> 建议绑定主流银行卡，提现更及时。</p>
+        
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- 页面底部 -->
+<nav class="footer border_t" id="footer"> <a href="index.html" class="" id="jx"><span></span>首页</a> <a href="list.html" id="lc" class="nav_on"><span></span>理财</a> <a href="#" id="jk" class=""><span></span>借款</a> <a href="个人中心.html" id="cf" class=""><span></span>我的账户</a> </nav>
+
+<script type="text/javascript" src="script/jquery-1.11.3.js"></script>
+<script type="text/javascript" src="script/common.js"></script>
+</body>
+</html>
+<script type="text/javascript" >
+$(function(){
+	$("#id").val(GetQueryString("id"))
+	
+	
+	httpRequest("post","/dic/getDicList?parentCode=account_type",{"resId":$("#resId").val().trim()},function(data){
+		if(data.code == 2000){
+			if( "" != data.value ){
+				var value=data.value;
+				for(var i=0;i<value.length;i++){
+					$("#accountType").append("<option value='"+value[i].code+"'>"+value[i].value+"</option>");
+				}
+				
+				if(null != GetQueryString("id")){
+					httpRequest("post","/tradeAccount/findTradeAccountList",{"resId":$("#resId").val().trim(),"id":$("#id").val()},function(data){
+						if(data.code == 2000){
+							if( "" != data.value ){
+								var value=data.value;
+								$("#type").val(value[0].type);
+								$("#accountType").val(value[0].accountType);
+								$("#name").val(value[0].name);
+								$("#account").val(value[0].account);
+								$("#idCard").val(value[0].idCard);
+								$("#accountAddress").val(value[0].accountAddress);
+							}       		 
+				       	 }else{
+				       		 alert(data.message);
+				       	 }
+					})
+				}
+				
+			}       		 
+       	 }else{
+       		 alert(data.message);
+       	 }
+	})
+	
+	$("#save").click(function(){
+		if("" == $("#type").val().trim()){
+			return alert("请选择账户类型!");	
+		}
+		if("" == $("#accountType").val().trim()){
+			return alert("请选择开户银行!");	
+		}
+		if("" == $("#name").val().trim()){
+			return alert("请填写账户名!");	
+		}
+		if("" == $("#account").val().trim()){
+			return alert("请填写银行账号!");	
+		}
+		if("" == $("#idCard").val().trim()){
+			return alert("请填写身份证!");	
+		}
+		if("" == $("#accountAddress").val().trim()){
+			return alert("请填写开户银行地址!");	
+		}
+		
+		httpRequest("post","/tradeAccount/saveOrUpdateTradeAccount",
+		{
+    		"id":$("#id").val(),
+			"resId":$("#resId").val().trim(),
+			"name":$("#name").val().trim(),
+			"idCard":$("#idCard").val().trim(),
+			"accountType":$("#accountType").val().trim(),
+			"type":$("#type").val().trim(),
+			"account":$("#account").val().trim(),
+			"accountAddress":$("#accountAddress").val().trim(),
+		   },function(data){
+			 alert(data.message);
+	       	 if(data.code == 2000){
+	       		 window.location = "bankList.html";
+	       	 }
+		})
+		
+	});
+	
+})
+
+function GetQueryString(name){
+  var reg = new RegExp("(^|&)"+ name +"=([^&]*)(&|$)");
+  var r = window.location.search.substr(1).match(reg);
+  if(r!=null)return  unescape(r[2]); return null;
+}
+</script>
+
+

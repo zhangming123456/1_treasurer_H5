@@ -2,45 +2,73 @@
   <div class="me_shop_info_page">
     <h2>填写基本资料</h2>
     <group class="me_shop_group">
-      <x-input title="门店名称" class="azm-font-cell" label-width=".88rem" name="trueName" is-type="china-name"
+      <x-input class="azm-font-cell" label-width=".88rem" name="trueName" is-type="china-name"
                v-model="trueName"
-               placeholder="请输入门店名称"></x-input>
-      <!--<x-input title="分店名称" type="number" class="azm-font-cell" label-width=".88rem" v-model="jobNumber"-->
-      <!--placeholder="请输入分店名称"></x-input>-->
-      <x-input title="门店电话" type="tel" class="azm-font-cell" label-width=".88rem" name="mobile" mask="9999-99999"
-               placeholder="请输入门店电话"
+               placeholder="请输入门店名称">
+        <div slot="label" class="label-width"><span class="color-red">*</span>门店名称</div>
+      </x-input>
+      <x-input title="门店电话" type="tel" class="azm-font-cell" label-width=".88rem" name="mobile"
+               mask="999999999999"
+               placeholder="输入电话&手机号码"
                v-model="mobile" keyboard="number"
-               :max="11"
-               :is-type="chinaMobile"></x-input>
+               :max="12"
+               :is-type="chinaMobile">
+        <div slot="label" class="label-width"><span class="color-red">*</span>门店电话</div>
+      </x-input>
+      <!--<x-input title="  " type="tel" class="azm-font-cell" label-width=".88rem" name="mobile" mask="99999999999"-->
+      <!--placeholder="或手机"-->
+      <!--v-model="mobile" keyboard="number"-->
+      <!--:max="11"-->
+      <!--is-type="china-mobile"></x-input>-->
     </group>
     <group title="门店设置" class="me_shop_group">
-      <popup-picker class="azm-font-cell" title="门店类型" label-width=".88rem"
+      <popup-picker class="azm-font-cell"
                     :data="businessTypeList"
                     :columns="1"
                     v-model="businessType"
                     :display-format="businessTypeFormat"
                     @on-change="onChange"
-                    placeholder="请选择门店类型"></popup-picker>
-      <popup-picker title="业态" class="azm-font-cell" label-width=".88rem" :data="orderList" v-model="orderValue"
-                    @on-change="onChange" placeholder="请选择业态"></popup-picker>
-      <!--<x-address title="地址选择" class="azm-font-cell" label-width="1.07rem" v-model="addressValue"-->
-      <!--:list="addressData" placeholder="请选择门店地址" @on-shadow-change="addressShadowChange"-->
-      <!--value-text-align="right"></x-address>-->
-      <cell is-link title="地址选择" :value="addressValue" @click.native="openPopup"></cell>
-      <x-textarea title="详细信息" class="azm-font-cell" placeholder="请填写详细信息" :show-counter="false" v-model="addRess"
+                    placeholder="请选择门店类型">
+        <div slot="title" class="label-width"><span class="color-red">*</span>门店类型</div>
+      </popup-picker>
+      <popup-picker class="azm-font-cell" :data="orderList" v-model="orderValue" :display-format="orderFormat"
+                    @click.native="openDishList"
+                    @on-change="onChange" placeholder="请选择业态">
+        <div slot="title" class="label-width"><span class="color-red">*</span>业态</div>
+      </popup-picker>
+      <cell is-link @click.native="doShowAddress(0)" :value="'ddd'">
+        <div slot="icon" class="label-width"><span class="color-red">*</span>门店地址</div>
+        <div v-if="addressDataTo">
+          <span v-for="(item,index) of addressDataTo" :key="index">{{ item.name }}&nbsp;&nbsp;</span>
+        </div>
+        <div v-else>
+          <span>省 - 市 - 区&县</span>
+        </div>
+      </cell>
+      <!--<x-address title="省份选择" :list="province_list" placeholder="省" @on-shadow-change="addressShadowChange"-->
+      <!--style="display:none;" :show.sync="onShowProvince_list"></x-address>-->
+      <x-textarea title="    " class="azm-font-cell" placeholder="请填写详细地址" v-model="addRess" name="addRess"
+                  autosize
                   :rows="3"></x-textarea>
     </group>
     <footer>
-      <x-button type="primary" class="azm-font-cell" action-type="submit" :show-loading="isSubmit"
-                style="border-radius:99px;">保存
+      <x-button type="primary" class="azm-font-cell azm-btn-submit" action-type="submit" :show-loading="isSubmit"
+                @click.native="fromSubmit">保存
       </x-button>
     </footer>
-
-    <van-popup v-model="popupShow" position="bottom" :overlay="false">
-      <van-area :areaList="addressData" :columnsNum="3" value="110101"/>
+    <van-popup v-model="popupShow" position="bottom">
+      <van-tabs :active="addressActive" sticky @click="handleTabClick">
+        <van-tab v-for="(item, index) of addressValue" :title="item.name" :disabled="!item.status" :key="index">
+          <scroller lock-x scrollbar-y class="azm-popupShow-h">
+            <group gutter="0">
+              <cell class="azm-address-cell" v-for="(v,i) of addressData[item.addressType]" :title="v.name"
+                    :is-loading="v.isLoading" :key="i"
+                    is-link @click.native="doShowAddress(index+1,v)"></cell>
+            </group>
+          </scroller>
+        </van-tab>
+      </van-tabs>
     </van-popup>
-    <!--<van-popup v-model="popupShow" position="bottom" :overlay="false">ljkafj</van-popup>-->
-    <!--<van-area :areaList="addressData" :columnsNum="3" value="110101"/>-->
   </div>
 </template>
 
@@ -57,11 +85,15 @@
     PopupPicker,
     numberComma,
     numberPad,
-    numberRandom
+    numberRandom,
+    Tab,
+    TabItem,
+    Scroller
   } from 'vux'
   import { Popup } from 'vant/lib/index'
   import { mapState } from 'vuex'
-  import VanArea from 'vant/packages/area/index'
+  import VanTab from 'vant/packages/tab/index'
+  import VanTabs from 'vant/packages/tabs/index'
 
   export default {
     directives: {
@@ -70,7 +102,8 @@
       numberRandom
     },
     components: {
-      VanArea,
+      VanTabs,
+      VanTab,
       [Popup.name]: Popup,
       XNumber,
       XTextarea,
@@ -80,7 +113,10 @@
       Cell,
       CellBox,
       XInput,
-      PopupPicker
+      PopupPicker,
+      Tab,
+      TabItem,
+      Scroller
     },
     data () {
       return {
@@ -100,10 +136,8 @@
           }
         ],
         businessType: [0],
-        orderList: [['堂食', '快餐'], ['小米1', 'iPhone2', '华为3', '情怀4', '三星5', '其他6', '不告诉你7']],
-        orderValue: [],
+        orderList: [],
         jobNumber: null,
-        CharacterList: [['sssjj']],
         Character: [],
         minWipeZero: '',
         maxWipeZero: '',
@@ -112,14 +146,32 @@
         isRefund: 0,
         isAntiCheckout: 0,
         isSubmit: false,
-        addressValue: [],
+        addressValue: [
+          {
+            name: '省',
+            addressType: 'province_list'
+          },
+          {
+            name: '市',
+            addressType: 'city_list'
+          },
+          {
+            name: '区&县',
+            addressType: 'county_list'
+          }
+        ],
+        addressDataTo: null,
+        addressActive: 0,
         provinceCity: [],
         trueName: '',
         mobile: '',
+        phone: '',
         addRess: '',
         areaList: {},
+        orderValue: [], // 业态
         searchResult: [],
-        popupShow: false
+        popupShow: false,
+        onShowProvince_list: false
       }
     },
     created () {
@@ -129,7 +181,9 @@
     },
     computed: {
       ...mapState({
-        addressData: state => state.ApiService.ChinaAddressData
+        addressData: state => state.ApiService.ChinaAddressData,
+        DicList: state => state.ApiService.DicList,
+        shiroUserId: state => state.ApiService.shiroUserId
       })
     },
     methods: {
@@ -138,7 +192,7 @@
         e.cancelBubble = true
       },
       routerLink (path, params) {
-        this.$router.push({path, params})
+        this.$router.push({path, query: params})
       },
       businessTypeFormat (value, name) {
         let v = Number(value[0])
@@ -155,32 +209,146 @@
       },
       onShow () {},
       onHide () {},
-      onChange () {},
+      onChange (v) {
+        // console.log(v, '______________')
+      },
+      orderFormat (value, name) {
+        // let that = this
+        // console.log(arguments, '++++++++')
+        return name
+        // return `${that.orderList[0][value[0]].name} - ${that.orderList[1][value[1]].name}`
+      },
+      openDishList () {
+        let that = this,
+          p1 = that.$store.dispatch('ApiService.getDicList'),
+          p2 = that.$store.dispatch('ApiService.getDicList', {config: {type: 1}})
+        this.$http.all([p1, p2]).then(
+          () => {
+            that.orderList = []
+            that.orderList[0] = that.DicList.cater_industry
+            that.orderList[1] = that.DicList.cooking_type
+            console.log(that.orderList)
+          }
+        )
+      },
       chinaMobile (v) {
         console.log(v)
-        if (/^(0|86|17951)?(13[0-9]|15[012356789]|17[678]|18[0-9]|14[57])[0-9]{8}$/.test(v)) {
-          return {valid: true, msg: '正确的手机号码'}
-        } else if (/^(0[0-9]{2,3})?([2-9][0-9]{6,7})+([0-9]{1,4})?$/.test(v)) {
+        // if (/^(0|86|17951)?(13[0-9]|15[012356789]|17[678]|18[0-9]|14[57])[0-9]{8}$/.test(v)) {
+        //   return {valid: true, msg: '正确的手机号码'}
+        // }
+        if (this.$azm.util.RegExp.isPhone_Mobile.test(v)) {
           return {valid: true, msg: '正确的电话号码'}
         } else {
-          return {valid: false, msg: '错误信息'}
+          return {valid: false, msg: '电话号码格式不对哦~'}
         }
       },
       onSave () {
       },
       onDelete () {
       },
-      openPopup () {
-        this.popupShow = true
+      doShowAddress (index, item, i) {
+        let that = this
+        if (index === 0) {
+          that.addressActive = index
+          that.popupShow = !that.popupShow
+          if (that.addressValue[0].status) {
+            Object.assign(that.addressValue[0], that.addressData.province_list[that.addressValue[0].index])
+          } else {
+            Object.assign(that.addressValue[0], that.addressData.province_list[0])
+          }
+          if (that.addressValue[1].status) {
+            Object.assign(that.addressValue[1], that.addressData.province_list[that.addressValue[1].index])
+          } else {
+            Object.assign(that.addressValue[1], that.addressData.city_list[0])
+          }
+          if (that.addressValue[2].status) {
+            Object.assign(that.addressValue[2], that.addressData.province_list[that.addressValue[2].index])
+          } else {
+            Object.assign(that.addressValue[2], that.addressData.county_list[0])
+          }
+        } else if (index === 1) {
+          Object.assign(that.addressValue[0], item)
+          item.isLoading = true
+          that.addressValue[1].status = false
+          that.addressValue[2].status = false
+          that.$store.dispatch('ApiService.getRegionByPid', {pid: item.value}).then(
+            (rsp) => {
+              that.addressActive = index
+              Object.assign(that.addressValue[1], that.addressData.city_list[0])
+              that.addressValue[0].index = i
+              item.isLoading = false
+            }
+          )
+        } else if (index === 2) {
+          let config = {addressType: 1}
+          Object.assign(that.addressValue[1], item)
+          that.addressValue[2].status = false
+          item.isLoading = true
+          that.$store.dispatch('ApiService.getRegionByPid', {pid: item.value, config}).then(
+            () => {
+              that.addressActive = index
+              Object.assign(that.addressValue[2], that.addressData.county_list[0])
+              that.addressValue[1].index = i
+              item.isLoading = false
+            }
+          )
+        } else if (index === 3) {
+          Object.assign(that.addressValue[2], item)
+          that.popupShow = !that.popupShow
+          that.addressDataTo = that.addressValue
+        }
       },
-      onChangeDetail (val) {
-        if (val) {
-          this.searchResult = [{
-            name: '黄龙万科中心',
-            address: '杭州市西湖区'
-          }]
+      handleTabClick (index) {
+        console.log(this.addressActive, index)
+        this.addressActive = index
+      },
+      /**
+       * 提交表单
+       */
+      fromSubmit () {
+        // *     mobile：门店电话
+        // *     provinceCity：门店地址.
+        // *     addRess：详细地址
+        // *     businessType:门店类型 //0连锁//1单店
+        // *     业态: {
+        // *          typeOfOperation: 分类 0：堂食 1：快餐
+        //   *          typeOfCooking：菜系
+        let data = {
+            shiroUserId: this.shiroUserId,
+            trueName: this.trueName,
+            mobile: this.mobile,
+            addRess: this.addRess,
+            businessType: this.businessType[0],
+            provinceCity: []
+          },
+          that = this
+        if (this.addressDataTo) {
+          for (let v of this.addressDataTo) {
+            data.provinceCity.push(v.value)
+          }
+          data.provinceCity = JSON.stringify(data.provinceCity)
+        }
+        data.typeOfOperation = this.orderValue[0]
+        data.typeOfCooking = this.orderValue[1]
+        console.log(data, '提交')
+        if (!this.$azm.util.trim(data.trueName)) {
+          this.$toast('门店名称不能为空')
+        } else if (!this.$azm.util.trim(data.mobile)) {
+          this.$toast('手机号码不能为空')
+        } else if (!this.$azm.util.RegExp.isPhone_Mobile.test(data.mobile)) {
+          this.$toast('手机格式不正确')
+        } else if (!this.$azm.util.trim(data.typeOfOperation) || !this.$azm.util.trim(data.typeOfCooking)) {
+          this.$toast('请选择业态')
+        } else if (!this.$azm.util.trim(data.provinceCity)) {
+          this.$toast('请选择门店地址')
         } else {
-          this.searchResult = []
+          that.$store.dispatch('ApiService.createRestaurant', data).then(
+            (rsp) => {
+              if (2000 == rsp.data.code) {
+                that.$router.go(-2)
+              }
+            }
+          )
         }
       }
     }
@@ -189,6 +357,21 @@
 <style scoped lang='less'>
   .me_shop_info_page {
     box-sizing: border-box;
+    .azm-address-cell {
+      font-size: 12px;
+    }
+    .label-width {
+      width: 66px;
+    }
+    .azm-btn-submit {
+      border-radius: 99px;
+    }
+    .color-red {
+      color: #ff0000;
+    }
+    .azm-popupShow-h {
+      height: 250px !important;
+    }
     h2 {
       text-align: center;
       padding: 10px 0 0;

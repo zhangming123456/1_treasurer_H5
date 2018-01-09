@@ -1,10 +1,27 @@
 'use strict'
-import queryString from 'querystring'
-import md5 from 'md5'
+import queryString from '../tools/querystring'
+import md5 from '../tools/md5'
+import RegExp from './util/RegExp'
+import trim from '../tools/string/trim'
+import throttle from '../tools/throttle'
 
 let exports = {
-  queryString, md5
+  queryString, md5, RegExp, throttle
 }
+
+function _trim (x = '') {
+  if (isString(x)) {
+    try {
+      return trim(x)
+    } catch (e) {
+      return x
+    }
+  } else {
+    return false
+  }
+}
+
+exports.trim = _trim
 
 /**
  * 判读是否是微信客户端
@@ -32,7 +49,7 @@ function sign (secretKey, params) {
     for (let v of arr) {
       str += `${v}${params[v]}`
     }
-    let sb = str.replace(/(&|=|undefined|null)/g, '')
+    let sb = str.replace(/(&|undefined|null)/g, '')
     return md5(secretKey + sb).toUpperCase()
   } catch (e) {
     return ''
@@ -112,26 +129,16 @@ function isString (arg) {
 
 exports.isString = isString
 
-function trim (x) {
+function isJsonString (arg = '') {
   try {
-    return x.replace(/^\s+|\s+$/gm, '')
-  } catch (e) {
-    return x
-  }
-}
-
-exports.trim = trim
-
-function isJsonString (arg) {
-  let json = trim(arg)
-  if (!!json && isString(json)) {
-    try {
+    let json = trim(arg)
+    if (!!json && isString(json)) {
       JSON.parse(json)
       return true
-    } catch (e) {
+    } else {
       return false
     }
-  } else {
+  } catch (e) {
     return false
   }
 }
@@ -293,4 +300,8 @@ exports.log = function () {
   console.log('%s - %s', timestamp(), exports.format.apply(exports, arguments))
 }
 
+exports.deepClone = function (obj) {
+  var proto = Object.getPrototypeOf(obj)
+  return Object.assign({}, Object.create(proto), obj)
+}
 export default exports

@@ -1,21 +1,21 @@
 <template>
   <div :class="name" class="azm-fixed">
     <van-cell-group>
-      <van-cell title="客服微信号" value="18507065087">
+      <van-cell title="客服微信号" value="zhenler123">
         <template slot="icon">
           <i class="iconfont icon-weixin" style="color: #49cfae"></i>
         </template>
       </van-cell>
-      <van-cell title="客服QQ号" value="18507065087">
+      <van-cell title="客服QQ号" value="2044789217">
         <template slot="icon">
           <i class="iconfont icon-qq" style="color: #f6a966"></i>
         </template>
       </van-cell>
-      <van-cell icon="phone" title="电话" value="18507065087"></van-cell>
+      <van-cell icon="phone" title="电话" value="0755-32914310"></van-cell>
     </van-cell-group>
     <div class="footer">
       <p>关注官方公众号：yihaozhanggui-，了解最新资讯</p>
-      <img src="../../assets/qr.png" alt="">
+      <img src="../../assets/lALPBbCc1UV6wrnNAQLNAQI_258_258.png" alt="">
     </div>
   </div>
 </template>
@@ -41,6 +41,9 @@
     },
     created () {
       this.$emit('transfer', this.transferObj)
+      if (!this.transferObj.navBarHide) {
+        this.name = `${this.name} azm-fixed_46px`
+      }
       this.$store.commit('setNavigationBarTitle', {title: '联系客服'})
     },
     methods: {}

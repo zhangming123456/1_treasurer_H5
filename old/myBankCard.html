@@ -1,0 +1,80 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<meta name="format-detection" content="telephone=no,email=no,adress=no"/>
+<title>我的银行卡</title>
+<link rel="stylesheet" type="text/css" href="css/common.css" />
+
+</head>
+<body style="background: #fff;">
+
+<!-- 中间内容 -->
+	<div class="wrapper" id = "bankList">
+	</div>
+	<div class ="messagebox" id = "tipinfo">
+	    <span></span>
+	</div>
+<script type="text/javascript" src="script/jquery-1.11.3.js"></script>
+<script type="text/javascript" src="script/common.js"></script>
+</body>
+</html>
+<script type="text/javascript" >
+$(function(){
+	var resId = getResId("resId");
+	var shiroUserId = getResId("shiroUserId");
+	httpRequest("post","/tradeAccount/findTradeAccountList",{"resId":resId,"shiroUserId":shiroUserId},function(data){
+		if(data.code == 2000){
+			if( "" != data.value ){
+				var value = data.value;
+				for(var i=0;i<value.length;i++){
+					var content = getStatus(value[i].status);
+					var html ="<div class = 'bankList'>"+
+								"<a href ='addBankCard.html?id="+value[i].id+"'>"+
+								"<img src='images/icon/"+value[i].accountType+".png'/>"+
+								"<div class='bankInfo'>"+
+									"<span class = 'bankName'>"+value[i].name+"</span><br/>"+
+									"<span class='cardNumber'>"+value[i].account+"</span>"+
+								"</div>"+
+								"<div class='goenter'>"+
+									"<span>"+content+"</span>"+
+								"</div>"+
+								"</a>"+
+							"</div>";
+					$("#bankList").append(html);   
+			    }
+			}else{
+				var html = "<div class='tipinfo'>"+
+							"<img src='images/u766.png'/>"+
+							"<span>您暂时还没有绑定的银行卡</span>"+
+						"</div>"+
+						"<a href = 'addBankCard.html' class='compbtn'><span>添加银行卡</span></a>";
+				$("#bankList").append(html);  
+			}
+       	 }else{
+       		 $("#tipinfo").css("visibility","visible").find("span").html(data.message);
+       	 }
+	})
+	//银行卡状态函数
+	function getStatus(status){
+		var content = "";
+		switch (status){
+			case 0:
+				content ="正常";
+				break;	
+			case 1:
+				content ="锁定";
+				break;
+			case 2:
+				content ="待审核";
+				break;
+			case 3:
+				content ="审核失败";
+				break;
+		}
+		return 	content;
+	}
+});
+</script>
+

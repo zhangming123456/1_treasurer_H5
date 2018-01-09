@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<meta name="format-detection" content="telephone=no,email=no,adress=no"/>
+<title>提现</title>
+<link rel="stylesheet" href="css/weui.min.css" />
+<link rel="stylesheet" href="css/withdram.css" />
+
+</head>
+<body>
+
+<!-- 中间内容 -->
+	<div class="layout">
+		<input type="hidden" value="" id="id"/>
+		<div class = "withdramBank">
+			<img class="bankIco" id="bankIco" src="" alt="" />
+			<div class="bankInfo">
+				<span class = "bankName" id="accountName"></span>
+				<p class="cardNumber" id="account"></p>
+			</div>
+		</div>
+
+		<div class = "moneyInfo">
+			<span>提现金额</span>
+			<div class="editMoney">￥<input class = "moneyNumber" id="money" type="number"/></div>
+			<div class="editMoney" id="remark">备注：<input class = "moneyNumber" placeholder="请输入备注" /></div>
+			<p class ="tipinfo" id="tipinfo"></p>
+			<div class="withdramTip">
+				<p>可提现金额<span class = "amount" id="availableBalance"></span>元，提现手续费<span id="price">0.00</span>元</p>
+			</div>
+
+		</div>
+		
+		<div class="btnBox">
+			<a href="javascript:void(0);" class="btn blue" id="save">提现</a>
+		</div>
+	</div>
+	<div class ="commonTips" id="tipInfo"><span></span></div>
+<script type="text/javascript" src="script/jquery-1.11.3.js"></script>
+<script type="text/javascript" src="script/common.js"></script>
+<script type="text/javascript">
+$(function(){
+	var resId = getResId("resId");
+	var shiroUserId = getResId("shiroUserId");
+	httpRequest("post","/tradeAccount/findTradeAccountList",{"resId":resId,"shiroUserId":shiroUserId},function(data){
+		 if(data.code==2000){
+			 var value= data.value[0];
+			 if(value.status == 3){
+			 	showToast("该卡待审核，请等待审核后再提现。");
+				return;
+			 }
+			 $("#id").val(value.id);
+			 $("#bankIco").attr("src","images/icon/"+value.accountType+".png");
+			 $("#account").text(value.account);
+			 $("#accountName").text(value.accountName);
+		 }else{
+			showToast(data.message);
+		 }
+	 })
+	 
+	 //获取可提现金额
+	  httpRequest("post","/tradeDetail/findAvailableTotalBalance",{"resId":resId},function(data){
+		 if(data.code==2000){
+			$("#availableBalance").text(parseFloat(data.value).toFixed(2));
+		 }else{
+			showToast(data.message);
+		 }
+	 })
+	 
+	 //获取提现服务费
+	 httpRequest("get","/dic/getServiceCharge",{"resId":resId},function(data){
+		 if(data.code==2000){
+			$("#price").text(data.value);
+		 }else{
+			$("#tipinfo").css("visibility","visible").find("span").html(data.message);
+		 }
+	 })
+
+	 //判断可提现金额
+	 $("#money").bind("change",function(){
+	 	var val = parseFloat($(this).val());
+	 	var nval = parseFloat($("#availableBalance").text());
+	 	var p = parseFloat($("#price").text());
+	 	if(val!= ""){
+	 		if(val > nval){
+	 			$("#tipinfo").text("余额不足！");
+	 		}else if(val < p){
+	 			$("#tipinfo").text("提现金额不足以支付手续费！");
+	 		}else if(val>=50000){
+	 			$("#remark").show();
+	 		}	
+	 	}
+	 })
+
+	 $("#save").click(function(){
+		var availableBalance =  $("#availableBalance").text();
+		var money =  $("#money").val();
+		var price =  $("#price").text();
+		var remark = $("#remark input").val();
+		if(money>=50000){
+			if(remark==""){
+				return;
+			}
+		}
+		if(parseFloat(money)<=parseFloat(availableBalance) && parseFloat(availableBalance) > parseFloat(price) && parseFloat(money) > 0){
+			//获取可提现金额
+		  httpRequest("post","/llpay/payment",{"resId":resId,info_order:remark,"money_order":parseFloat(money),"tradeAccountId":$("#id").val()},function(data){
+			 if(data.code==2000){
+			 	window.location="withdramList.html";
+				var value=JSON.parse(data.value);
+				// if(value.ret_code == 4002 || value.ret_code == 4003||value.ret_code == 4004){
+				// 	var no_order = value.no_order;
+				// 	var confirm_code = value.confirm_code;
+				// 	if(confirm("疑是重复订单,请确认!")){
+				// 		 //获取可提现金额
+				// 		  httpRequest("post","/llpay/confirmPayment",{"no_order":no_order,"confirm_code":confirm_code},function(data){
+				// 			 if(data.code==2000){
+				// 				 var v = JSON.parse(data.value);
+				// 				 if(v.ret_code="0000"){
+				// 					 window.location="withdramList.html";
+				// 				 }else{
+				// 				 	showToast(v.ret_msg);
+				// 				 }
+				// 			 }else{
+				// 				showToast(data.message);
+				// 			 }
+				// 		 })
+				// 	}
+				// }else{
+				// 	window.location="withdramList.html";
+				// }
+			 }else{
+				$("#tipinfo").html(data.message);
+			 }
+		 })
+		}else{
+			showToast("提现金额应小于可用提现金额，请重新输入");
+			return;
+		}
+		 
+		
+	 });
+	  
+})
+</script>
+</body>
+</html>

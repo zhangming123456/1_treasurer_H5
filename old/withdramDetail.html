@@ -1,0 +1,71 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<meta name="format-detection" content="telephone=no,email=no,adress=no"/>
+<title>提现详情</title>
+<link rel="stylesheet" href="css/withdram.css" />
+</head>
+<body style="background: #fff;">
+<!-- 页面头部 -->
+	<header>
+		<a href="JavaScript:history.go(-1)" class="backpre"><img src="images/u10.png"></a>
+		<span class="headTitle">提现详情</span>
+	</header>
+<!-- 中间内容 -->
+	<div class ="messagebox l_messagebox" id="tipInfo">
+      	<span></span>
+    </div>
+	<!--提现申请-->
+	<div class="withdrawDetail">
+		<ul class="withdramStep" id="withdramStep">
+			<li><a class="stepStatus stepicon0"></a><div class="stepInfo"><p>提交提现申请</p><p id="firstTime"></p></div></li>
+		</ul>
+	</div>
+<script type="text/javascript" src="script/jquery-1.11.3.js"></script>
+<script type="text/javascript" src="script/common.js"></script>
+<script type="text/javascript" >
+$(function(){
+	var Id = GetQueryString("id");
+	var firstTime;
+	httpRequest("post","/tradeCash/findTradeCashDetailList",{"id":Id},function(data){
+		if(data.code == 2000){
+			if( "" != data.value ){
+				var value=data.value;
+				for(var i=0;i<value.length;i++){
+					if(i==0){
+						firstTime = new Date(value[i].createTime).Format("yyyy-MM-dd hh:mm:ss");
+						$("#firstTime").text(firstTime);
+					}
+
+
+					var status = '';//0处理中 1成功 2失败  3待确认//wangzi
+					if(0 == value[i].status){
+						status = '<p>提交申请成功</p>';
+					}else if(1 == value[i].status){
+						status = '<p>提现成功</p>';
+					}else if(2 == value[i].status){
+						status = '<p>提现失败<span style="color:#ff0000;">('+value[i].memo+')</span></p>';
+					}else if(3 == value[i].status){
+						status = '<p>待确认</p>';
+					}
+					var html = '<li><a class="stepStatus stepicon0"></a>'
+							 + '<div class="stepInfo">'
+							 + status
+							 + '<p>'+new Date(value[i].createTime).Format("yyyy-MM-dd hh:mm:ss");+'</p>'
+							 + '</div>'
+							 + '</li>'
+					 $("#withdramStep").append(html);   
+				}
+			}       		 
+       	 }else{
+       	 	showToast(data.message);
+       	 }
+	})
+})
+</script>
+</body>
+</html>
+
+

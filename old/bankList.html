@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<meta name="format-detection" content="telephone=no,email=no,adress=no"/>
+<title>首页</title>
+<link rel="stylesheet" type="text/css" href="css/setting.css" />
+<link rel="stylesheet" type="text/css" href="css/common.css" />
+
+
+<style type="text/css">
+</style>
+</head>
+<body>
+<!-- 页面头部 -->
+<section>
+  <div class="navigation-bar"> <a href="JavaScript:history.go(-1)" class="z-01"></a> <span>我的银行卡</span> <a href="#" class="z-02"></a> </div>
+</section>
+<!-- 中间内容 -->
+<div class="m-wrapper">
+  <div class="wrapper   ">
+    <div class="login-password">
+      <div class="container-fluid">
+  
+       
+         <div class="index-list-wrap" id="list">
+  		</div>
+	    	
+
+
+         <input  type="button" name="submitButton" value="添加银行卡" style="border:none;cursor:pointer;" class="btn-submit mt20" onClick="window.location='bankInfo.html'">
+      </div>
+    </div>
+  </div>
+</div>
+<input type="hidden" value="0000000055dd15670155ddd056ef0121" id="resId" /><!-- 临时定义 -->
+<!-- 页面底部 -->
+<nav class="footer border_t" id="footer"> <a href="index.html" class="" id="jx"><span></span>首页</a> <a href="list.html" id="lc" class="nav_on"><span></span>理财</a> <a href="#" id="jk" class=""><span></span>借款</a> <a href="个人中心.html" id="cf" class=""><span></span>我的账户</a> </nav>
+
+<script type="text/javascript" src="script/jquery-1.11.3.js"></script>
+<script type="text/javascript" src="script/common.js"></script>
+</body>
+</html>
+
+<script type="text/javascript" >
+$(function(){
+	httpRequest("post","/tradeAccount/findTradeAccountList",{"resId":$("#resId").val().trim()},function(data){
+		if(data.code == 2000){
+			if( "" != data.value ){
+				var value=data.value;
+				for(var i=0;i<value.length;i++){
+					var html = '<div class="index-pad">'+ 
+							     '<a href="bankinfo.html?id='+value[i].id+'" class="index-list index-che">'+
+							      '<div class="list-tit clear"> <span class="fl tit-name"><i></i><strong>'+value[i].name+'</strong></span></div>'+
+							      '<div class="list-main">'+
+							      '<div class="main-l"> <span class="per">'+value[i].account+'</span></div>'+
+							      '</div>'+
+							     '</a> '+
+							    '</div>';
+					 $("#list").append(html);   
+				}
+			}       		 
+       	 }else{
+       		 alert(data.message);
+       	 }
+	})
+})
+</script>

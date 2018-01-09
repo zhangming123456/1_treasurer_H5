@@ -1,0 +1,83 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<meta name="format-detection" content="telephone=no,email=no,adress=no"/>
+<title>收入明细</title>
+<link rel="stylesheet" type="text/css" href="css/common.css" />
+
+</head>
+<body style = "background: #fff;">
+	<div class="wrapper">
+		<!--<div class="dateTime">
+			<p>
+				<span class= "time">2017年6月</span>
+				<img src="images/u930.png" alt="" />
+			</p>
+		</div>-->
+	</div>
+	<p id="nolist" style="text-align:center;font-size:14px;color:#000;padding-top:40px;" hidden>暂无明细</p>
+	<div class ="messagebox" id = "tipinfo">
+	    <span></span>
+	</div>
+<script type="text/javascript" src="script/jquery-1.11.3.js"></script>
+<script type="text/javascript" src="script/common.js"></script>
+</body>
+</html>
+<script type="text/javascript" >
+$(function(){
+	var resId = getResId("resId");
+	httpRequest("post","/tradeDetail/findTradeDetailList",{"resId":resId},function(data){
+		if(data.code == 2000){
+			if( "" != data.value ){
+				var value=data.value;
+				for(var i=0;i<value.length;i++){
+					var type = '';
+					var payType = '';
+					if(0 == value[i].type){
+						type = '消费';
+					}else if(1 == value[i].type){
+						type = '充值';
+					}
+					if(value[i].payType==2){
+						payType = '<img src="images/u888.png"/>';
+					}else if(value[i].payType==4){
+						payType = '<img src="images/u922.png"/>';
+					}
+					if(value[i].status==0){
+						status="待入账";
+					}else if(value[i].status==1){
+						status="已入账";
+					}else if(value[i].status==2){
+						status="已结算";
+					}else if(value[i].status==3){
+						status="已退款";
+					}
+					var html ='<div class = "bankinfo">'+
+									'<a href="incomeBill.html?resId='+resId+'&orderNo='+value[i].orderNo+'&type='+value[i].type+'"><div class="icon">'+
+										payType+
+									'</div>'+
+									'<div class="leftinfo">'+
+										'<p><span>'+type+'</span></p>'+
+										'<p><span>'+new Date(value[i].createTime).Format("yyyy-MM-dd hh:mm:ss")+'</span></p>'+
+									'</div>'+
+									'<div class="rightinfo">'+
+										'<p class = "money" style="color:#ff0000;">'+status+'</p>'+
+										'<p class = "money">￥'+value[i].amount+'</p>'+
+									'</div>'+
+									'<div class="goenter">'+
+										'<span><img src="images/u1129.png" alt="" /></span>'+
+									'</div></a>'+
+								'</div>';
+					$(".wrapper").append(html); 
+				}
+			}else{
+				$("#nolist").show();
+			}       		 
+       	 }else{
+       		 $("#tipinfo").css("visibility","visible").find("span").html(data.message);
+       	 }
+	})
+})
+</script>

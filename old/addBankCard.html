@@ -1,0 +1,271 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<meta name="format-detection" content="telephone=no,email=no,adress=no"/>
+<title>首页</title>
+<link rel="stylesheet" type="text/css" href="css/common.css" />
+<link rel="stylesheet" href="css/weui.min.css" />
+</head>
+<body style="background: #fff;">
+
+<!-- 中间内容 -->
+	<div class="add_wrapper">
+		<div class = "bankinfo">
+			<div class="leftinfo">
+				<span>账户类型：</span>
+			</div>
+			<div class="inputBox">
+				<select class = "type" id="type">
+	                <option value="0">个人账号</option>
+	                <option value="1">公司账号</option>
+	            </select>
+	            <span></span>
+			</div>
+		</div>
+		<div class = "bankinfo">
+			<div class="leftinfo">
+				<span>开户银行：</span>
+			</div>
+			<div class="inputBox">
+				<!--<input type="text" id="accountType" placeholder="开户银行">-->
+				<select  name="type" id="accountType">
+              	</select>
+              	<span></span>
+			</div>
+		</div>
+		<div class = "bankinfo">
+			<div class="leftinfo">
+				<span>开户地点：</span>
+			</div>
+			<div class="inputBox">
+      			<input type="text" id = "accountAddress" placeholder="开户地点">
+				<span></span>
+      		</div>
+		</div>
+		<div class = "bankinfo">
+			<div class="leftinfo">
+				<span>开户人姓名：</span>
+			</div>
+			<div class="inputBox">
+				<input type="text" id = "name" placeholder="开户人姓名">
+				<span></span>
+			</div>
+		</div>
+		<div class = "bankinfo">
+			<div class="leftinfo">
+				<span>银行账号：</span>
+			</div>
+			<div class="inputBox">
+				<input type="text" id="account" placeholder="银行账号">
+				<span></span>
+			</div>
+		</div>
+		<div class = "bankinfo">
+			<div class="leftinfo">
+				<span>身份证号码：</span>
+			</div>
+			<div class="inputBox">
+				<input type="text" id="idCard" placeholder="身份证号码">
+				<span></span>
+			</div>
+		</div>
+		<div id="showOrhide">
+			<div class="bankinfo" id = "regbox">
+		        <input id="authCode" name="authCode" type="text" maxlength="26"  placeholder="请输入验证码">
+			    <div class="waittime" >
+			        <input value="获取验证码" id = "getCode" type="button" />
+			    </div>
+		    </div>
+			<div class = "tipInfo">
+				<label for="weuiAgree" class="weui-agree">
+					<input type="checkbox" id="weuiAgree" class="weui-agree__checkbox">
+					<span class="weui-agree__text">我已阅读并同意<a href="paymentAgree.html" style="color:#000;" class="weui-agree__text">《连连支付协议》</a></span>
+		       	</label>
+			</div>
+			<div class ="messagebox" id = "tipinfo">
+		      	<span></span>
+		    </div>
+			<a href = "#" class="compbtn" id = "save"><span>提交</span></a>
+			<p class = "note">
+				注：<span>请填写真实信息才能提现。</span><br/>
+				<span>仅支持储蓄卡，不支持信用卡。</span><br/>
+				<span>建议绑定主流银行卡，提现更及时。</span>
+			</p>
+		</div>
+	</div>
+<script type="text/javascript" src="script/jquery-1.11.3.js"></script>
+<script type="text/javascript" src="script/common.js"></script>
+</body>
+</html>
+
+<script type="text/javascript">
+	$(function(){
+		var resId = getResId("resId");
+		var shiroUserId = getResId("shiroUserId");
+		var id = GetQueryString("id");
+		httpRequest("post","/dic/getDicList",{"parentCode":"account_type"},function(data){
+			if(data.code == 2000){
+				if( "" != data.value ){
+					var value=data.value;
+					for(var i=0;i<value.length;i++){
+						$("#accountType").append("<option value='"+value[i].code+"'>"+value[i].value+"</option>");
+					}
+					if(null != id){
+						httpRequest("post","/tradeAccount/findTradeAccountList",{"resId":resId,"shiroUserId":shiroUserId,"id":id},function(data){
+							if(data.code == 2000){
+								var value=data.value;
+								if(value[0].status==3){
+									$("#type option").eq(value[0].type).attr("selected","selected");
+									$("#accountType").val(value[0].accountType);
+									$("#accountAddress").val(value[0].accountAddress);
+									$("#name").val(value[0].name);
+									$("#account").val(value[0].account);
+									$("#idCard").val(value[0].idCard);
+								}else{
+									if( "" != data.value ){
+										$("#type").hide();
+										$("#accountType").hide();
+										$("#account").hide();
+										$("#accountAddress").hide();
+										$("#name").hide();
+										$("#idCard").hide();
+										$("#showOrhide").hide();
+										$(".inputBox span").css("display","block");
+										
+										var spanDoms =$(".inputBox span"); 
+										$(spanDoms[0]).text(value[0].type==0?"个人账号":"公司账号");
+										$(spanDoms[1]).text(value[0].accountName);
+										$(spanDoms[2]).text(value[0].accountAddress);
+										$(spanDoms[3]).text(value[0].name);
+										$(spanDoms[4]).text(value[0].account);
+										$(spanDoms[5]).text(value[0].idCard);
+									} 
+								}
+								      		 
+					       	 }else{
+					       		$("#tipinfo").css("visibility","visible").find("span").html(data.message);
+					       	 }
+						})
+					}
+				}       		 
+	       	 }else{
+	       		 $("#tipinfo").css("visibility","visible").find("span").html(data.message);
+	       	 }
+		})
+		//点击提交按钮验证判断
+		$("#save").click(function(){
+			if("" == $("#authCode").val().trim()){
+				$("#tipinfo").css("visibility","visible").find("span").html("请填写验证码!");
+				return;	
+			}else if($('#weuiAgree').not(':checked').length==1){
+				$("#tipinfo").css("visibility","visible").find("span").html("请勾选同意支付协议!");
+				return;
+			}
+			var autoCode = $("#authCode").val().trim();
+			var code = checkRegCode(autoCode);
+			var mobile = getCookie("phonenum");
+			if(code){
+				$("#tipinfo").css("visibility","visible").find("span").html(code);
+				return;
+			}
+			httpRequest("get","/sms/checkSmsCodeByMobile",{mobile:mobile,code:autoCode,msgTemp:"SMS_DEFAULT_CONTENT"},function(data){
+				if(data.code == 2000){
+					return true;
+          		   	
+          	 	}else{
+          	 		$("#tipinfo").css("visibility","visible").find("span").html(data.message);
+          	 		return false;
+          	 	}
+		 	})
+
+			httpRequest("post","/tradeAccount/saveOrUpdateTradeAccount",
+						{
+							"resId":resId,
+							"id":id==null?"":id,
+							"shiroUserId":shiroUserId,
+							"name":$("#name").val().trim(),
+							"idCard":$("#idCard").val().trim(),
+							"accountType":$("#accountType").val().trim(),
+							"account":$("#account").val().trim(),
+							"type":$("#type").val().trim(),
+							"accountAddress":$("#accountAddress").val().trim()
+						   },function(data){
+							 $("#tipinfo").css("visibility","visible").find("span").html(data.message);
+					       	 if(data.code == 2000){
+					       		 window.location = "myBankCard.html";
+					       	 }
+						})
+			
+			
+		});
+		//时间倒计时函数
+	 var clock = '';
+	 var nums = 60;
+	 var btn;
+	 function sendCode(thisBtn)
+	 { 
+		 btn = thisBtn;
+		 btn.attr("disabled", true); //将按钮置为不可点击
+		 btn.val('重新获取'+nums+'s') ;
+		 clock = setInterval(doLoop, 1000); //一秒执行一次
+	 }
+	 function doLoop()
+	 {
+		 nums--;
+		 if(nums > 0){
+		  btn.val('重新获取'+nums+'s');
+		 }else{
+		  clearInterval(clock); //清除js定时器
+		  btn.attr("disabled", false);
+		  btn.val('重新获取');
+		  nums = 60; //重置时间
+		 }
+	 }
+		// 获取验证码
+		$("#getCode").click(function(){
+			var reg;
+			if("" == $("#type").val().trim()){
+				$("#tipinfo").css("visibility","visible").find("span").html("请选择账户类型!");
+				return;	
+			}
+			if("" == $("#accountType").val().trim()){
+				$("#tipinfo").css("visibility","visible").find("span").html("请选择开户银行!");
+				return;	
+			}
+			if("" == $("#accountAddress").val().trim()){
+				$("#tipinfo").css("visibility","visible").find("span").html("请填写开户银行地址!");
+				return;	
+			}
+			reg=/^([\u4e00-\u9fa5]){2,7}$/;
+			if("" == $("#name").val().trim()){
+				$("#tipinfo").css("visibility","visible").find("span").html("账户名有误");
+				return;	
+			}
+			reg=/^\d{16}|\d{19}$/;
+			if(!reg.test($("#account").val())){
+				$("#tipinfo").css("visibility","visible").find("span").html("卡号有误");
+				return;	
+			}
+			reg=/^[1-9]\d{7}((0\d)|(1[0-2]))(([0|1|2]\d)|3[0-1])\d{3}$|^[1-9]\d{5}[1-9]\d{3}((0\d)|(1[0-2]))(([0|1|2]\d)|3[0-1])\d{3}([0-9]|X)$/; 
+
+			if(!validateIdCard($("#idCard").val())){
+				$("#tipinfo").css("visibility","visible").find("span").html("身份证有误!");
+				return;	
+			}
+			
+
+
+			//setTime();
+			httpRequest("get","/sms/getSmsCode",{mobile:getCookie("mobile"),msgTemp:"SMS_DEFAULT_CONTENT"},function(data){
+				if(data.code == 2000){
+					 $("#tipinfo").css("visibility","visible").find("span").html(data.message);
+					sendCode($("#getCode"));
+		      	 }else{
+		      	 	 $("#tipinfo").css("visibility","visible").find("span").html(data.message);
+		      	 }
+			})
+		});
+    })
+</script>

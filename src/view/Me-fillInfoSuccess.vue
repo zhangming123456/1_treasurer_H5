@@ -7,10 +7,11 @@
     <footer>
       <flexbox>
         <flexbox-item>
-          <x-button type="default" class="azm-font-cell" :show-loading="isSubmit">继续添加</x-button>
+          <x-button type="default" class="azm-font-cell" :show-loading="isSubmit" link="/Me-wizard">继续添加</x-button>
         </flexbox-item>
         <flexbox-item>
-          <x-button type="primary" class="azm-font-cell" :show-loading="isSubmit">返回员工列表</x-button>
+          <x-button type="primary" class="azm-font-cell" :show-loading="isSubmit" link="/me-staff-admin">返回员工列表
+          </x-button>
         </flexbox-item>
       </flexbox>
     </footer>
@@ -47,7 +48,7 @@
         e.cancelBubble = true
       },
       routerLink (path, params) {
-        this.$router.push({path, params})
+        this.$router.push({path, query: params})
       },
       onShow () {},
       onHide () {},

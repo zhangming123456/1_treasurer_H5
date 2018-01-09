@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<meta name="format-detection" content="telephone=no,email=no,adress=no"/>
+<title>账单详情</title>
+<link rel="stylesheet" type="text/css" href="css/usercenter.css" />
+<script>
+    (function () {
+        document.addEventListener('DOMContentLoaded', function () {
+            var html = document.documentElement;
+            var windowWidth = html.clientWidth;
+            html.style.fontSize = windowWidth / 15 + 'px';
+        }, false);
+    })();
+</script>
+</head>
+<body>
+<div class="incomeDetail">
+	<div class="incomeTotal">
+		<h2 id="amount"></h2>
+		<p id="payType"></p>
+	</div>
+	<ins class="perch"></ins>
+	<div class="incomeInfo">
+		<div class="incomeInfoItem"><span>交易时间：</span><p id="createTime"></p></div>
+		<div class="incomeInfoItem"><span>交易流水：</span><p id="tradeNo"></div>
+		<div class="incomeInfoItem"><span>入账状态：</span><p id="status"></div>
+		<div class="incomeInfoItem"><span>交易说明：</span><p id="dealInfo"></div>
+		<div class="incomeInfoItem"><span>余额：</span><p id="banlance"></div>
+		<div class="incomeOrder" id="info1">
+			<div class="incomeInfoItem"><span>商户订单号：</span><p id="orderNo"></div>
+			<div class="incomeInfoItem"><span>订单类型:</span><p id="transType"></div>
+		</div>
+		<div class="incomeOrder" id="info2" style="display:none;">
+			<div class="incomeInfoItem"><span>充值订单号：</span><p id="orderNo1"></div>
+			<div class="incomeInfoItem"><span>订单类型:</span><p id="transType1"></div>
+		</div>
+		<div class="incomeOrder" id="info3" style="display:none;">
+			<div class="incomeInfoItem"><span>收款账户：</span><p id="account"></div>
+			<div class="incomeInfoItem"><span>收款方:</span><p id="accountName"></div>
+		</div>
+	</div>
+</div>
+<script type="text/javascript" src="script/jquery-1.11.3.js"></script>
+<script type="text/javascript" src="script/common.js"></script>
+<script type="text/javascript">
+$(function(){
+	var id = GetQueryString("id");
+	httpRequest("post","/tradeDetail/findTradeDetailByOrder",{"id":id},function(data){
+		if(data.code == 2000){
+			if( null != data.value ){
+				var value = data.value[0];
+				console.log(data.value);
+				var amount = value.amount;
+				var payType = value.payType;
+				var createTime = new Date(value.createTime).Format("yyyy-MM-dd hh:mm:ss");;
+				var orderNo = value.orderNo;
+				var status = value.status;
+				var banlance = value.banlance;
+				var tradeNo = value.tradeNo;
+				var transType = value.transType;
+				var account = value.account;
+				var accountName = value.accountName;
+				var flag,dealInfo;
+				if(status==0){
+					status="待入账";
+				}else if(status==1){
+					status="已入账";
+				}else if(status==2){
+					status="已结算";
+				}else if(status==3){
+					status="已退款";
+				}
+				if(value.transFlag==1){
+					flag = "+";
+				}else{
+					flag = "-";
+				}
+				if(value.transType==0){
+					transType="堂食订单";
+					dealInfo = "消费";
+				}else if(value.transType==1){
+					transType="外卖订单";
+					dealInfo = "消费";
+				}else if(value.transType==2){
+					transType="会员充值";
+					dealInfo="会员充值";
+				}else if(value.transType==3){
+					transType="退款";
+					dealInfo="退款";
+				}else if(value.transType==4){
+					transType="服务费";
+					dealInfo="服务费";
+				}else if(value.transType==5){
+					transType="提现手续费";
+					dealInfo="提现手续费";
+				}else if(value.transType==6){
+					transType="提现";
+					dealInfo="提现";
+				}else if(value.transType==7){
+					transType="提现失败退款";
+					dealInfo="提现失败退款";
+				}else{
+					transType="消费";
+				}
+				$("#amount").text(flag+amount);
+				$("#payType").text(payType);
+				$("#createTime").text(createTime);
+				$("#orderNo").text(orderNo);
+				$("#status").text(status);
+				$("#banlance").text(parseFloat(banlance).toFixed(2));
+				$("#tradeNo").text(tradeNo);
+				$("#transType").text(transType);
+				$("#orderNo1").text(tradeNo);
+				$("#transType1").text(transType);
+				$("#dealInfo").text(dealInfo);
+				$("#account").text(account);
+				$("#accountName").text(accountName);
+				if(value.transType==2){
+					$(".incomeOrder").hide();
+					$("#info2").show();
+				}else if(value.transType==5 || value.transType==7){
+					$(".incomeOrder").hide();
+				}else if(value.transType==6){
+					$(".incomeOrder").hide();
+					$("#info3").show();
+				}
+			}
+		}else{
+
+		}
+	})
+})
+</script>
+</body>
+</html>

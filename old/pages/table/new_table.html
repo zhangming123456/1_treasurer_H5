@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html style="height:100%;">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+    <meta name="format-detection" content="telephone=no,email=no,adress=no"/>
+    <title>桌台选择</title>
+    <link rel="stylesheet" type="text/css" href="../../css/usercenter.css"/>
+    <link rel="stylesheet" href="../../js/lib/mui/css/mui.min.css">
+    <link rel="stylesheet" href="../../js/lib/iconFont/iconfont.css">
+    <link rel="stylesheet" type="text/css" href="new_table.css"/>
+    <script>
+        (function () {
+            document.addEventListener('DOMContentLoaded', function () {
+                var html = document.documentElement;
+                var windowWidth = html.clientWidth;
+                html.style.fontSize = windowWidth / 15 + 'px';
+            }, false);
+        })();
+    </script>
+</head>
+<body>
+<div id="app">
+    <!--<button class="qr-btn" node-type="qr-btn" @click="type = 1" disabled="!isBindRestaurantQRcode">绑定店铺-->
+    <!--<input node-type="jsbridge" type="file" name="myPhoto" value="扫描二维码1"/>-->
+    <!--</button>-->
+    <!--@click="isBindQRCode(shopData,1,$event)"-->
+    <h2 class="azm-tableHead">
+        <i class="azm-icon iconfont icon-tubiaozhizuomoban"></i>
+        <button v-if="isBindRestaurantQRcode" @click="isBindShopQRCode(shopData,$event)">
+            解绑店铺
+        </button>
+        <button v-else class="qr-btn qr-btn-dp" node-type="qr-btn"
+                @click="isBindShopQRCode(shopData,$event)">
+            绑定店铺
+            <input node-type="jsbridge" type="file" name="myPhoto"
+                   :disabled="isBindRestaurantQRcode || isWeiXin"
+                   value="扫描二维码1"/>
+        </button>
+    </h2>
+    <div class="azm-tableLayout">
+        <div class="tableLeft mui-scroll-wrapper">
+            <ul class="mui-scroll" id="tableLeft">
+                <li v-for="(item,index) in data" v-bind:class="{'selected':index === tableLeftIndex}"
+                    @click="bindTab(index)">
+                    {{item.subareaName}}
+                </li>
+            </ul>
+        </div>
+        <div class="tableRight mui-scroll-wrapper">
+            <div class="mui-scroll" id="tableRight">
+                <ul v-for="(item,index) in data" class="tableConItem"
+                    v-bind:class="{'selected':index === tableLeftIndex}">
+                    <li class="tableInfo" v-for="(val,i) in item.tableList">
+                        <header>
+                            <h3>名称：{{val.name}}</h3>
+                            <p>桌台编号&nbsp;&nbsp;<span>{{val.tableNo}}</span></p>
+                        </header>
+                        <section>
+                            <p>二维码编号1：
+                                <span v-if="val.qrTableList && val.qrTableList[0]">{{val.qrTableList[0].serialNumber}}</span>
+                            </p>
+                            <p>二维码编号2：
+                                <span v-if="val.qrTableList && val.qrTableList[1]">{{val.qrTableList[1].serialNumber}}</span>
+                            </p>
+                        </section>
+                        <footer class="clear">
+                            <!--<div class="btn-item fl" v-if="val.qrTableList && val.qrTableList[0]">-->
+                            <!--<button class="selected" @click="unBindQRcode(val.qrTableList[0],0)">解綁1</button>-->
+                            <!--</div>-->
+                            <!--<button @click="bindQRCode(val,0)">綁定1</button>-->
+                            <div class="btn-item fl">
+                                <button v-if="val.qrTableList && val.qrTableList[0]" class="selected"
+                                        @click="isBindQRCode(val,$event,(val.qrTableList && val.qrTableList[0]),1)">
+                                    解绑1
+                                </button>
+                                <button v-else class="qr-btn" node-type="qr-btn" :class="'qr-btn-zt' + val.id + 1"
+                                        @click="isBindQRCode(val,$event,(val.qrTableList && val.qrTableList[0]),1)">
+                                    绑定1
+                                    <input node-type="jsbridge" type="file" name="myPhoto"
+                                           :disabled="(val.qrTableList && val.qrTableList[0]) || isWeiXin"
+                                           value="扫描二维码1"/>
+                                </button>
+                            </div>
+                            <div class="btn-item fl">
+                                <button v-if="val.qrTableList && val.qrTableList[1]" class="selected"
+                                        @click="isBindQRCode(val,$event,(val.qrTableList && val.qrTableList[1]),2)">
+                                    解绑2
+                                </button>
+                                <button v-else class="qr-btn" node-type="qr-btn" :class="'qr-btn-zt' + val.id + 2"
+                                        @click="isBindQRCode(val,$event,(val.qrTableList && val.qrTableList[1]),2)">
+                                    绑定2
+                                    <input node-type="jsbridge" type="file" name="myPhoto"
+                                           :disabled="(val.qrTableList && val.qrTableList[1]) || isWeiXin"
+                                           value="扫描二维码1"/>
+                                </button>
+                            </div>
+                        </footer>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <input class="result-qrcode" id="result-qrcode" value="" hidden/>
+</div>
+</body>
+</html>
+<script type="text/javascript" src="../../script/jquery-1.11.3.js"></script>
+<script type="text/javascript" src="../../script/qrcode.lib.min.js"></script>
+<script type="text/javascript" src="../../script/qrcode.js"></script>
+<script type="text/javascript" src="../../script/md5.js" id="mdClass"></script>
+<script type="text/javascript" src="../../script/common.js"></script>
+<script type="text/javascript" src="../../js/lib/mui/js/mui.min.js"></script>
+<script type="text/javascript" src="../../js/lib/vue/vue.min.js"></script>
+<script type="text/javascript" src="../../js/lib/promise/promise.js"></script>
+<script type="text/javascript" src="../../script/jweixin-1.2.0.js"></script>
+<script type="text/javascript" src="../../pages/table/new_table.js"></script>
+<script type="text/javascript">
+    new Vue({
+        el: '#app',
+        data: {
+            isShow: false,
+            shopData: {},
+            isBindRestaurantQRcode: false,
+            data: {},
+            qrcodeData: {},
+            tableLeftIndex: 0,
+            handleId: '',
+            tableConItemSelected: 'selected',
+            resId: '',
+            JweixinData: {},
+            jweixinPromise: null,
+            type: 0,
+            htmlStr: '',
+            btnClass: '',
+            isWeiXin: false
+        },
+        created: function () {
+            function is_weixin() {
+                var ua = navigator.userAgent.toLowerCase();
+                if (ua.match(/MicroMessenger/i) == "micromessenger") {
+                    return true;
+                }
+                else {
+                    return false;
+                }
+            }
+
+            this.isWeiXin = is_weixin();
+            this.resId = getResId('resId');
+            this.handleId = getCookie("shiroUserId");
+            if (this.isWeiXin) {
+                this.getJweixinData();
+            }
+            this.getData();
+            this.getBindRestaurantQRcode();
+        },
+        methods: {
+            isBindQRCode: function (val, e, flag, index) {
+                var _this = this;
+                this.type = 0;
+                this.btnClass = '.qr-btn-zt' + val.id + index;
+                if (flag && index > 0) {
+                    this.qrcodeData = val.qrTableList[index - 1]
+                } else {
+                    this.qrcodeData = val
+                }
+                if (flag) {
+                    this.unBindQRcode(this.qrcodeData, this.type, _this.getBindQrcode);
+                } else {
+                    this.bindQRCode(this.qrcodeData, this.type);
+                }
+            },
+            isBindShopQRCode: function (val, e) {
+                console.log(e);
+                var _this = this;
+                this.type = 1;
+                this.qrcodeData = null;
+                this.btnClass = '.qr-btn-dp';
+                if (!$.isEmptyObject(val)) {
+                    this.unBindQRcode(val, this.type, _this.getBindQrcode)
+                } else {
+                    this.bindQRCode(this.qrcodeData, this.type);
+                }
+            },
+            getBindQrcode: function () {
+                return;
+                if (!this.isWeiXin) {
+                    var _this = this;
+                    var html = $(_this.btnClass).html();
+                    Qrcode.init($(_this.btnClass), function (data) {
+                        _this.bindQRCode(_this.qrcodeData, _this.type, data);
+                    });
+                }
+            },
+            rejectBlur() {
+                return;
+                var _this = this;
+                _this.isWeiXin = false;
+                console.log('非微信客户端绑定桌台');
+                /**
+                 * 非微信客户端绑定桌台
+                 */
+                if (!_this.isShow) {
+                    _this.isShow = true;
+                    Qrcode.init($('[node-type=qr-btn]'), function (data) {
+                        _this.bindQRCode(_this.qrcodeData, _this.type, data);
+                    });
+//                    $(".result-qrcode").bind("blur", function () {
+//                        console.log($(this).val());
+//                        _this.bindQRCode(_this.qrcodeData, _this.type, $(this).val());
+//                    });
+                }
+            },
+            getData: function (cb) {
+                var _this = this;
+                httpRequest("get", "/table/findQRTableDtoList", {resId: _this.resId}, function (res) {
+                    if (res.code == 2000) {
+                        _this.data = res.value;
+                        mui('.mui-scroll-wrapper').scroll({
+                            scrollY: true, //是否竖向滚动
+                            scrollX: false, //是否横向滚动
+                            startX: 0, //初始化时滚动至x
+                            startY: 0, //初始化时滚动至y
+                            indicators: true, //是否显示滚动条
+                            deceleration: 0.0006, //阻尼系数,系数越小滑动越灵敏
+                            bounce: true //是否启用回弹
+                        });
+                        cb && cb();
+                        if (_this.isWeiXin) {
+                            _this.jweixinPromise.then(function () {
+
+                            }, function () {
+//                            _this.rejectBlur();
+                            });
+                        }
+                    }
+                });
+            },
+            getJweixinData: function (challback) {
+                var _location = window.location,
+                    host = location.host,
+                    protocol = location.protocol,
+                    href_first = protocol + '//' + host + '/jweixin',
+                    api = 'http://192.168.134.121:9000/pages/table/new_table.html',
+                    // url = encodeURIComponent(location.href.split('#')[0]),
+                    url = location.href.split('#')[0],
+                    _this = this,
+                    data = {
+                        url: url
+                    };
+                this.jweixinPromise = new ES6Promise(function (resolve, reject) {
+                    httpRequest("post", "/wxScanQRcode/scan", data,
+                        function (data) {
+//                            _this.isWeiXin = false;
+                            if (data.returnStatus) {
+                                _this.JweixinData = data.value;
+                                var data = _this.JweixinData,
+                                    jsApiList = [
+                                        'checkJsApi',
+                                        'onMenuShareTimeline',
+                                        'onMenuShareAppMessage',
+                                        'onMenuShareQQ',
+                                        'onMenuShareWeibo',
+                                        'onMenuShareQZone',
+                                        'hideMenuItems',
+                                        'showMenuItems',
+                                        'hideAllNonBaseMenuItem',
+                                        'showAllNonBaseMenuItem',
+                                        'translateVoice',
+                                        'startRecord',
+                                        'stopRecord',
+                                        'onVoiceRecordEnd',
+                                        'playVoice',
+                                        'onVoicePlayEnd',
+                                        'pauseVoice',
+                                        'stopVoice',
+                                        'uploadVoice',
+                                        'downloadVoice',
+                                        'chooseImage',
+                                        'previewImage',
+                                        'uploadImage',
+                                        'downloadImage',
+                                        'getNetworkType',
+                                        'openLocation',
+                                        'getLocation',
+                                        'hideOptionMenu',
+                                        'showOptionMenu',
+                                        'closeWindow',
+                                        'scanQRCode',
+                                        'chooseWXPay',
+                                        'openProductSpecificView',
+                                        'addCard',
+                                        'chooseCard',
+                                        'openCard'
+                                    ];
+                                wx.config({
+                                    debug: false,
+                                    appId: data.appId,
+                                    timestamp: data.timestamp,
+                                    nonceStr: data.nonceStr,
+                                    signature: data.signature,
+                                    jsApiList: jsApiList
+                                });
+                                wx.ready(function (res) {
+                                    wx.checkJsApi({
+                                        jsApiList: [
+                                            'scanQRCode',
+                                        ],
+                                        success: function (res) {
+                                            console.log(res, "成功");
+//                                            _this.isWeiXin = true;
+                                            resolve();
+                                        }
+                                    });
+                                });
+                                wx.error(function (res) {
+                                    reject();
+                                });
+                            } else {
+                                reject();
+                            }
+                        });
+                })
+            },
+            getBindRestaurantQRcode: function () {
+                var _this = this;
+                httpRequest("get", "/qrtable/isBindRestaurantQRcode", {resId: _this.resId},
+                    function (res) {
+                        if (res.code == 2000) {
+                            _this.isBindRestaurantQRcode = true;
+                            _this.shopData = res.value
+                        } else {
+                            _this.isBindRestaurantQRcode = false;
+                            _this.shopData = {}
+                        }
+                    }
+                );
+            },
+            bindQRCode: function (val, type, result, cb) {
+//                var url = 'http://vip.zhenler.com/H5/qrcode.html?id=50f1b9e6219c4f448c446b15f3f6e2e7';
+//                var url = 'http://vip.zhenler.com/H5/qrcode.html?id=3a0a9435be7640e48dbcd66e576283e0';
+                var _this = this;
+                if (this.isWeiXin) {
+                    wx.scanQRCode({
+                        needResult: 1, // 默认为0，扫描结果由微信处理，1则直接返回扫描结果，
+                        scanType: ["qrCode", "barCode"], // 可以指定扫二维码还是一维码，默认二者都有
+                        success: function (res) {
+                            result = res.resultStr; // 当needResult 为 1 时，扫码返回的结果
+                            bindQRCode(result)
+                        },
+                        fail: function (res) {
+                            mui.toast('微信扫码无效');
+                        }
+                    });
+                } else {
+//                    bindQRCode(result);
+                    mui.toast('请使用微信扫码');
+//                    var result = $("#result-qrcode").val();
+                }
+
+                function bindQRCode(result) {
+                    var data = {
+                        resId: _this.resId,
+                        id: result,
+                        handleId: _this.handleId,
+                        type: type
+                    };
+                    if (type === 0) {
+                        data.tableId = val.id
+                    }
+                    httpRequest("post", "/qrtable/bindQRcode", data,
+                        function (data) {
+                            mui.toast(data.message);
+                            if (data.returnStatus) {
+                                if (type === 0) {
+                                    _this.getData();
+                                } else {
+                                    _this.getBindRestaurantQRcode();
+                                }
+                            }
+                        }, function (res) {
+                            mui.toast(res.message);
+                        });
+                }
+            },
+            unBindQRcode: function (val, type, cb) {
+                var _this = this;
+                var text = "桌台";
+                if (type === 1) {
+                    text = '店铺'
+                }
+                mui.confirm('解绑' + text, '是否解绑' + text, ['是', '否'], function (res) {
+                    if (res.index === 0) {
+                        unBindQRcode();
+                    } else {
+
+                    }
+                });
+
+                function unBindQRcode() {
+                    var data = {
+                        resId: _this.resId,
+                        id: val.id,
+                        handleId: _this.handleId,
+                        type: type
+                    };
+                    if (type === 0) {
+                        data.tableId = val.id;
+                    }
+
+                    httpRequest("post", "/qrtable/unBoundQRcode", data, function (data) {
+                        if (data.returnStatus) {
+                            if (type === 0) {
+                                _this.shopData = {};
+                                _this.getData(cb);
+                            } else {
+                                _this.getBindRestaurantQRcode();
+                            }
+                            _this.$nextTick(function () {
+                                console.log(111);
+                                cb && cb();
+                            })
+                        } else {
+
+                        }
+                    }, function (res) {
+                        mui.toast(res.message);
+                    });
+
+                }
+            },
+            bindTab: function (index) {
+                this.tableLeftIndex = index;
+                mui('.tableRight').scroll().scrollTo(0, 0, 100);
+            }
+        }
+    })
+</script>

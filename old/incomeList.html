@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+    <meta name="format-detection" content="telephone=no,email=no,adress=no"/>
+    <meta name="x5-fullscreen" content="true">
+    <meta name="full-screen" content="yes">
+    <title>我的账户</title>
+    <link rel="stylesheet" href="css/weui.min.css"/>
+    <link rel="stylesheet" href="css/usercenter.css"/>
+    <link rel="stylesheet" href="css/LCalendar.css"/>
+    <link rel="stylesheet" href="css/mescroll.min.css"/>
+    <style type="text/css">
+        #wrapper {
+            position: absolute;
+            margin: auto;
+            left: 0;
+            top: 40px;
+            bottom: 0;
+            right: 0;
+        }
+
+        .mescroll {
+            height: auto;
+        }
+    </style>
+</head>
+<body>
+<div class="dataBar">
+    <ins class="leftBtn"></ins>
+    <input type="text" readonly="" id="chooseData" name="input_date" placeholder="请输入日期"
+           data-lcalendar="2000-01-01,2018-01-29"/>
+    <ins class="rightBtn"></ins>
+</div>
+<div id="wrapper">
+    <div id="mescroll" class="mescroll">
+        <ul class="incomeList myScrollbar" id="incomeList"></ul>
+    </div>
+</div>
+<script type="text/javascript" src="script/jquery-1.11.3.js"></script>
+<script type="text/javascript" src="script/common.js?v=2.8.1025"></script>
+<script type="text/javascript" src="script/LCalendar.js?v=2.8.1025"></script>
+<script type="text/javascript" src="script/mescroll.min.js?v=2.8.1025"></script>
+<script type="text/javascript">
+    $(function () {
+        var formatDate = function (date) {
+            var y = date.getFullYear();
+            var m = date.getMonth() + 1;
+            m = m < 10 ? '0' + m : m;
+            var d = date.getDate();
+            d = d < 10 ? ('0' + d) : d;
+            return y + '-' + m + '-' + d + ' 00:00:00';
+        };
+        var pagenum = 1;
+        var resId = getResId("resId");
+        $("#chooseData").val(show());
+        var listData = [], totalSize = 0;
+        var mescroll = new MeScroll("mescroll", {
+            down: {
+                auto: false,
+                callback: downCallback //下拉刷新的回调
+            },
+            up: {
+                auto: true,
+                toTop: {
+                    src: './images/toTop-icon.png',
+                    offset: 20,
+                    warpClass: "mescroll-totop",
+                    showClass: "mescroll-fade-in",
+                    hideClass: "mescroll-fade-out",
+                    duration: 300
+                },
+                htmlNodata: '<p class="upwarp-nodata">-------------- 我是有底线的 --------------</p>',
+                callback: upCallback //上拉加载的回调
+            }
+        });
+        var calendar = new LCalendar();
+        calendar.init({
+            'trigger': '#chooseData',//标签id
+            'type': 'ym',//date 调出日期选择 datetime 调出日期时间选择 time 调出时间选择 ym 调出年月选择
+            'minDate': '1900-1-1',//最小日期 注意：该值会覆盖标签内定义的日期范围
+            'maxDate': show(),//最大日期 注意：该值会覆盖标签内定义的日期范围
+            'callback': function () {
+                mescroll.triggerDownScroll();
+            }
+        });
+        $(".leftBtn").bind("click", function () {
+            $("#incomeList").empty();
+            var date = new Date($("#chooseData").val());
+            var d = date.getDate();
+            var m = date.getMonth();
+            var y = date.getFullYear();
+            if (m == 0) {
+                m = 12;
+                y = y - 1;
+            }
+            m = m < 10 ? '0' + m : m;
+            d = d < 10 ? ('0' + d) : d;
+            var createTime = m + '/' + d + '/' + y;
+            $("#chooseData").val(y + '-' + m);
+            mescroll.triggerDownScroll();
+        });
+        $(".rightBtn").bind("click", function () {
+            $("#incomeList").empty();
+            var date = new Date($("#chooseData").val());
+            var d = date.getDate();
+            var m = date.getMonth() + 1;
+            var y = date.getFullYear();
+            if (m == 12) {
+                m = 0;
+                y = y + 1;
+            }
+            m = m + 1;
+            m = m < 10 ? '0' + m : m;
+            d = d < 10 ? ('0' + d) : d;
+            var createTime = m + '/' + d + '/' + y;
+            pagenum = 1;
+            $("#chooseData").val(y + '-' + m)
+            mescroll.triggerDownScroll();
+        });
+
+        function show() {
+            var mydate = new Date();
+            var mou = '';
+            if (mydate.getMonth() + 1 <= 9) {
+                mou = "0" + (mydate.getMonth() + 1)
+            } else {
+                mou = mydate.getMonth() + 1
+            }
+            var str = "" + mydate.getFullYear() + "-";
+            str += mou + "";
+            //str += mydate.getDate() + "";
+            return str;
+        }
+
+        function createDom() {
+            //$("#incomeList").empty();
+            var incomeList = $("#incomeList");
+            var arr = [];
+            totalSize = 0;
+            var ul = document.createElement('ul');
+            for (var j = 0; j < listData.length; j++) {
+                totalSize += listData[j].length;
+                arr = listData[j];
+                for (var i = 0; i < arr.length; i++) {
+                    var flag, status, time, week, transType;
+                    var weekArray = new Array("周日", "周一", "周二", "周三", "周四", "周五", "周六");
+                    time = (new Date(arr[i].createTime).getMonth() + 1) + "月" + new Date(arr[i].createTime).getDate() + "日";
+                    week = weekArray[new Date(arr[i].createTime).getDay()];
+                    //time = new Date(data.value[i].createTime).Format("yyyy-MM-dd");
+                    if (arr[i].transFlag == 1) {
+                        flag = "+";
+                    } else {
+                        flag = "-";
+                    }
+                    if (arr[i].status == 0) {
+                        status = "<p style='color:#ff0000'>待入账</p>";
+                    } else if (arr[i].status == 1) {
+                        status = "<p id='statue'>已入账</p>";
+                    } else if (arr[i].status == 2) {
+                        status = "<p id='statue'>已结算</p>";
+                    } else if (arr[i].status == 3) {
+                        status = "<p id='statue'>已退款</p>";
+                    }
+                    if (arr[i].transType == 0) {
+                        transType = "堂食订单";
+                    } else if (arr[i].transType == 1) {
+                        transType = "外卖订单";
+                    } else if (arr[i].transType == 2) {
+                        transType = "会员充值";
+                    } else if (arr[i].transType == 3) {
+                        transType = "退款";
+                    } else if (arr[i].transType == 4) {
+                        transType = "服务费";
+                    } else if (arr[i].transType == 5) {
+                        transType = "提现手续费";
+                    } else if (arr[i].transType == 6) {
+                        transType = "提现";
+                    } else if (arr[i].transType == 7) {
+                        transType = "提现失败退款";
+                    } else {
+                        transType = "订单";
+                    }
+                    var html = '<li class="incomeItem" data-id=' + arr[i].id + '><a style="width:100%;display: flex;">'
+                        + '<div class="incomeInfo"><h3>' + week + '</h3><p>' + time + '</p></div>'
+                        + '<div class="incomeInfo"><h3>' + transType + '</h3><p>余额' + parseFloat(arr[i].banlance).toFixed(2) + '</p></div>'
+                        + '<div class="incomeInfo"><h3>' + flag + '' + arr[i].amount + '</h3>' + status + '</div>'
+                        + '<ins></ins></a></li>';
+                    $(ul).append(html);
+                }
+            }
+            if (totalSize > 0) {
+                incomeList.html($(ul).html());
+            } else {
+                $('.mescroll-upwarp').css({visibility: 'visible'}).html('<p class="upwarp-nodata">-------------- 暂无更多数据 --------------</p>');
+            }
+        }
+
+        //点击跳转
+        $("#wrapper").on("click", ".incomeItem", function () {
+            var id = $(this).attr("data-id");
+            window.location.href = "incomeDetail.html?id=" + id + ""
+        });
+
+
+        var downFlag = true;
+
+        //下拉刷新的回调
+        function downCallback(a) {
+            if (!downFlag) {
+                return;
+            }
+            downFlag = false;
+            var createTime = formatDate(new Date($("#chooseData").val()));
+            pagenum = 1;
+            listData = [];
+            if (a.optUp.isLock) {
+                mescroll.lockUpScroll(false);
+                mescroll.resetUpScroll(false);
+                downFlag = true;
+            } else {
+                httpRequest("post", "/tradeDetail/findTradeDetailList", {
+                    "resId": resId,
+                    "pageSize": 10,
+                    "pageNum": 1,
+                    "createTime": createTime
+                }, function (data) {
+                    if (data.code == 2000) {
+                        $("#incomeList").empty();
+                        listData[pagenum - 1] = data.value;
+                        setTimeout(function () {
+                            createDom(data.value);
+                            mescroll.endSuccess();
+                        }, 1000);
+                    } else {
+                        showToast(data.message);
+                        mescroll.endErr();
+                    }
+                }, function () {
+                    downFlag = true;
+                })
+            }
+        }
+
+        var upFlag = true;
+
+        //上拉加载的回调 page = {num:1, size:10}; num:当前页 从1开始, size:每页数据条数
+        function upCallback(page) {
+            if (!upFlag) {
+                return;
+            }
+            upFlag = false;
+            var createTime = formatDate(new Date($("#chooseData").val()));
+            pagenum = page.num;
+            httpRequest("post", "/tradeDetail/findTradeDetailList", {
+                "resId": resId,
+                "pageSize": page.size,
+                "pageNum": page.num,
+                "createTime": createTime
+            }, function (data) {
+                if (data.code == 2000) {
+                    listData[pagenum - 1] = data.value;
+//                mescroll.endBySize(data.value.length, totalSize);
+                    $(".mescroll-upwarp").css({display: 'block'});
+                    setTimeout(function () {
+                        createDom(data.value);
+                        mescroll.endSuccess(data.value.length, data.value.length == page.size);
+                    }, 1000);
+                } else {
+                    showToast(data.message);
+                    mescroll.endErr();
+                }
+            }, function () {
+                upFlag = true;
+            })
+        }
+    })
+</script>
+</body>
+</html>

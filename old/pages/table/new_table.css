@@ -1,0 +1,125 @@
+body,
+div {
+  box-sizing: border-box;
+}
+input[node-type=jsbridge] {
+  display: none;
+}
+.azm-tableHead {
+  margin: 0;
+  padding-top: 0.38rem;
+  padding-bottom: 0.38rem;
+  margin-bottom: 0.1rem;
+  position: relative;
+  text-align: center;
+}
+.azm-tableHead .azm-icon {
+  position: absolute;
+  font-size: 0.6rem;
+  top: 50%;
+  transform: translateY(-50%);
+  left: 36%;
+  z-index: 10;
+  color: #fff;
+}
+.azm-tableHead button {
+  width: 13.32rem;
+  font-size: 0.6rem;
+  padding: 0.5rem 0rem 0.5rem 0rem;
+  background-color: #34c9e1;
+  color: #fff;
+}
+.azm-tableLayout {
+  width: 100%;
+  overflow: hidden;
+  position: absolute;
+  margin: auto;
+  left: 0;
+  top: 2.82rem;
+  right: 0;
+  bottom: 0;
+}
+.azm-tableLayout .tableLeft {
+  float: left;
+  width: 30%;
+  height: 100%;
+  position: absolute;
+  background: #f7f9fa;
+}
+.azm-tableLayout .tableLeft li {
+  display: Block;
+  height: 2rem;
+  padding-right: 0.2rem;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  text-indent: 15px;
+  font-size: 0.52rem;
+  color: #282e3a;
+  line-height: 2rem;
+}
+.azm-tableLayout .tableLeft li:active,
+.azm-tableLayout .tableLeft li.selected {
+  background: #fff;
+  color: #34c9e1;
+  border-right: 3px solid #34c9e1;
+}
+.azm-tableLayout .tableRight {
+  overflow: hidden;
+  margin-left: 33%;
+  width: 67%;
+}
+.azm-tableLayout .tableRight .tableConItem {
+  display: none;
+}
+.azm-tableLayout .tableRight .tableConItem .tableInfo {
+  position: relative;
+  padding: 0.52rem 0.84rem 0.52rem 0.48rem;
+  border-bottom: 1px solid #f1f3f4;
+  background-color: #f7f9fa;
+  margin-bottom: 0.4rem;
+}
+.azm-tableLayout .tableRight .tableConItem .tableInfo header {
+  border-bottom: 2px solid #f2f4f5;
+}
+.azm-tableLayout .tableRight .tableConItem .tableInfo header h3 {
+  font-size: 0.6rem;
+  height: 1.04rem;
+  line-height: 1.04rem;
+}
+.azm-tableLayout .tableRight .tableConItem .tableInfo section {
+  padding: 0.4rem 0rem 0.4rem 0rem;
+}
+.azm-tableLayout .tableRight .tableConItem .tableInfo footer .btn-item {
+  width: 50%;
+  text-align: center;
+}
+.azm-tableLayout .tableRight .tableConItem .tableInfo footer .btn-item button {
+  font-size: 0.52rem;
+  width: 90%;
+  padding-top: 0.24rem;
+  padding-bottom: 0.24rem;
+  border-radius: 1.28rem;
+  color: #34c9e1;
+  border: 1px solid #34c9e1;
+}
+.azm-tableLayout .tableRight .tableConItem .tableInfo footer .btn-item button.selected {
+  color: #f74b7b;
+  border: 1px solid #f74b7b;
+}
+.azm-tableLayout .tableRight .tableConItem .tableInfo p {
+  margin: 0;
+  font-size: 0.54rem;
+  height: 1.04rem;
+  line-height: 1.04rem;
+  color: #96a0b2;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.azm-tableLayout .tableRight .tableConItem .tableInfo p span {
+  color: #282e3a;
+}
+.azm-tableLayout .tableRight .tableConItem.selected {
+  display: Block;
+}

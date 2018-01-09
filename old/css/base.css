@@ -1,0 +1,291 @@
+html {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  _background-image: url(n1othing.txt);
+}
+body,
+div,
+span,
+object,
+iframe,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+blockquote,
+pre,
+a,
+abbr,
+acronym,
+address,
+code,
+del,
+dfn,
+em,
+img,
+q,
+dl,
+dt,
+dd,
+ol,
+ul,
+li,
+fieldset,
+form,
+label,
+legend,
+caption,
+tbody,
+tfoot,
+thead,
+article,
+aside,
+dialog,
+figure,
+footer,
+header,
+hgroup,
+nav,
+section {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font-size: 100%;
+  vertical-align: baseline;
+}
+ol,
+ul,
+li {
+  list-style: none;
+}
+body {
+  line-height: 1.5;
+  background: white;
+  font-family: 'Microsoft Yahei', Arial, Helvetica, sans-serif;
+  font-size: 12px;
+  color: #333;
+}
+table,
+tr,
+th,
+td {
+  border-collapse: collapse;
+  margin: 0;
+  padding: 0;
+  font-size: 100%;
+  vertical-align: baseline;
+}
+caption,
+th,
+td {
+  text-align: left;
+  font-weight: normal;
+  float: none !important;
+}
+table,
+th,
+td,
+select,
+img,
+input,
+object {
+  vertical-align: middle;
+}
+:focus {
+  outline: 0;
+}
+input,
+select {
+  margin: 0;
+}
+a {
+  color: #005EA7;
+  text-decoration: none;
+}
+a:hover {
+  text-decoration: none;
+}
+p,
+a,
+td {
+  word-wrap: break-word;
+  word-break: break-all;
+}
+img {
+  border: none;
+  vertical-align: top;
+}
+textarea {
+  resize: none;
+  border: 1px solid #ccc;
+}
+textarea:hover {
+  border-color: #ccc;
+}
+dfn {
+  font-style: normal;
+  font-family: Arial;
+}
+.layout {
+  padding: 0 15px;
+  overflow: hidden;
+}
+.tipinfo {
+  font-size: 12px;
+  color: #ff0000;
+  line-height: 120%;
+}
+.commonTips {
+  visibility: hidden;
+  padding: 10px 20px;
+  background: rgba(0, 0, 0, 0.8);
+  font-size: 14px;
+  color: #fff;
+  line-height: 120%;
+  text-align: center;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  border-radius: 25px;
+  white-space: nowrap;
+  z-index: 99;
+}
+.btnBox {
+  text-align: center;
+}
+.btn {
+  border-radius: 25px;
+  padding: 0 30px;
+  min-width: 140px;
+  height: 40px;
+  line-height: 40px;
+  text-align: center;
+  display: inline-block;
+  vertical-align: middle;
+  font-size: 18px;
+}
+.btn.blue {
+  color: #fff;
+  background: #34c9e1;
+}
+.rec_btn {
+  border-radius: 3px;
+  height: 1.8rem;
+  line-height: 1.8rem;
+  text-align: center;
+  display: inline-block;
+  vertical-align: middle;
+  font-size: 0.6rem;
+}
+.rec_btn.all_btn {
+  width: 100%;
+}
+.rec_btn.blue {
+  color: #fff;
+  background: #34c9e1;
+}
+.fl {
+  float: left;
+}
+.fr {
+  float: right;
+}
+/**
+ * 循环初始字体大小:
+ *     @end   : 结束字体大小(数字),必须输;
+ *     @begin : 开始字体大小(数字),可以省略;
+ *     @un    : 字体单位(字符串),可以省略;
+ *     例子   : .base-fonts(28);
+ */
+/**
+ * 循环初始默认样式:
+ *     @name  : 样式前缀名,必须输;
+ *    @style : 设置样式,必须输;
+ *    @end   : 结束样式,必须输;
+ *    @begin : 开始样式,可以省略;
+ *    @mult  : 循环累加倍数,可以省略;
+ *     @un    : 字体单位(字符串),可以省略;
+ *     例子   : .base-styles(mb,margin-bottom,30,5);
+ */
+/* 强制折行 */
+/**
+ * css3动画,只能写在调用页面,配合.css3( @style,@frames )使用;
+ * 例子 :  
+ * .keyframes(starts,{
+        0% {transform:rotate(0deg)}
+        100%{transform:rotate(360deg)}
+    });
+    .className{.css3(animation,starts 8s linear infinite .3s );}
+ */
+/* 默认浮动 */
+.fl {
+  float: left;
+}
+.fr {
+  float: right;
+}
+.clear {
+  *zoom: 1;
+}
+.clear:after {
+  content: "";
+  display: block;
+  height: 0;
+  clear: both;
+  visibility: hidden;
+  overflow: hidden;
+}
+/* 显示隐藏 */
+.hide {
+  display: none;
+}
+.show {
+  display: block;
+}
+/* 文本方向 */
+.tal {
+  text-align: left;
+}
+.tar {
+  text-align: right;
+}
+.tac {
+  text-align: center;
+}
+/* 截取 */
+.over {
+  overflow: hidden;
+}
+.ofv {
+  overflow: visible !important;
+}
+/* 定位 */
+.abs {
+  position: absolute;
+}
+.rel {
+  position: relative;
+}
+/* 鼠标手势 */
+.cursor {
+  cursor: pointer;
+}
+.def {
+  cursor: default;
+}
+/* 。。。。 */
+.ellipsis {
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+/* 强制折行 */
+.break-word {
+  word-break: break-all;
+  /*支持IE，chrome，FF不支持*/
+}

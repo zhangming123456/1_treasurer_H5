@@ -1,20 +1,23 @@
 /**
  * 小程序配置文件
  */
-// var host = 'http://192.168.134.254:8080/zhenler-server/api'
-// var host = "http://192.168.134.2:8082/api";
-// var host = 'http://192.168.134.116:8080/zhenler-server/api';
+// var host = 'http://192.168.134.254:8080/zhenler-server'
+// var host = 'http://192.168.134.2:8082'
+// var host = 'http://192.168.134.116:8080/zhenler-server'
 // var host = 'https://vip.zhenler.com/api';// 发布环境
 var host = 'http://vip.zhenler.com'// 开发环境
+var Hash = '1'
 // var host = 'http://119.23.132.192/zhenler-server/api';// 测试环境
 
 if (process.env.NODE_ENV === 'production') {
-  host = ''
+  host = 'https://vip.zhenler.com'
+  Hash = +new Date()
 }
 
 var config = {
   // 下面的地址配合云端 Server 工作
   host,
+  Hash,
 
   version: '1.0.1212',
 
@@ -53,13 +56,47 @@ var config = {
   findResUser: `${host}/api/resUser/findResUser`,
   // 更新用户信息
   updateShiroUser: `${host}/api/user/updateShiroUser`,
-  // 更新用户信息
+  // 查询是否绑定店铺
   judgmentShop: `${host}/api/restaurant/judgmentShop`,
   // 创建店铺
   createRestaurant: `${host}/api/restaurant/createRestaurant`,
   // 三级联动 - 省
   getAllProvince: `${host}/api/region/getAllProvince`,
   // 三级联动 - 市/区
-  getRegionByPid: `${host}/api/region/getRegionByPid`
+  getRegionByPid: `${host}/api/region/getRegionByPid`,
+  // 获取业态下拉
+  getDicList: `${host}/api/dic/getDicList`,
+  // 删除员工
+  deleteResUser: `${host}/api/resUser/deleteResUser`,
+  // 更新员工
+  updateOrSaveResUser: `${host}/api/resUser/updateOrSaveResUser`,
+  // 更新员工状态
+  updateResUser: `${host}/api/resUser/updateResUser`,
+  // 查询餐厅角色
+  findRoleList: `${host}/api/role/findRoleList`,
+  // 绑定员工
+  bindResUser: `${host}/api/resUser/bindResUser`,
+  // 我的应用列表
+  getResModularList: `${host}/api/resmodular/getResModularList`,
+  // 短信使用记录
+  getMobileMsgList: `${host}/api/mobileMsg/getMobileMsgList`,
+  // 获取验证码
+  getSmsCode: `${host}/api/sms/getSmsCode`,
+  // 注册
+  register: `${host}/api/user/register`,
+  // 校验手机号是否注册过
+  checkMobile: `${host}/api/user/checkMobile`,
+  // 更新密码
+  updatePassword: `${host}/api/user/updatePassword`,
+  // 重置密码
+  resetPassword: `${host}/api/user/resetPassword`,
+  // 获取桌台列表
+  findQRTableDtoList: `${host}/api/table/findQRTableDtoList`,
+  // 是否绑定店铺
+  isBindRestaurantQRcode: `${host}/api/qrtable/isBindRestaurantQRcode`,
+  // 解绑二维码-桌台或店铺
+  unBoundQRcode: `${host}/api/qrtable/unBoundQRcode`,
+  // 绑定二维码-桌台或店铺
+  bindQRcode: `${host}/api/qrtable/bindQRcode`,
 }
 module.exports = config

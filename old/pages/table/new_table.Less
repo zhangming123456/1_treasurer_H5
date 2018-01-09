@@ -1,0 +1,130 @@
+@import "../../css/index";
+
+body, div {
+  box-sizing: border-box;
+}
+
+input[node-type=jsbridge] {
+  display: none;
+}
+
+.azm-tableHead {
+  margin: 0;
+  .px2rem(padding-top, 9.5);
+  .px2rem(padding-bottom, 9.5);
+  .px2rem(margin-bottom, 2.5);
+  position: relative;
+  text-align: center;
+  .azm-icon {
+    position: absolute;
+    .px2rem(font-size, 15);
+    .translateY(50%);
+    left: 36%;
+    z-index: 10;
+    color: #fff;
+  }
+  button {
+    .px2rem(width, 333);
+    .px2rem(font-size, 15);
+    .px2rem-two(padding, 12.5, 0, 12.5, 0);
+    background-color: #34c9e1;
+    color: #fff;
+  }
+}
+
+.azm-tableLayout {
+  width: 100%;
+  overflow: hidden;
+  position: absolute;
+  margin: auto;
+  left: 0;
+  .px2rem(top, 70.5);
+  right: 0;
+  bottom: 0;
+
+  .tableLeft {
+    float: left;
+    width: 30%;
+    height: 100%;
+    position: absolute;
+    background: #f7f9fa;
+    li {
+      display: Block;
+      height: 2rem;
+      .px2rem(padding-right, 5);
+      .text-overflow();
+      text-indent: 15px;
+      font-size: 0.52rem;
+      color: #282e3a;
+      line-height: 2rem;
+    }
+  }
+
+  .tableLeft li:active,
+  .tableLeft li.selected {
+    background: #fff;
+    color: #34c9e1;
+    border-right: 3px solid #34c9e1;
+  }
+
+  .tableRight {
+    overflow: hidden;
+    margin-left: 33%;
+    width: 67%;
+    .tableConItem {
+      display: none;
+      .tableInfo {
+        position: relative;
+        .px2rem-two(padding, 13, 21, 13, 12);
+        border-bottom: 1px solid #f1f3f4;
+        background-color: #f7f9fa;
+        .px2rem(margin-bottom, 10);
+        header {
+          border-bottom: 2px solid #f2f4f5;
+          h3 {
+            .px2rem(font-size, 15);
+            .px2rem(height, 26);
+            .px2rem(line-height, 26);
+          }
+        }
+        section {
+          .px2rem-two(padding, 10, 0, 10, 0);
+        }
+        footer {
+          .btn-item {
+            width: 50%;
+            text-align: center;
+            button {
+              .px2rem(font-size, 13);
+              width: 90%;
+              .px2rem(padding-top, 6);
+              .px2rem(padding-bottom, 6);
+              .px2rem(border-radius, 32);
+              color: #34c9e1;
+              border: 1px solid #34c9e1;
+              &.selected {
+                color: @color-f74b7b;
+                border: 1px solid @color-f74b7b;
+              }
+            }
+          }
+        }
+        p {
+          margin: 0;
+          .px2rem(font-size, 13.5);
+          .px2rem(height, 26);
+          .px2rem(line-height, 26);
+          color: #96a0b2;
+          .text-overflow();
+          span {
+            color: #282e3a;
+          }
+        }
+      }
+    }
+  }
+
+  .tableRight .tableConItem.selected {
+    display: Block;
+  }
+}

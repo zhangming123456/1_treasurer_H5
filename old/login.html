@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+    <meta name="format-detection" content="telephone=no,email=no,adress=no"/>
+    <title>登录</title>
+    <link rel="stylesheet" type="text/css" href="css/common.css"/>
+    <script type="text/javascript" src="script/jquery-1.11.3.js"></script>
+    <script type="text/javascript" src="script/md5.js"></script>
+    <script>
+        $('head').append('<script type="text/javascript" src="script/common.js?t=' + +new Date() + '"><\/script>');
+    </script>
+
+</head>
+<body>
+<div class="wrapper">
+    <div class="imgbox">
+        <img src="images/logo.png" alt=""/>
+    </div>
+    <div class="messagebox l_messagebox" id="tipInfo">
+        <span></span>
+    </div>
+    <div class="register">
+        <form>
+            <div class="m-field">
+                <div class="iconHeader"><img src="images/mobilephone.png"></div>
+                <input id="mobileNumber" type="text" maxlength="11" placeholder="请输入手机号码">
+                <!--<div class = "iconEnd select" id = "select"><img src="images/enter.png"></div>-->
+            </div>
+            <div class="m-field">
+                <div class="iconHeader"><img src="images/lock.png" alt=""/></div>
+                <input id="password" type="password" maxlength="20" placeholder="请输入密码">
+                <div class="iconEnd" id="delete"><img src="images/delete.png"></div>
+            </div>
+            <div class="remember l_remember">
+                <span class="borderLine" id="checkIcon"><img src="images/success.png"/></span>
+                <span>记住密码</span>
+            </div>
+            <div class="btn">
+                <input id="login" type="button" value="登 录">
+            </div>
+            <div>
+                <a href="forgetPassword.html" class="rempass">忘记密码？</a>
+                <a href="register.html" class="newuser">注册</a>
+            </div>
+        </form>
+    </div>
+</div>
+<script>
+    $(function () {
+        //var userid = getCookie("shiroUserId");
+        //if(userid){
+        //window.location.href = "userCenter.html";
+        //}
+        // $("#login").attr("value","登录");
+        //点击登录按钮
+        $("#login").click(function () {
+            if ("" == $("#mobileNumber").val().trim()) {
+                showToast("请输入手机号 ");
+                return;
+            }
+            if ("" == $("#password").val().trim()) {
+                showToast("请输入密码 ");
+                return;
+            }
+            //手机号验证
+            var number = checkPhoneNumber($("#mobileNumber").val().trim());
+            if (number) {
+                showToast(number);
+                return;
+            }
+            var newPwd = hex_md5($("#password").val().trim()).toLowerCase();
+            var password = hex_md5($("#mobileNumber").val().trim() + $("#password").val().trim()).toLowerCase();
+            //登录请求
+            httpRequest("post", "/user/toLogin", {
+                "mobile": $("#mobileNumber").val().trim(),
+                "password": password,
+                "newPwd": newPwd
+            }, function (data) {
+                if (data.code == 2000) {
+                    setCookie("mobile", $("#mobileNumber").val(), 1);
+                    setCookie("resId", data.value.resId, 1);
+                    setCookie("username", data.value.nike_name, 1);
+                    setCookie("resname", data.value.resName, 1);
+                    setCookie("phonenum", $("#mobileNumber").val(), 1);
+                    setCookie("shiroUserId", data.value.shiroUserId, 1);
+                    setCookie("token", data.value.token, 1);
+                    $("#login").attr("value", "登录中，请稍后....");
+                    window.location.href = "userCenter.html?mobile=" + $("#mobileNumber").val();
+                } else {
+                    showToast(data.message);
+                }
+            })
+        });
+
+        // 记住密码
+        $("#checkIcon").click(function () {
+            $(this).find("img").toggle();
+        });
+        //密码输入焦点显示删除图片
+        $("#password").focus(function () {
+            $("#delete").show();
+        }).blur(function () {
+            setTimeout(function () {
+                $("#delete").hide();
+            }, 300)
+        })
+        $("#delete").bind("click", function (event) {
+            event.stopPropagation();
+            $("#password").val("");
+            $(this).hide();
+        });
+    })
+</script>
+</body>
+</html>
+
+<script>
+
+</script> 
