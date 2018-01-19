@@ -4,7 +4,7 @@
       <cell is-link link="/me-shop-info" title="基本资料填写" class="azm-cell"></cell>
       <cell is-link link="/me-staff-info" title="员工资料填写" class="azm-cell"></cell>
       <cell is-link link="/me-staff-admin" title="员工管理" class="azm-cell"></cell>
-      <cell is-link link="/me-wizard" title="添加员工向导" class="azm-cell"></cell>
+      <cell is-link link="/me/wizard" title="添加员工向导" class="azm-cell"></cell>
       <cell is-link link="/me-fill-info-success" title="添加员工成功提示" class="azm-cell"></cell>
       <cell is-link link="/me-shop-success" title="开店成功提示" class="azm-cell"></cell>
     </group>

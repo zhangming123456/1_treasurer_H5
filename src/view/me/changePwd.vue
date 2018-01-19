@@ -56,13 +56,14 @@
 </template>
 
 <script>
+  import { XButton, Countdown } from 'vux'
   import { mapState } from 'vuex'
   import VanField from 'vant/packages/field/index'
   import VanCellGroup from 'vant/packages/cell-group/index'
-  import XButton from '../../components/x-button/index'
   import VanRow from 'vant/packages/row/index'
   import VanCol from 'vant/packages/col/index'
-  import Countdown from '../../components/countdown/index'
+  // import Countdown from '../../components/countdown/index'
+  // import XButton from '../../components/x-button/index'
 
   export default {
     components: {
@@ -136,12 +137,12 @@
             }
             that.$store.dispatch('ApiService.updatePassword', data).then(
               (rsp) => {
-                if (rsp.data.code == 2000 && rsp.data.returnStatus) {
+                if (rsp.code == 2000 && rsp.returnStatus) {
                   that.endShow = true
                   that.endCountdownTime = 10
                   that.step++
                 }
-                that.$toast(rsp.data.message)
+                that.$toast(rsp.message)
               }
             )
           }

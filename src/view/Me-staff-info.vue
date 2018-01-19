@@ -222,7 +222,7 @@
           if (that.isEdit) {
             that.$store.dispatch('ApiService.updateOrSaveResUser', data).then(
               (rsp) => {
-                if (2000 == rsp.data.code) {
+                if (2000 == rsp.code) {
                   that.$router.go(-1)
                 }
               }
@@ -230,7 +230,7 @@
           } else {
             that.$store.dispatch('ApiService.bindResUser', data).then(
               (rsp) => {
-                if (2000 == rsp.data.code) {
+                if (2000 == rsp.code) {
                   that.$router.go(-3)
                 }
               }

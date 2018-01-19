@@ -62,8 +62,9 @@
 </template>
 
 <script>
+  import { XButton } from 'vux'
   import { mapState } from 'vuex'
-  import XButton from '../../components/x-button/index'
+  // import XButton from '../../components/x-button/index'
   import VanCol from 'vant/packages/col/index'
   import VanRow from 'vant/packages/row/index'
 
@@ -169,7 +170,7 @@
                 that.$vux.loading.show({text: 'Loading'})
                 that.$store.dispatch('ApiService.bindQRcode', data).then(
                   (rsp) => {
-                    that.$toast(rsp.data.message)
+                    that.$toast(rsp.message)
                     that.$vux.loading.hide()
                   }
                 )
@@ -185,7 +186,7 @@
               // that.$vux.loading.show({text: 'Loading'})
               // that.$store.dispatch('ApiService.bindQRcode', data).then(
               //   (rsp) => {
-              //     that.$toast(rsp.data.message)
+              //     that.$toast(rsp.message)
               //     that.$vux.loading.hide()
               //   }
               // )

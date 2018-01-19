@@ -96,13 +96,15 @@
 </template>
 
 <script>
+  import { XButton, Countdown } from 'vux'
   import { mapState } from 'vuex'
   import VanField from 'vant/packages/field/index'
   import VanCellGroup from 'vant/packages/cell-group/index'
-  import XButton from '../../components/x-button/index'
   import VanRow from 'vant/packages/row/index'
   import VanCol from 'vant/packages/col/index'
-  import Countdown from '../../components/countdown/index'
+
+  // import Countdown from '../../components/countdown/index'
+  // import XButton from '../../components/x-button/index'
 
   export default {
     components: {
@@ -151,7 +153,7 @@
           if (regMobile.test(mobile)) {
             this.$store.dispatch('ApiService.checkMobile', {mobile}).then(
               (rsp) => {
-                if (rsp.data.code == 5006 && !rsp.data.returnStatus) {
+                if (rsp.code == 5006 && !rsp.returnStatus) {
                   that.$store.dispatch('ApiService.getSmsCode', {mobile}).then(
                     () => {
                       that.show = true
@@ -159,7 +161,7 @@
                     }
                   )
                 } else {
-                  that.$toast(rsp.data.message)
+                  that.$toast(rsp.message)
                 }
               }
             )
@@ -216,12 +218,12 @@
             }
             that.$store.dispatch('ApiService.resetPassword', data).then(
               (rsp) => {
-                if (rsp.data.code == 2000) {
+                if (rsp.code == 2000) {
                   that.endShow = true
                   that.endCountdownTime = 10
                   that.step++
                 }
-                that.$toast(rsp.data.message)
+                that.$toast(rsp.message)
               }
             )
           }

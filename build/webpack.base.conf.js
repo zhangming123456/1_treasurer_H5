@@ -34,7 +34,7 @@ const webpackConfig = {
       'src': resolve('src'),
       'assets': resolve('src/assets'),
       '~assets': resolve('assets'),
-      'components': resolve('src/components'),
+      // 'components': resolve('src/components'),
       '@': resolve('src')
     }
   },

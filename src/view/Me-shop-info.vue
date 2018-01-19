@@ -344,7 +344,7 @@
         } else {
           that.$store.dispatch('ApiService.createRestaurant', data).then(
             (rsp) => {
-              if (2000 == rsp.data.code) {
+              if (2000 == rsp.code) {
                 that.$router.go(-2)
               }
             }

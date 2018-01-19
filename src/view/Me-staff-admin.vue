@@ -58,10 +58,10 @@
           <p><span>入职日期：</span>{{item.createTime | dateFormat}}</p>
         </flexbox-item>
         <flexbox-item style="text-align: right">
-          <x-button v-if="item.status == 1" type="warn" mini show-loadin="false" class="azm-button"
+          <x-button v-if="item.status == 0" type="warn" mini show-loadin="false" class="azm-button"
                     @click.native="startUsing(item)">禁用
           </x-button>
-          <x-button v-else-if="item.status == 0" type="primary" mini show-loadin="false" class="azm-button"
+          <x-button v-else-if="item.status == 1" type="primary" mini show-loadin="false" class="azm-button"
                     @click.native="startUsing(item)">启用
           </x-button>
         </flexbox-item>
@@ -142,7 +142,7 @@
       that.getFindResUserList()
       that.$store.commit('setNavBar', {
         clickRight: function () {
-          that.routerLink('/me-wizard')
+          that.routerLink('/me/wizard')
         },
         rightText: '添加'
       })
@@ -194,7 +194,7 @@
             status: item.status == 1 ? 0 : 1
           }
         ]
-        if (item.status == 1) {
+        if (item.status == 0) {
           this.$vux.confirm.show({
             title: '确认操作',
             content: '您是否禁用当前员工。',
@@ -217,7 +217,7 @@
         let that = this
         that.$store.dispatch('ApiService.updateResUser', data).then(
           (rsp) => {
-            if (2000 == rsp.data.code) {
+            if (2000 == rsp.code) {
               that.getFindResUserList()
             }
           }

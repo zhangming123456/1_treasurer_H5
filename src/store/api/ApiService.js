@@ -9,6 +9,7 @@ import store from '../index'
 
 class RequestParams {
   constructor (state, data, signa) {
+    this.signa = signa
     try {
       let params = {
         token: state.token
@@ -34,15 +35,27 @@ class RequestParams {
   post (type) {
     let that = this
     console.log(that.params)
-    const p = axios.post(config[type], util.queryString.stringify(that.params))
-    p.then(
-      (rsp) => {
-        if (rsp.data.code == 5010) {
-          store.dispatch('logOut')
-          Vue.$vux.toast.text(rsp.data.message)
-        }
+    const p = new Promise((resolve, reject) => {
+      if (!that.signa && !that.params.signature) {
+        reject()
+      } else {
+        axios.post(config[type], util.queryString.stringify(that.params)).then(
+          (rsp) => {
+            rsp.data.code = +rsp.data.code
+            if (rsp.data.code === 5010) {
+              store.dispatch('logOut')
+              Vue.$vux.toast.text(rsp.data.message)
+            } else if (rsp.data.code === 5001) {
+              Vue.$vux.toast.text(rsp.data.message)
+            }
+            resolve(rsp.data)
+          },
+          (rsp) => {
+            reject(rsp)
+          }
+        )
       }
-    )
+    })
     return p
   }
 }
@@ -128,7 +141,7 @@ let ApiService = {
       cookie.set('resId', state.resId, {
         expires: 1 / 24
       })
-      state.qrcodeImg = querystring.stringify(data)
+      state.qrcodeImg = JSON.stringify(data)
       cookie.set('qrcodeImg', state.qrcodeImg, {
         expires: 1 / 24
       })
@@ -211,9 +224,9 @@ let ApiService = {
       try {
         p.then(
           (rsp) => {
-            if (2000 == rsp.data.code && util.isEmptyValue(rsp.data.value)) {
-              console.log(rsp.data.value, type)
-              commit({type: `ApiService.${type}`, data: rsp.data.value})
+            if (2000 == rsp.code && util.isEmptyValue(rsp.value)) {
+              console.log(rsp.value, type)
+              commit({type: `ApiService.${type}`, data: rsp.value})
             }
           },
           (rsp) => {
@@ -257,7 +270,7 @@ let ApiService = {
             if (data.mobile && data.password && data.newPwd) {
               dispatch('ApiService.toLogin', data).then(
                 (rsp) => {
-                  if (rsp.data.code == 2000) {
+                  if (rsp.code == 2000) {
                     resolve()
                   } else {
                     cookie.remove('secretKey')
@@ -295,9 +308,9 @@ let ApiService = {
       try {
         p.then(
           (rsp) => {
-            if (2000 == rsp.data.code && util.isEmptyValue(rsp.data.value)) {
-              console.log(rsp.data.value, type)
-              commit({type: `ApiService.${type}`, data: rsp.data.value})
+            if (2000 == rsp.code && util.isEmptyValue(rsp.value)) {
+              console.log(rsp.value, type)
+              commit({type: `ApiService.${type}`, data: rsp.value})
             }
           },
           (rsp) => {
@@ -333,18 +346,18 @@ let ApiService = {
       try {
         p.then(
           (rsp) => {
-            let data = rsp.data.value
+            let data = rsp.value
             if (util.isJsonString(data)) {
               data = JSON.parse(data)
             }
             if (!isGet) {
               if (isList) {
-                if (2000 == rsp.data.code && util.isEmptyValue(data)) {
+                if (2000 == rsp.code && util.isEmptyValue(data)) {
                   console.log(data, type)
                   commit({type: `ApiService.${type}List`, data: data})
                 }
               } else {
-                if (2000 == rsp.data.code && util.isEmptyValue(data) && data[0] && util.isEmptyValue(data[0])) {
+                if (2000 == rsp.code && util.isEmptyValue(data) && data[0] && util.isEmptyValue(data[0])) {
                   console.log(data[0], type)
                   commit({type: `ApiService.${type}`, data: data[0]})
                 } else {
@@ -441,11 +454,11 @@ let ApiService = {
       try {
         p.then(
           (rsp) => {
-            let data = rsp.data.value
+            let data = rsp.value
             if (util.isJsonString(data)) {
               data = JSON.parse(data)
             }
-            if (2000 == rsp.data.code && util.isEmptyValue(data) && data[0] && util.isEmptyValue(data[0])) {
+            if (2000 == rsp.code && util.isEmptyValue(data) && data[0] && util.isEmptyValue(data[0])) {
               console.log(data[0], type)
               // commit({type: `ApiService.${type}`, data: data[0]})
             }
@@ -475,11 +488,11 @@ let ApiService = {
       try {
         p.then(
           (rsp) => {
-            let data = rsp.data.value
+            let data = rsp.value
             if (util.isJsonString(data)) {
               data = JSON.parse(data)
             }
-            if (2000 == rsp.data.code && util.isEmptyValue(data) && data[0] && util.isEmptyValue(data[0])) {
+            if (2000 == rsp.code && util.isEmptyValue(data) && data[0] && util.isEmptyValue(data[0])) {
               console.log(data, type)
               commit({type: `ApiService.${type}`, data: data})
             }
@@ -516,11 +529,11 @@ let ApiService = {
       try {
         p.then(
           (rsp) => {
-            let data = rsp.data.value
+            let data = rsp.value
             if (util.isJsonString(data)) {
               data = JSON.parse(data)
             }
-            if (2000 == rsp.data.code && util.isEmptyValue(data) && data[0] && util.isEmptyValue(data[0])) {
+            if (2000 == rsp.code && util.isEmptyValue(data) && data[0] && util.isEmptyValue(data[0])) {
               console.log(data, type)
               commit({type: `ApiService.${type}`, data: data})
             }
@@ -557,11 +570,11 @@ let ApiService = {
       try {
         p.then(
           (rsp) => {
-            let data = rsp.data.value
+            let data = rsp.value
             if (util.isJsonString(data)) {
               data = JSON.parse(data)
             }
-            if (2000 == rsp.data.code && util.isEmptyValue(data) && data[0] && util.isEmptyValue(data[0])) {
+            if (2000 == rsp.code && util.isEmptyValue(data) && data[0] && util.isEmptyValue(data[0])) {
               console.log(data, type)
               commit({type: `ApiService.${type}`, data: data})
             }
@@ -590,11 +603,11 @@ let ApiService = {
       try {
         p.then(
           (rsp) => {
-            let data = rsp.data.value
+            let data = rsp.value
             if (util.isJsonString(data)) {
               data = JSON.parse(data)
             }
-            if (2000 == rsp.data.code && util.isEmptyValue(data)) {
+            if (2000 == rsp.code && util.isEmptyValue(data)) {
               console.log(data, type)
               // commit({type: `ApiService.${type}`, data: data})
             }
@@ -635,11 +648,11 @@ let ApiService = {
       try {
         p.then(
           (rsp) => {
-            let data = rsp.data.value
+            let data = rsp.value
             if (util.isJsonString(data)) {
               data = JSON.parse(data)
             }
-            if (2000 == rsp.data.code && util.isEmptyValue(data)) {
+            if (2000 == rsp.code && util.isEmptyValue(data)) {
               console.log(data, type)
               // commit({type: `ApiService.${type}`, data: data})
             }
@@ -671,11 +684,11 @@ let ApiService = {
       try {
         p.then(
           (rsp) => {
-            let data = rsp.data.value
+            let data = rsp.value
             if (util.isJsonString(data)) {
               data = JSON.parse(data)
             }
-            if (2000 == rsp.data.code && util.isEmptyValue(data)) {
+            if (2000 == rsp.code && util.isEmptyValue(data)) {
               console.log(data, type)
               // commit({type: `ApiService.${type}`, data: data})
             }
@@ -716,11 +729,11 @@ let ApiService = {
       try {
         p.then(
           (rsp) => {
-            let data = rsp.data.value
+            let data = rsp.value
             if (util.isJsonString(data)) {
               data = JSON.parse(data)
             }
-            if (2000 == rsp.data.code && util.isEmptyValue(data)) {
+            if (2000 == rsp.code && util.isEmptyValue(data)) {
               console.log(data, type)
               // commit({type: `ApiService.${type}`, data: data})
             }
@@ -749,11 +762,11 @@ let ApiService = {
       try {
         p.then(
           (rsp) => {
-            let data = rsp.data.value
+            let data = rsp.value
             if (util.isJsonString(data)) {
               data = JSON.parse(data)
             }
-            if (2000 == rsp.data.code && util.isEmptyValue(data)) {
+            if (2000 == rsp.code && util.isEmptyValue(data)) {
               console.log(data, type + '_________________-')
               commit({type: `ApiService.${type}`, data: data})
             }
@@ -782,11 +795,11 @@ let ApiService = {
       try {
         p.then(
           (rsp) => {
-            let data = rsp.data.value
+            let data = rsp.value
             if (util.isJsonString(data)) {
               data = JSON.parse(data)
             }
-            if (2000 == rsp.data.code && util.isEmptyValue(data)) {
+            if (2000 == rsp.code && util.isEmptyValue(data)) {
               console.log(data, type + '_________________-')
               commit({type: `ApiService.${type}`, data: data})
             }
@@ -815,11 +828,11 @@ let ApiService = {
       try {
         p.then(
           (rsp) => {
-            let data = rsp.data.value
+            let data = rsp.value
             if (util.isJsonString(data)) {
               data = JSON.parse(data)
             }
-            if (2000 == rsp.data.code && util.isEmptyValue(data)) {
+            if (2000 == rsp.code && util.isEmptyValue(data)) {
               console.log(data, type + '_________________-')
               commit({type: `ApiService.${type}`, data: data})
             }
@@ -851,11 +864,11 @@ let ApiService = {
       try {
         p.then(
           (rsp) => {
-            let data = rsp.data.value
+            let data = rsp.value
             if (util.isJsonString(data)) {
               data = JSON.parse(data)
             }
-            if (2000 == rsp.data.code && util.isEmptyValue(data)) {
+            if (2000 == rsp.code && util.isEmptyValue(data)) {
               console.log(data, type + '_________________-')
             }
           },
@@ -883,11 +896,11 @@ let ApiService = {
       try {
         p.then(
           (rsp) => {
-            let data = rsp.data.value
+            let data = rsp.value
             if (util.isJsonString(data)) {
               data = JSON.parse(data)
             }
-            if (2000 == rsp.data.code && util.isEmptyValue(data)) {
+            if (2000 == rsp.code && util.isEmptyValue(data)) {
               console.log(data, type + '_________________-')
             }
           },
@@ -915,11 +928,11 @@ let ApiService = {
       try {
         p.then(
           (rsp) => {
-            let data = rsp.data.value
+            let data = rsp.value
             if (util.isJsonString(data)) {
               data = JSON.parse(data)
             }
-            if (2000 == rsp.data.code && util.isEmptyValue(data)) {
+            if (2000 == rsp.code && util.isEmptyValue(data)) {
               console.log(data, type + '_________________-')
             }
           },
@@ -947,11 +960,11 @@ let ApiService = {
       try {
         p.then(
           (rsp) => {
-            let data = rsp.data.value
+            let data = rsp.value
             if (util.isJsonString(data)) {
               data = JSON.parse(data)
             }
-            if (2000 == rsp.data.code && rsp.data.returnStatus) {
+            if (2000 == rsp.code && rsp.returnStatus) {
               console.log(data, type + '_________________-')
               commit({type: `ApiService.toLogin`, data: {}})
             }
@@ -983,11 +996,11 @@ let ApiService = {
       try {
         p.then(
           (rsp) => {
-            let data = rsp.data.value
+            let data = rsp.value
             if (util.isJsonString(data)) {
               data = JSON.parse(data)
             }
-            if (2000 == rsp.data.code && rsp.data.returnStatus) {
+            if (2000 == rsp.code && rsp.returnStatus) {
               console.log(data, type + '_________________-')
               commit({type: `ApiService.toLogin`, data: {}})
             }
@@ -1016,11 +1029,11 @@ let ApiService = {
       try {
         p.then(
           (rsp) => {
-            let data = rsp.data.value
+            let data = rsp.value
             if (util.isJsonString(data)) {
               data = JSON.parse(data)
             }
-            if (2000 == rsp.data.code && util.isEmptyValue(data)) {
+            if (2000 == rsp.code && util.isEmptyValue(data)) {
               console.log(data, type + '_________________-')
               commit({type: `ApiService.${type}`, data})
             }
@@ -1049,11 +1062,11 @@ let ApiService = {
       try {
         p.then(
           (rsp) => {
-            let data = rsp.data.value
+            let data = rsp.value
             if (util.isJsonString(data)) {
               data = JSON.parse(data)
             }
-            if (2000 == rsp.data.code && util.isEmptyValue(data)) {
+            if (2000 == rsp.code && util.isEmptyValue(data)) {
               console.log(data, type + '_________________-')
               commit({type: `ApiService.${type}`, data})
             } else {
@@ -1090,11 +1103,11 @@ let ApiService = {
       try {
         p.then(
           (rsp) => {
-            let data = rsp.data.value
+            let data = rsp.value
             if (util.isJsonString(data)) {
               data = JSON.parse(data)
             }
-            if (2000 == rsp.data.code) {
+            if (2000 == rsp.code) {
               if (orderType == 1) {
                 dispatch('ApiService.isBindRestaurantQRcode', {resId})
               } else {
@@ -1132,11 +1145,11 @@ let ApiService = {
       try {
         p.then(
           (rsp) => {
-            let data = rsp.data.value
+            let data = rsp.value
             if (util.isJsonString(data)) {
               data = JSON.parse(data)
             }
-            if (2000 == rsp.data.code) {
+            if (2000 == rsp.code) {
               if (orderType == 1) {
                 dispatch('ApiService.isBindRestaurantQRcode', {resId})
               } else {

@@ -63,7 +63,7 @@
     },
     created () {
       this.$emit('transfer', this.transferObj)
-      this.$store.commit('setNavigationBarTitle', {title: '开店成功'})
+      this.$store.commit('setNavigationBarTitle', {title: '商家开店'})
       if (this.$route.query) {
         this.type = this.$route.query.type
       }

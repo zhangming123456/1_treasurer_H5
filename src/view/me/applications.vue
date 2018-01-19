@@ -23,17 +23,17 @@
 </template>
 
 <script>
-  // import { Group, Cell, CellBox, Previewer, TransferDom, PopupPicker, Flexbox, FlexboxItem } from 'vux'
+  import { Group, Cell, CellBox, Previewer, TransferDom, PopupPicker, Flexbox, FlexboxItem } from 'vux'
   import XButton from '../../../node_modules/vux/src/components/x-button/index.vue'
   import { mapState } from 'vuex'
-  import Group from '../../components/group/index'
-  import Cell from '../../components/cell/index'
-  import CellBox from '../../components/cell-box/index'
-  import Previewer from '../../components/previewer/index'
-  import PopupPicker from '../../components/popup-picker/index'
-  import Flexbox from '../../components/flexbox/flexbox'
-  import FlexboxItem from '../../components/flexbox/flexbox-item'
-  import TransferDom from '../../directives/transfer-dom'
+  // import Group from '../../components/group/index'
+  // import Cell from '../../components/cell/index'
+  // import CellBox from '../../components/cell-box/index'
+  // import Previewer from '../../components/previewer/index'
+  // import PopupPicker from '../../components/popup-picker/index'
+  // import Flexbox from '../../components/flexbox/flexbox'
+  // import FlexboxItem from '../../components/flexbox/flexbox-item'
+  // import TransferDom from '../../directives/transfer-dom'
 
   export default {
     directives: {

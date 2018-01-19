@@ -5,8 +5,9 @@
 </template>
 
 <script>
+  import { XButton } from 'vux'
   import { mapState } from 'vuex'
-  import XButton from '../../components/x-button/index'
+  // import XButton from '../../components/x-button/index'
 
   export default {
     components: {XButton},

@@ -136,8 +136,8 @@ store.registerModule('vux', {
       state.isWxRegister = true
       dispatch('ApiService.wxScanQRcode', {url}).then(
         (rsp) => {
-          if (2000 == rsp.data.code && util.isEmptyValue(rsp.data.value)) {
-            let data = rsp.data.value
+          if (2000 == rsp.code && util.isEmptyValue(rsp.value)) {
+            let data = rsp.value
             wx.config({
               debug,
               appId: data.appId,

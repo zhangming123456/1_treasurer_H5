@@ -83,7 +83,7 @@
     },
     created () {
       this.$emit('transfer', this.transferObj)
-      this.$store.commit('setNavigationBarTitle', {title: '登入'})
+      this.$store.commit('setNavigationBarTitle', {title: '登录'})
     },
     methods: {
       fromSubmit () {
@@ -120,7 +120,7 @@
             this.isSubmit = true
             that.$store.dispatch('ApiService.toLogin', data).then(
               (rsp) => {
-                if (2000 == rsp.data.code && that.$azm.util.isEmptyValue(rsp.data.value)) {
+                if (2000 === rsp.code && that.$azm.util.isEmptyValue(rsp.value)) {
                   that.$router.push({path: '/'})
                 } else {
                   that.$toast('用户名或密码不正确')

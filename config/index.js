@@ -9,7 +9,7 @@ module.exports = {
     env: require('./dev.env'),
     host: 'localhost',
     port: 8081,
-    autoOpenBrowser: false,
+    autoOpenBrowser: true,
     assetsSubDirectory: 'static',
     assetsPublicPath: '/',
     proxyTable: {},

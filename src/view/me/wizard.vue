@@ -11,7 +11,7 @@
         </flow>
       </flexbox-item>
       <flexbox-item class="azm-img-box" :span="3/4">
-        <img src="../assets/mePage.jpg" alt="" class="azm-img">
+        <img src="../../assets/mePage.jpg" alt="" class="azm-img">
       </flexbox-item>
     </flexbox>
     <footer>
@@ -64,20 +64,20 @@
             scanType: ['qrCode', 'barCode'], // 可以指定扫二维码还是一维码，默认二者都有
             success: function (res) {
               var result = res.resultStr // 当needResult 为 1 时，扫码返回的结果
-              data = that.$azm.querystring.parse(result)
+              data = that.JSON.parse(result)
               if (data.shiroUserId) {
                 that.$vux.loading.show({text: 'Loading'})
 
                 that.$store.dispatch('ApiService.judgmentShop', data).then(
                   (rsp) => {
-                    if (!rsp.data.returnStatus && rsp.data.code == 2000) {
+                    if (!rsp.returnStatus && rsp.code === 2000) {
                       that.routerLink('/me-staff-info', {
                         shiro_user_id: data.shiroUserId,
                         isBindResUser: 1,
                         type: 2
                       })
                     } else {
-                      that.$toast(rsp.data.message)
+                      that.$toast(rsp.message)
                     }
                     that.$vux.loading.hide()
                   }
@@ -96,14 +96,14 @@
               //   that.$vux.loading.show({text: 'Loading'})
               //   that.$store.dispatch('ApiService.judgmentShop', data).then(
               //     (rsp) => {
-              //       if (!rsp.data.returnStatus && rsp.data.code == 2000) {
+              //       if (!rsp.returnStatus && rsp.code == 2000) {
               //         that.routerLink('/me-staff-info', {
               //           shiro_user_id: data.shiroUserId,
               //           isBindResUser: 1,
               //           type: 2
               //         })
               //       } else {
-              //         that.$toast(rsp.data.message)
+              //         that.$toast(rsp.message)
               //       }
               //       that.$vux.loading.hide()
               //     }
