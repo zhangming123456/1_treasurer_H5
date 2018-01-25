@@ -39,9 +39,11 @@
   import { mapState } from 'vuex'
   import util from 'libs/util'
   import VanNavBar from 'vant/packages/nav-bar/index'
+  import TouchRipple from 'vue-touch-ripple/src/component'
 
   export default {
     components: {
+      TouchRipple,
       VanNavBar,
       Tabbar,
       TabbarItem,
@@ -104,12 +106,14 @@
   @import '~vux/src/styles/1px.less';
   @import '~vux/src/styles/close.less';
   @import '~vant/lib/vant-css/index.css';
+  @import '~vue-touch-ripple/component.css';
 
   body {
     position: relative;
     > div {
       position: relative;
     }
+
   }
 
   .vux-confirm .weui-dialog {
@@ -123,6 +127,9 @@
       z-index: 1000;
       height: 46px;
       line-height: 46px;
+    }
+    .vux-loading {
+      z-index: 1000;
     }
     .weui-tabbar {
       position: fixed;

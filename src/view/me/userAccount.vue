@@ -10,7 +10,9 @@
   // import XButton from '../../components/x-button/index'
 
   export default {
-    components: {XButton},
+    components: {
+      XButton
+    },
     data () {
       return {
         name: 'user-account',

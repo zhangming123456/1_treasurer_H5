@@ -44,9 +44,11 @@ class RequestParams {
             rsp.data.code = +rsp.data.code
             if (rsp.data.code === 5010) {
               store.dispatch('logOut')
-              Vue.$vux.toast.text(rsp.data.message)
-            } else if (rsp.data.code === 5001) {
-              Vue.$vux.toast.text(rsp.data.message)
+              rsp.data.status = true
+              Vue.$vux.toast.text(rsp.data.message, 'top')
+            } else if (rsp.data.code === 5001 || 3001 === rsp.data.code) {
+              Vue.$vux.toast.text(rsp.data.message, 'top')
+              rsp.data.status = true
             }
             resolve(rsp.data)
           },
@@ -61,6 +63,7 @@ class RequestParams {
 }
 
 const ApiService_data = {
+  expires: 1 / 24,
   loginInfo: {},
   secretkey: '261ad12f08f13811298e2b50f803deab',
   token: '',
@@ -105,8 +108,18 @@ let ApiService = {
       //   // 'token': '55fcdccdda67df10240e8bd2e6a1a875',
       //   // 'type': '1',
       // }
+      let expires = isNaN(+state.expires) ? 0 : +state.expires
       Object.assign(state, util.deepClone(ApiService_data))
       state.loginInfo = payload.data
+      if (+payload.expires > 0) {
+        state.expires = payload.expires
+        expires = state.expires
+      } else if (expires) {
+        state.expires = expires
+      } else {
+        state.expires = 1 / 24
+        expires = 1 / 24
+      }
       if (state.loginInfo.phoneNumber) {
         state.loginInfo.mobile = state.loginInfo.phoneNumber
       }
@@ -115,16 +128,16 @@ let ApiService = {
       state.resId = state.loginInfo.resId || ''
       state.mobile = state.loginInfo.mobile || ''
       cookie.set('token', state.token, {
-        expires: 1 / 24
+        expires: state.expires
       })
       cookie.set('shiroUserId', state.shiroUserId, {
-        expires: 1 / 24
+        expires: state.expires
       })
       cookie.set('resId', state.resId, {
-        expires: 1 / 24
+        expires: state.expires
       })
       cookie.set('mobile', state.mobile, {
-        expires: 1 / 24
+        expires: state.expires
       })
     },
     async ['ApiService.wxScanQRcode'] (state, payload) {
@@ -139,11 +152,11 @@ let ApiService = {
       }
       state.resId = data.resId || ''
       cookie.set('resId', state.resId, {
-        expires: 1 / 24
+        expires: state.expires
       })
       state.qrcodeImg = JSON.stringify(data)
       cookie.set('qrcodeImg', state.qrcodeImg, {
-        expires: 1 / 24
+        expires: state.expires
       })
     },
     async ['ApiService.findResUserList'] (state, payload) {
@@ -220,13 +233,20 @@ let ApiService = {
      */
     async ['ApiService.toLogin'] ({commit, state, dispatch}, data = {}) {
       const type = 'toLogin'
+      let expires = null
+      if (data.config) {
+        if (+data.config.expires > 0) {
+          expires = data.config.expires
+        }
+      }
+      delete data.config
       const p = new RequestParams(state, data, true).post(type)
       try {
         p.then(
           (rsp) => {
             if (2000 == rsp.code && util.isEmptyValue(rsp.value)) {
               console.log(rsp.value, type)
-              commit({type: `ApiService.${type}`, data: rsp.value})
+              commit({type: `ApiService.${type}`, data: rsp.value, expires})
             }
           },
           (rsp) => {
@@ -767,7 +787,7 @@ let ApiService = {
               data = JSON.parse(data)
             }
             if (2000 == rsp.code && util.isEmptyValue(data)) {
-              console.log(data, type + '_________________-')
+              console.log(data, type + `_______获取${type}接口数据__________`)
               commit({type: `ApiService.${type}`, data: data})
             }
           },
@@ -800,7 +820,7 @@ let ApiService = {
               data = JSON.parse(data)
             }
             if (2000 == rsp.code && util.isEmptyValue(data)) {
-              console.log(data, type + '_________________-')
+              console.log(data, type + `_______获取${type}接口数据__________`)
               commit({type: `ApiService.${type}`, data: data})
             }
           },
@@ -833,7 +853,7 @@ let ApiService = {
               data = JSON.parse(data)
             }
             if (2000 == rsp.code && util.isEmptyValue(data)) {
-              console.log(data, type + '_________________-')
+              console.log(data, type + `_______获取${type}接口数据__________`)
               commit({type: `ApiService.${type}`, data: data})
             }
           },
@@ -869,7 +889,77 @@ let ApiService = {
               data = JSON.parse(data)
             }
             if (2000 == rsp.code && util.isEmptyValue(data)) {
-              console.log(data, type + '_________________-')
+              console.log(data, type + `_______获取${type}接口数据__________`)
+            }
+          },
+          (rsp) => {
+
+          }
+        )
+      } catch (e) {
+        console.warn(`调用${type}赋值失败`)
+      }
+      return p
+    },
+    /**
+     * 获取验证码 - new
+     * @param commit
+     * @param state
+     * @param dispatch
+     * @param data {"mobile": mobile, msgTemp: "SMS_DEFAULT_CONTENT"},
+     * @returns {Promise<*>}
+     * @constructor
+     */
+    async ['ApiService.getSmsCodeForRegister'] ({commit, state, dispatch}, data = {}) {
+      let type = 'getSmsCodeForRegister'
+      Object.assign(data, {
+        msgTemp: 'SMS_DEFAULT_CONTENT'
+      })
+      const p = new RequestParams(state, data, true).post(type)
+      try {
+        p.then(
+          (rsp) => {
+            let data = rsp.value
+            if (util.isJsonString(data)) {
+              data = JSON.parse(data)
+            }
+            if (2000 == rsp.code && util.isEmptyValue(data)) {
+              console.log(data, type + `_______获取${type}接口数据__________`)
+            }
+          },
+          (rsp) => {
+
+          }
+        )
+      } catch (e) {
+        console.warn(`调用${type}赋值失败`)
+      }
+      return p
+    },
+    /**
+     * 校验验证码
+     * @param commit
+     * @param state
+     * @param dispatch
+     * @param data {"mobile": mobile,code:'', msgTemp: "SMS_DEFAULT_CONTENT"},
+     * @returns {Promise<*>}
+     * @constructor
+     */
+    async ['ApiService.checkSmsCodeByMobile'] ({commit, state, dispatch}, data = {}) {
+      let type = 'checkSmsCodeByMobile'
+      Object.assign(data, {
+        msgTemp: 'SMS_DEFAULT_CONTENT'
+      })
+      const p = new RequestParams(state, data, true).post(type)
+      try {
+        p.then(
+          (rsp) => {
+            let data = rsp.value
+            if (util.isJsonString(data)) {
+              data = JSON.parse(data)
+            }
+            if (2000 == rsp.code && util.isEmptyValue(data)) {
+              console.log(data, type + `_______获取${type}接口数据__________`)
             }
           },
           (rsp) => {
@@ -901,7 +991,7 @@ let ApiService = {
               data = JSON.parse(data)
             }
             if (2000 == rsp.code && util.isEmptyValue(data)) {
-              console.log(data, type + '_________________-')
+              console.log(data, type + `_______获取${type}接口数据__________`)
             }
           },
           (rsp) => {
@@ -933,7 +1023,8 @@ let ApiService = {
               data = JSON.parse(data)
             }
             if (2000 == rsp.code && util.isEmptyValue(data)) {
-              console.log(data, type + '_________________-')
+              console.log(data, type + `_______获取${type}接口数据__________`)
+              commit({type: `ApiService.toLogin`, data: rsp.value})
             }
           },
           (rsp) => {
@@ -965,7 +1056,7 @@ let ApiService = {
               data = JSON.parse(data)
             }
             if (2000 == rsp.code && rsp.returnStatus) {
-              console.log(data, type + '_________________-')
+              console.log(data, type + `_______获取${type}接口数据__________`)
               commit({type: `ApiService.toLogin`, data: {}})
             }
           },
@@ -1001,7 +1092,7 @@ let ApiService = {
               data = JSON.parse(data)
             }
             if (2000 == rsp.code && rsp.returnStatus) {
-              console.log(data, type + '_________________-')
+              console.log(data, type + `_______获取${type}接口数据__________`)
               commit({type: `ApiService.toLogin`, data: {}})
             }
           },
@@ -1034,7 +1125,7 @@ let ApiService = {
               data = JSON.parse(data)
             }
             if (2000 == rsp.code && util.isEmptyValue(data)) {
-              console.log(data, type + '_________________-')
+              console.log(data, type + `_______获取${type}接口数据__________`)
               commit({type: `ApiService.${type}`, data})
             }
           },
@@ -1067,7 +1158,7 @@ let ApiService = {
               data = JSON.parse(data)
             }
             if (2000 == rsp.code && util.isEmptyValue(data)) {
-              console.log(data, type + '_________________-')
+              console.log(data, type + `_______获取${type}接口数据__________`)
               commit({type: `ApiService.${type}`, data})
             } else {
               commit({type: `ApiService.${type}`, data: {}})

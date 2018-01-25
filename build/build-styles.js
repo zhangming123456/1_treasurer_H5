@@ -2,7 +2,7 @@ const postcss = require('postcss')
 const syntax = require('postcss-less')
 const path = require('path')
 const fs = require('fs')
-const less = require('../../work_preject/一号掌柜商家（web）-project/build/less')
+const less = require('../../work_preject/1号掌柜商家（web）-project/build/less')
 const shell = require('shelljs')
 
 const distPath = path.resolve(__dirname, `../dist/styles/`)

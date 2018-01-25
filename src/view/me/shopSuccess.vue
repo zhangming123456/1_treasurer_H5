@@ -2,7 +2,7 @@
   <div class="Me_fillinfosuccess_page">
     <header>
       <i class="iconfont icon-dui azm-icon"></i>
-      <h2 v-if="type == 2">您已经是一号掌柜有限公司的员工，继续开店将失去员工身份。是否继续？</h2>
+      <h2 v-if="type == 2">您已经是1号掌柜有限公司的员工，继续开店将失去员工身份。是否继续？</h2>
       <h2 v-else>恭喜您已开店成功</h2>
     </header>
     <footer>
@@ -83,7 +83,7 @@
       },
       btnManageStaff () {
         let that = this
-        that.routerLink('/me-staff-admin')
+        that.routerLink('/me/staffAdmin')
       },
       onShow () {},
       onHide () {},

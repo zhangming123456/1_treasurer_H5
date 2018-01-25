@@ -73,7 +73,7 @@ store.registerModule('vux', {
         debug = payload.debug
       wx.ready(() => {
         let menuShare = {
-          title: '一号掌柜', // 分享标题
+          title: '1号掌柜', // 分享标题
           desc: '珍乐旗下的智慧餐饮系统品牌，作为中国领先的互联网餐饮系统。',
           link: 'http://vip.zhenler.com/H5/dist/index.html',
           imgUrl: 'http://www.zhenler.com/images/favicon.ico',

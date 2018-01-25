@@ -28,7 +28,7 @@
         </van-cell>
       </van-cell-group>
       <van-cell-group v-if="appInfo.type == 1">
-        <van-cell is-link title="使用记录" icon="pending-orders" to="/me-expenses-record"></van-cell>
+        <van-cell is-link title="使用记录" icon="pending-orders" to="/me/expensesRecord"></van-cell>
       </van-cell-group>
       <van-cell-group>
         <van-cell>

@@ -28,7 +28,7 @@
         </van-cell>
       </van-cell-group>
       <van-cell-group v-if="appInfo.type == 1">
-        <van-cell is-link title="使用记录" icon="pending-orders" to="/me-expenses-record"></van-cell>
+        <van-cell is-link title="使用记录" icon="pending-orders" to="/me/expensesRecord"></van-cell>
       </van-cell-group>
       <van-cell-group>
         <van-cell>
@@ -46,19 +46,37 @@
         立即开通
       </van-button>
     </footer>
+    <van-popup v-model="show">
+      <div class="azm-popup">
+        <header>温馨提示</header>
+        <section>
+          <p>您可以通过以下两种方式购买/续费:</p>
+          <ul>
+            <li>联系客服人员 0755-32914310</li>
+            <li>关注下方1号掌柜微信公众号进入微信商城内进行购买</li>
+          </ul>
+          <div class="img">
+            <img src="../../../../assets/lALPBbCc1UV6wrnNAQLNAQI_258_258.png"/>
+          </div>
+        </section>
+      </div>
+    </van-popup>
   </div>
 </template>
 
 <script>
+  import { Popup } from 'vant/lib/index'
   import VanCellGroup from 'vant/packages/cell-group/index'
   import VanButton from 'vant/packages/button/index'
   import VanCell from 'vant/packages/cell/index'
   import VanTag from 'vant/packages/tag/index'
   import VanRow from 'vant/packages/row/index'
   import VanCol from 'vant/packages/col/index'
+  import VanModal from 'vant/packages/mixins/popup/Modal'
 
   export default {
     components: {
+      [Popup.name]: Popup,
       VanCol,
       VanRow,
       VanTag,
@@ -74,7 +92,8 @@
           isTabbar: false,
           tabbarLink: 'me-applications-info'
         },
-        appInfo: {}
+        appInfo: {},
+        show: false
       }
     },
     created () {
@@ -87,7 +106,7 @@
     },
     methods: {
       benewNowBtn () {
-
+        this.show = !this.show
       }
     }
   }
@@ -100,6 +119,40 @@
 
 <style scoped lang='less'>
   .me-applications-info {
+    .azm-popup {
+      min-width: 300px;
+      header {
+        text-align: center;
+        line-height: 45px;
+        background-color: #383f4f;
+        color: #fff;
+        font-size: 14px;
+      }
+      section {
+        box-sizing: border-box;
+        padding: 0 15px;
+        p {
+          font-size: 13px;
+          line-height: 40px;
+        }
+        ul {
+          margin-left: 14px;
+        }
+        li {
+          list-style-type: disc;
+          color: #b4b8b9;
+          font-size: 12px;
+        }
+        .img {
+          width: 100%;
+          text-align: center;
+          img {
+            width: 150px;
+            height: auto;
+          }
+        }
+      }
+    }
     .btn-Using {
       color: #88deec;
       border: 1px solid #88deec;

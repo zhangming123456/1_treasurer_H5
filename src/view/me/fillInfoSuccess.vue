@@ -10,7 +10,7 @@
           <x-button type="default" class="azm-font-cell" :show-loading="isSubmit" link="/me/wizard">继续添加</x-button>
         </flexbox-item>
         <flexbox-item>
-          <x-button type="primary" class="azm-font-cell" :show-loading="isSubmit" link="/me-staff-admin">返回员工列表
+          <x-button type="primary" class="azm-font-cell" :show-loading="isSubmit" link="/me/staffAdmin">返回员工列表
           </x-button>
         </flexbox-item>
       </flexbox>

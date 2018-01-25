@@ -3,9 +3,9 @@
  */
 // var host = 'http://192.168.134.254:8080/zhenler-server'
 // var host = 'http://192.168.134.2:8082'
-// var host = 'http://192.168.134.116:8080/zhenler-server'
+var host = 'http://192.168.134.108:8080/zhenler-server'
 // var host = 'https://vip.zhenler.com/api';// 发布环境
-var host = 'http://vip.zhenler.com'// 开发环境
+// var host = 'http://vip.zhenler.com'// 开发环境
 var Hash = '1'
 // var host = 'http://119.23.132.192/zhenler-server/api';// 测试环境
 
@@ -19,7 +19,7 @@ var config = {
   host,
   Hash,
 
-  version: '1.0.1212',
+  version: '1.1.0122',
 
   // 图片服务器地址
   imageUrl: `http://f.zhenler.com`,
@@ -82,6 +82,10 @@ var config = {
   getMobileMsgList: `${host}/api/mobileMsg/getMobileMsgList`,
   // 获取验证码
   getSmsCode: `${host}/api/sms/getSmsCode`,
+  // 获取验证码-new
+  getSmsCodeForRegister: `${host}/api/sms/getSmsCodeForRegister`,
+  // 校验验证码
+  checkSmsCodeByMobile: `${host}/api/sms/checkSmsCodeByMobile`,
   // 注册
   register: `${host}/api/user/register`,
   // 校验手机号是否注册过

@@ -1,6 +1,6 @@
 <template>
   <div class="me_page">
-    <div class="azm-me" @click="routerLink('/me-info')">
+    <div class="azm-me" @click="routerLink('/me/info')">
       <div class="azm-me-link clearfix">
         <div class="fl azm-me-link-item azm-me-img">
           <img v-if="userInfo" :src="imagesUrl+userInfo.headPhoto" alt="" class="">
@@ -20,7 +20,7 @@
       <group class="azm-cell-list-group">
         <cell is-link title="我的账户" class="azm-cell" @click.native="judg('/me/userAccount')">
           <i slot="icon" class="iconfont icon-diamond azm-icon azm-icon-f86162"></i>
-          <div>收银账号设置</div>
+          <div>收款账户设置</div>
         </cell>
         <cell is-link title="我的应用" class="azm-cell" @click.native="judg('/me/applications')">
           <i slot="icon" class="iconfont icon-05 azm-icon azm-icon_bold azm-icon-34c9e1"></i>
@@ -37,7 +37,11 @@
         <cell is-link title="修改密码" class="azm-cell" link="/me/changePwd">
           <i slot="icon" class="iconfont icon-mima azm-icon azm-icon-ac92eb"></i>
         </cell>
-        <cell is-link title="联系客服" class="azm-cell" link="/me-contact-service">
+        <cell is-link title="联系客服" class="azm-cell" link="/me/contactService">
+          <i slot="icon" class="iconfont icon-kefu azm-icon azm-icon-febf00"></i>
+        </cell>
+        <cell is-link title="微信登录" class="azm-cell"
+              link="https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx2a89c0f4efea410c&redirect_uri=http://weixin.aaronzm.xin/#/login?ip=56757653&response_type=code&scope=snsapi_base">
           <i slot="icon" class="iconfont icon-kefu azm-icon azm-icon-febf00"></i>
         </cell>
       </group>
@@ -147,11 +151,11 @@
             try {
               let type = that.userInfo.type
               if (1 == type) {
-                that.routerLink('/me-shop-success', {type})
+                that.routerLink('/me/shopSuccess', {type})
               } else if (2 == type) {
-                that.routerLink('/me-shop-success', {type})
+                that.routerLink('/me/shopSuccess', {type})
               } else {
-                that.routerLink('/me-shop-info')
+                that.routerLink('/me/shopInfo')
               }
             } catch (e) {
 

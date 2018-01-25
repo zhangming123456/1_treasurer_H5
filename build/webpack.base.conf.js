@@ -16,6 +16,9 @@ const webpackConfig = {
   entry: {
     app: './src/main.js'
   },
+  devServer: {
+    disableHostCheck: true,
+  },
   output: {
     path: config.build.assetsRoot,
     filename: '[name].js',
@@ -24,7 +27,7 @@ const webpackConfig = {
       : config.dev.assetsPublicPath
   },
   resolve: {
-    extensions: ['.js', '.vue', '.json'],
+    extensions: ['.js', '.ts', '.vue', '.json'],
     modules: [
       resolve('src'),
       resolve('node_modules')
@@ -50,6 +53,16 @@ const webpackConfig = {
       //     formatter: require('eslint-friendly-formatter')
       //   }
       // },
+      {
+        // 对所有引入的tsx文件进行解析
+        test: /\.tsx?$/,
+        loader: 'ts-loader',
+        exclude: /node_modules/,
+        options: {
+          // 自动将所有.vue文件转化为.vue.tsx文件
+          appendTsSuffixTo: [/\.vue$/]
+        }
+      },
       {
         test: /\.vue$/,
         loader: 'vue-loader',

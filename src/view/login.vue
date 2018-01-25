@@ -37,9 +37,9 @@
     </div>
     <div class="submit">
       <x-button type="primary" class="azm-font-cell azm-btn-submit" action-type="submit" :show-loading="isSubmit"
-                @click.native="fromSubmit">登录
+                @click.native="fromSubmit">{{isSubmit?'登录中，请稍后。。。':'登录'}}
       </x-button>
-      <router-link to="/login/register" class="register">新用户注册</router-link>
+      <router-link to="/login/register" class="register" replace>新用户注册</router-link>
     </div>
   </div>
 </template>
@@ -72,7 +72,8 @@
         username: '',
         password: '',
         checkbox: false,
-        isSubmit: false
+        isSubmit: false,
+        loginText: '登录'
       }
     },
     computed: {
@@ -107,15 +108,18 @@
               password: that.$azm.md5(mobile + password).toLowerCase()
             }
             if (that.checkbox) {
-              let secretKey = that.$azm.querystring.stringify({
-                0: data.mobile, 1: data.password, 2: data.newPwd
-              })
-              console.log(secretKey, 'secretKey')
-              that.$azm.cookie.set('secretKey',
-                secretKey,
-                {
-                  expires: 7
-                })
+              data.config = {
+                expires: 7
+              }
+              // let secretKey = that.$azm.querystring.stringify({
+              //   0: data.mobile, 1: data.password, 2: data.newPwd
+              // })
+              // console.log(secretKey, 'secretKey')
+              // that.$azm.cookie.set('secretKey',
+              //   secretKey,
+              //   {
+              //     expires: 7
+              //   })
             }
             this.isSubmit = true
             that.$store.dispatch('ApiService.toLogin', data).then(
@@ -123,7 +127,7 @@
                 if (2000 === rsp.code && that.$azm.util.isEmptyValue(rsp.value)) {
                   that.$router.push({path: '/'})
                 } else {
-                  that.$toast('用户名或密码不正确')
+                  !rsp.status && that.$toast('用户名或密码不正确')
                 }
                 this.isSubmit = false
               },

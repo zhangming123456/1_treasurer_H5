@@ -193,7 +193,7 @@
             }
           })
         } else {
-          that.$toast('请进入一号掌柜微信公众号使用哦~')
+          that.$toast('请进入1号掌柜微信公众号使用哦~')
         }
       },
       tabCilck (index) {

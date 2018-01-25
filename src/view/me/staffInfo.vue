@@ -165,7 +165,7 @@
           that.role_id = query.role_id
           that.role_name = query.role_name
           that.minMaling = query.minMaling || 0
-          that.maxMaling = query.maxMaling || 100
+          that.maxMaling = query.maxMaling || 9999
           that.minDiscount = query.minDiscount || 0
           that.maxDiscount = query.maxDiscount || 100
           that.checkout = query.checkout || 0
@@ -202,9 +202,9 @@
           workNo: that.workNo,
           role_id: that.role_id,
           role_name: that.role_name,
-          minMaling: that.minMaling,
+          minMaling: that.minMaling || 0,
           maxMaling: that.maxMaling,
-          minDiscount: that.minDiscount,
+          minDiscount: that.minDiscount || 0,
           maxDiscount: that.maxDiscount,
           checkout: that.checkout,
           refund: that.refund,
@@ -218,6 +218,14 @@
           this.$toast('手机格式不正确')
         } else if (!this.$azm.util.trim(data.role_id)) {
           this.$toast('请选择角色')
+        } else if (data.minDiscount > data.maxDiscount) {
+          this.$toast('最小折扣不能大于最大折扣')
+        } else if (data.minMaling > data.maxMaling) {
+          this.$toast('最小抹零不能大于最大抹零')
+        } else if (9999 < data.maxMaling) {
+          this.$toast('请设置抹零在0~9999范围')
+        } else if (100 < data.maxDiscount) {
+          this.$toast('请设置抹零在0~100范围')
         } else {
           if (that.isEdit) {
             that.$store.dispatch('ApiService.updateOrSaveResUser', data).then(

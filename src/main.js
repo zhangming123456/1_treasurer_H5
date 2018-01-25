@@ -9,7 +9,7 @@ import util from './libs/util'
 Vue.use(VueRouter)
 
 require('es6-promise').polyfill()
-
+import WechatPlugin from './plugins/wechat/index'
 import {
   DatetimePlugin,
   CloseDialogsPlugin,
@@ -21,7 +21,6 @@ import {
   AlertPlugin,
   ConfirmPlugin,
   LoadingPlugin,
-  WechatPlugin,
   AjaxPlugin,
   AppPlugin,
   querystring,
@@ -46,7 +45,6 @@ import cookie from 'js-cookie'
   }
 }(document))
 Vue.use(LocalePlugin)
-
 // // global VUX config
 Vue.use(ConfigPlugin, {
   $layout: 'VIEW_BOX' // global config for VUX, since v2.5.12
@@ -113,8 +111,8 @@ router.beforeEach(function (to, from, next) {
   const fromIndex = historyLogRouter[from.path]
   // console.log(historyLogRouter, to.path, from.path)
   if (toIndex) {
-    if ('/me-shop-success' === to.path && '/me-staff-info' === from.path) {
-      router.push({path: '/me-fill-info-success'})
+    if ('/me/shopSuccess' === to.path && '/me/staffInfo' === from.path) {
+      router.push({path: `/me/fillInfoSuccess`})
     }
 
     if (!fromIndex || parseInt(toIndex, 10) > parseInt(fromIndex, 10) || (toIndex === '0' && fromIndex === '0')) {
@@ -151,6 +149,7 @@ router.afterEach(function (to) {
             url = window.location.href.split('#')[0]
             debug = false
           }
+          console.log(wx, '____________________')
           store.dispatch('wxRegister', {wx, url, debug})
         }
       },
@@ -171,11 +170,15 @@ router.afterEach(function (to) {
     ga && ga('send', 'pageview')
   }
 })
+
 import VueScroll from 'vue-scroll'
 import VueScroller from 'vue-scroller'
+import TouchRipple from 'vue-touch-ripple'
 
+Vue.use(TouchRipple)
 Vue.use(VueScroll)
 Vue.use(VueScroller)
+console.log(router, '____________________router________________')
 new Vue({
   store,
   router,

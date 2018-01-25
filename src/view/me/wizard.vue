@@ -71,7 +71,7 @@
                 that.$store.dispatch('ApiService.judgmentShop', data).then(
                   (rsp) => {
                     if (!rsp.returnStatus && rsp.code === 2000) {
-                      that.routerLink('/me-staff-info', {
+                      that.routerLink('/me/staffInfo', {
                         shiro_user_id: data.shiroUserId,
                         isBindResUser: 1,
                         type: 2
@@ -97,7 +97,7 @@
               //   that.$store.dispatch('ApiService.judgmentShop', data).then(
               //     (rsp) => {
               //       if (!rsp.returnStatus && rsp.code == 2000) {
-              //         that.routerLink('/me-staff-info', {
+              //         that.routerLink('/me/staffInfo', {
               //           shiro_user_id: data.shiroUserId,
               //           isBindResUser: 1,
               //           type: 2
@@ -114,7 +114,7 @@
             }
           })
         } else {
-          that.$toast('请进入一号掌柜微信公众号使用哦~')
+          that.$toast('请进入1号掌柜微信公众号使用哦~')
         }
       },
       onShow () {},

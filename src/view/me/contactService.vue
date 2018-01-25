@@ -1,7 +1,7 @@
 <template>
   <div :class="name" class="azm-fixed">
     <van-cell-group>
-      <van-cell title="客服微信号" value="zhenler123">
+      <van-cell title="客服微信号" value="kelailer">
         <template slot="icon">
           <i class="iconfont icon-weixin" style="color: #49cfae"></i>
         </template>
@@ -11,23 +11,27 @@
           <i class="iconfont icon-qq" style="color: #f6a966"></i>
         </template>
       </van-cell>
-      <van-cell icon="phone" title="电话" value="0755-32914310"></van-cell>
+      <van-cell icon="phone" title="电话" value="0755-32914310转2"></van-cell>
     </van-cell-group>
     <div class="footer">
-      <p>关注官方公众号：yihaozhanggui-，了解最新资讯</p>
-      <img src="../../assets/lALPBbCc1UV6wrnNAQLNAQI_258_258.png" alt="">
+      <p style="margin-bottom: 2em">请添加微信客服一对一客服</p>
+      <qrcode value="https://u.wechat.com/MEsww62KjAF9TMjecL5BbE0" type="img" :size="200"></qrcode>
+      <!--<img src="../../../assets/lALPBbCc1UV6wrnNAQLNAQI_258_258.png" alt="">-->
     </div>
   </div>
 </template>
 
 <script>
-  import VanCellGroup from 'vant/packages/cell-group/index'
-  import VanCell from 'vant/packages/cell/index'
+  import { Qrcode } from 'vux'
+  import { CellGroup, Cell } from 'vant/lib/index'
+  // import VanCellGroup from 'vant/packages/cell-group/index'
+  // import VanCell from 'vant/packages/cell/index'
 
   export default {
     components: {
-      VanCell,
-      VanCellGroup
+      Qrcode,
+      [CellGroup.name]: CellGroup,
+      [Cell.name]: Cell
     },
     data () {
       return {

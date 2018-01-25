@@ -11,6 +11,14 @@
                    @click-icon="oldPwd = ''"
         />
       </van-cell-group>
+      <p class="forget_text">*如果忘记密码，请退出登陆，点击'忘记密码',重设密码后重新登陆。</p>
+      <div class="forget_pwd_form_footer">
+        <x-button type="primary" class="azm-btn azm-btn-submit" action-type="submit"
+                  @click.native="next">下一步
+        </x-button>
+      </div>
+    </div>
+    <div v-else-if="step === 1" class="forget_pwd_form_box">
       <van-cell-group class="forget_pwd_form">
         <van-field class="forget_pwd_form_password forget_pwd_form_item"
                    v-model="password"
@@ -37,7 +45,7 @@
         </x-button>
       </div>
     </div>
-    <div v-else-if="step === 1" class="forget_pwd_form_box">
+    <div v-else-if="step === 2" class="forget_pwd">
       <p>修改密码成功</p>
       <p>
         <i class="iconfont icon-dui azm-icon"></i>
@@ -118,6 +126,14 @@
             that.$toast('旧密码不能为空')
           } else if (oldPwd.length < 6) {
             that.$toast('旧密码至少6位数字')
+          } else {
+            that.step++
+          }
+        } else if (this.step === 1) {
+          if (!oldPwd) {
+            that.$toast('旧密码不能为空')
+          } else if (oldPwd.length < 6) {
+            that.$toast('旧密码至少6位数字')
           } else if (!password) {
             that.$toast('新密码不能为空')
           } else if (!password2) {
@@ -146,7 +162,7 @@
               }
             )
           }
-        } else if (this.step === 1) {
+        } else if (this.step === 2) {
           that.$router.go(-1)
         }
       }
@@ -165,7 +181,12 @@
     .forget_pwd_form_box {
       padding: 80px 20px;
       box-sizing: border-box;
-      &:nth-child(1) {
+      .forget_text {
+        text-align: left;
+        font-size: 12px;
+        color: #96a0b2;
+      }
+      &:nth-child(2) {
         p {
           font-size: 13px;
           color: #96a0b2;

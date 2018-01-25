@@ -10,7 +10,7 @@
             <span>({{item.role_name}})</span>
           </div>
           <div class="fr title-item">
-            <div class="title-item-bianji" @click="routerLink('/me-staff-info',item)">
+            <div class="title-item-bianji" @click="routerLink('/me/staffInfo',item)">
               <i class="iconfont icon-bianji"></i>
               <span>编辑</span>
             </div>
@@ -45,7 +45,7 @@
               <i class="iconfont icon-shanchu"></i>
               <span>删除</span>
             </div>
-            <div class="title-item-bianji" @click="routerLink('/me-staff-info',item)">
+            <div class="title-item-bianji" @click="routerLink('/me/staffInfo',item)">
               <i class="iconfont icon-bianji"></i>
               <span>编辑</span>
             </div>
