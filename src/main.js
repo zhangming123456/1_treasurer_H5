@@ -21,6 +21,7 @@ import {
   AlertPlugin,
   ConfirmPlugin,
   LoadingPlugin,
+  dateFormat,
   AjaxPlugin,
   AppPlugin,
   querystring,
@@ -65,7 +66,6 @@ import store from './store/index'
 import { ImagePreview } from 'vant/lib/index'
 
 // 过滤器
-import { dateFormat } from 'libs/filter'
 
 Vue.filter('dateFormat', dateFormat)
 
@@ -136,14 +136,14 @@ router.beforeEach(function (to, from, next) {
 })
 
 router.afterEach(function (to) {
-  if (!/^\/login/.test(to.path)) {
+  if (!config.isVerifyApi(to.path)) {
     store.dispatch('ApiService.getToLogin').then(
       () => {
         /**
          * -------------------------- 微信jssdk ----------------------
          */
         if (Vue.$device.isWechat) {
-          let url = config.host + '/H5',
+          let url = window.location.href.split('#')[0],
             debug = true
           if (process.env.NODE_ENV === 'production') {
             url = window.location.href.split('#')[0]
@@ -154,7 +154,7 @@ router.afterEach(function (to) {
         }
       },
       () => {
-        if (!/^\/login/.test(to.path)) {
+        if (!config.isVerifyApi(to.path)) {
           router.push({path: '/login'})
         }
         cookie.remove('token')

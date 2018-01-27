@@ -97,16 +97,16 @@ let ApiService = {
   mutations: {
     async ['ApiService.toLogin'] (state, payload) {
       // state.loginInfo = {
-      //   // 'nike_name': '1号掌柜66',
-      //   // 'resName': '1号掌柜有限公司',
-      //   // 'companyId': '000000005c2536d5015c2e169195061d',
-      //   // 'phoneNumber': '18812345678',
-      //   // 'nowDateTime': 1513409501190,
-      //   // 'companyName': '珍乐科技',
-      //   // 'shiroUserId': '000000005c2536d5015c2e169196061e',
-      //   // 'resId': '000000005c2536d5015c2e169199061f',
-      //   // 'token': '55fcdccdda67df10240e8bd2e6a1a875',
-      //   // 'type': '1',
+      //   'nike_name': '1号掌柜66',
+      //   'resName': '1号掌柜有限公司',
+      //   'companyId': '000000005c2536d5015c2e169195061d',
+      //   'phoneNumber': '18812345678',
+      //   'nowDateTime': 1513409501190,
+      //   'companyName': '珍乐科技',
+      //   'shiroUserId': '000000005c2536d5015c2e169196061e',
+      //   'resId': '000000005c2536d5015c2e169199061f',
+      //   'token': '55fcdccdda67df10240e8bd2e6a1a875',
+      //   'type': '1',
       // }
       let expires = isNaN(+state.expires) ? 0 : +state.expires
       Object.assign(state, util.deepClone(ApiService_data))
@@ -324,6 +324,14 @@ let ApiService = {
      */
     async ['ApiService.wxScanQRcode'] ({commit, state, dispatch}, data = {}) {
       const type = 'wxScanQRcode'
+      // https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=wxc9d4b3065a30a3f4&secret=c8e09e9911a364f6060e9a1af403f4a3
+      // https://api.weixin.qq.com/cgi-bin/ticket/getticket?access_token=ACCESS_TOKEN&type=jsapi
+      if (true) {
+        Object.assign(data, {
+          appID: 'wxc9d4b3065a30a3f4',
+          appSecret: 'c8e09e9911a364f6060e9a1af403f4a3'
+        })
+      }
       const p = new RequestParams(state, data).post(type)
       try {
         p.then(
@@ -902,7 +910,7 @@ let ApiService = {
       return p
     },
     /**
-     * 获取验证码 - new
+     * 获取注册验证码 - new
      * @param commit
      * @param state
      * @param dispatch
@@ -937,6 +945,41 @@ let ApiService = {
       return p
     },
     /**
+     * 获取重置验证码 - new
+     * @param commit
+     * @param state
+     * @param dispatch
+     * @param data {"mobile": mobile, msgTemp: "SMS_DEFAULT_CONTENT"},
+     * @returns {Promise<*>}
+     * @constructor
+     */
+    async ['ApiService.getSmsCodeForResetPassword'] ({commit, state, dispatch}, data = {}) {
+      let type = 'getSmsCodeForResetPassword'
+      Object.assign(data, {
+        msgTemp: 'SMS_PASSWORD_CONTENT'
+      })
+      const p = new RequestParams(state, data, true).post(type)
+      try {
+        p.then(
+          (rsp) => {
+            let data = rsp.value
+            if (util.isJsonString(data)) {
+              data = JSON.parse(data)
+            }
+            if (2000 == rsp.code && util.isEmptyValue(data)) {
+              console.log(data, type + `_______获取${type}接口数据__________`)
+            }
+          },
+          (rsp) => {
+
+          }
+        )
+      } catch (e) {
+        console.warn(`调用${type}赋值失败`)
+      }
+      return p
+    },
+    /**
      * 校验验证码
      * @param commit
      * @param state
@@ -947,9 +990,11 @@ let ApiService = {
      */
     async ['ApiService.checkSmsCodeByMobile'] ({commit, state, dispatch}, data = {}) {
       let type = 'checkSmsCodeByMobile'
-      Object.assign(data, {
-        msgTemp: 'SMS_DEFAULT_CONTENT'
-      })
+      if (!data.msgTemp) {
+        Object.assign(data, {
+          msgTemp: 'SMS_DEFAULT_CONTENT'
+        })
+      }
       const p = new RequestParams(state, data, true).post(type)
       try {
         p.then(
@@ -1012,8 +1057,8 @@ let ApiService = {
      * @returns {Promise<*>}
      * @constructor
      */
-    async ['ApiService.register'] ({commit, state, dispatch}, data = {}) {
-      let type = 'register'
+    async ['ApiService.userRegister'] ({commit, state, dispatch}, data = {}) {
+      let type = 'userRegister'
       const p = new RequestParams(state, data, true).post(type)
       try {
         p.then(
@@ -1081,7 +1126,7 @@ let ApiService = {
     async ['ApiService.resetPassword'] ({commit, state, dispatch}, data = {}) {
       let type = 'resetPassword'
       Object.assign(data, {
-        msgTemp: 'SMS_DEFAULT_CONTENT'
+        msgTemp: 'SMS_PASSWORD_CONTENT'
       })
       const p = new RequestParams(state, data, true).post(type)
       try {

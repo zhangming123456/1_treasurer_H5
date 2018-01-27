@@ -184,21 +184,13 @@
           let mobile = this.$azm.util.trim(this.mobile),
             regMobile = this.$azm.util.RegExp.isMobile
           if (regMobile.test(mobile)) {
-            this.$store.dispatch('ApiService.checkMobile', {mobile}).then(
+            that.$store.dispatch('ApiService.getSmsCodeForRegister', {mobile}).then(
               (rsp) => {
-                if (rsp.code == 2000 && rsp.returnStatus) {
-                  that.$store.dispatch('ApiService.getSmsCodeForRegister', {mobile}).then(
-                    () => {
-                      if (2000 === rsp.code) {
-                        cb && cb()
-                      }
-                      that.show = true
-                      that.countdownTime = 60
-                    }
-                  )
-                } else {
-                  !rsp.status && that.$toast(rsp.message)
+                if (2000 === rsp.code) {
+                  cb && cb()
                 }
+                that.show = true
+                that.countdownTime = 60
               }
             )
           } else {
@@ -247,7 +239,7 @@
             })
           } else {
             that.getSmsCode(null, function () {
-              // that.step++
+              that.step++
             })
           }
         } else if (this.step === 1) {
@@ -279,7 +271,7 @@
                 if (rsp.code === 2000) {
                   that.step++
                 } else {
-                  that.$toast({
+                  !rsp.status && that.$toast({
                     message: '验证码输入错误',
                     position: `top`
                   })
@@ -295,19 +287,22 @@
               password: that.$azm.md5(mobile + password).toLowerCase(),
               newPwd: that.$azm.md5(password).toLowerCase()
             }
-            that.$store.dispatch('ApiService.register', data).then(
+            that.$store.dispatch('ApiService.userRegister', data).then(
               (rsp) => {
                 if (rsp.code == 2000) {
-                  that.endShow = true
-                  that.endCountdownTime = 10
-                  that.step++
+                  // that.endShow = true
+                  // that.endCountdownTime = 10
+                  that.$router.replace('/userinfo-perfect')
                 }
-                that.$toast(rsp.message)
+                !rsp.status && that.$toast({
+                  message: rsp.message,
+                  position: `top`
+                })
               }
             )
           }
         } else if (this.step === 3) {
-          that.$router.replace('/')
+
         }
       },
       getVerifyPassword () {

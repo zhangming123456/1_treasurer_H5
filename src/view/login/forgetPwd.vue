@@ -1,7 +1,6 @@
 <template>
   <div :class="name" class="azm-fixed">
     <div v-if="step === 0" class="forget_pwd_form_box">
-      <p class="text-left">请输入需要找回密码的手机号码</p>
       <van-cell-group class="forget_pwd_form">
         <van-field class="forget_pwd_form_username forget_pwd_form_item"
                    v-model="mobile"
@@ -12,6 +11,16 @@
                    @click-icon="mobile = ''"
         />
       </van-cell-group>
+      <div class="forget_pwd_form_footer">
+        <x-button type="primary" class="azm-btn" action-type="submit"
+                  @click.native="next">获取验证码
+        </x-button>
+      </div>
+    </div>
+    <div v-else-if="step === 1" class="forget_pwd_form_box">
+      <p class="mobile-text">
+        验证码已发送至：{{mobile}}
+      </p>
       <van-cell-group class="forget_pwd_form">
         <van-row>
           <van-col :span="16" class="vux-1px-r forget_pwd_form_item">
@@ -41,43 +50,53 @@
         </x-button>
       </div>
     </div>
-    <div v-else-if="step === 1" class="forget_pwd_form_box">
-      <van-cell-group class="forget_pwd_form">
-        <van-field class="forget_pwd_form_username forget_pwd_form_item"
-                   v-model="password"
-                   type="tel"
-                   icon="clear"
-                   maxLength="6"
-                   placeholder="请输入6位数字密码"
-                   @click-icon="password = ''"
-        />
-      </van-cell-group>
-      <van-cell-group class="forget_pwd_form">
-        <van-field class="forget_pwd_form_password forget_pwd_form_item"
-                   v-model="password2"
-                   type="tel"
-                   placeholder="请确认密码"
-                   icon="clear"
-                   maxLength="6"
-                   @click-icon="password2 = ''"
-        />
-      </van-cell-group>
+    <div v-else-if="step === 2" class="forget_pwd_form_box">
+      <p class="password-text">请设置6位数的数字密码</p>
+      <van-password-input
+        :value="password"
+        info="    "
+        @focus="onKeyboardBlur(1)"
+      />
+      <van-password-input
+        :value="password2"
+        info=""
+        @focus="onKeyboardBlur(2)"
+      />
+
+      <!-- 数字键盘 -->
+      <van-number-keyboard
+        :show="showKeyboard || showKeyboard2"
+        @input="onInput"
+        @delete="onDelete"
+        @blur="onKeyboardBlur(0)"
+      />
+      <!--<van-cell-group class="forget_pwd_form">-->
+      <!--<van-field class="forget_pwd_form_username forget_pwd_form_item"-->
+      <!--v-model="password"-->
+      <!--type="tel"-->
+      <!--icon="clear"-->
+      <!--maxLength="6"-->
+      <!--placeholder="请输入6位数字密码"-->
+      <!--@click-icon="password = ''"-->
+      <!--/>-->
+      <!--</van-cell-group>-->
+      <!--<van-cell-group class="forget_pwd_form">-->
+      <!--<van-field class="forget_pwd_form_password forget_pwd_form_item"-->
+      <!--v-model="password2"-->
+      <!--type="tel"-->
+      <!--placeholder="请确认密码"-->
+      <!--icon="clear"-->
+      <!--maxLength="6"-->
+      <!--@click-icon="password2 = ''"-->
+      <!--/>-->
+      <!--</van-cell-group>-->
       <div class="forget_pwd_form_footer">
-        <van-row gutter="20">
-          <van-col :span="12">
-            <x-button type="primary" class="azm-btn azm-btn-submit" action-type="submit"
-                      @click.native="step--">上一步
-            </x-button>
-          </van-col>
-          <van-col :span="12">
-            <x-button type="primary" class="azm-btn azm-btn-submit" action-type="submit"
-                      @click.native="next">确认
-            </x-button>
-          </van-col>
-        </van-row>
+        <x-button type="primary" class="azm-btn azm-btn-submit" :class="{'disabled':disabled}" action-type="submit"
+                  @click.native="next">确定
+        </x-button>
       </div>
     </div>
-    <div v-else-if="step === 2" class="forget_pwd_form_box">
+    <div v-else-if="step === 3" class="forget_pwd_form_box">
       <p>重置密码成功</p>
       <p>
         <i class="iconfont icon-dui azm-icon"></i>
@@ -98,10 +117,11 @@
 <script>
   import { XButton, Countdown } from 'vux'
   import { mapState } from 'vuex'
-  import VanField from 'vant/packages/field/index'
-  import VanCellGroup from 'vant/packages/cell-group/index'
-  import VanRow from 'vant/packages/row/index'
-  import VanCol from 'vant/packages/col/index'
+  import { Field, CellGroup, Row, Col, PasswordInput, NumberKeyboard } from 'vant/lib/index'
+  // import VanField from 'vant/packages/field/index'
+  // import VanCellGroup from 'vant/packages/cell-group/index'
+  // import VanRow from 'vant/packages/row/index'
+  // import VanCol from 'vant/packages/col/index'
 
   // import Countdown from '../../components/countdown/index'
   // import XButton from '../../components/x-button/index'
@@ -109,11 +129,13 @@
   export default {
     components: {
       Countdown,
-      VanCol,
-      VanRow,
       XButton,
-      VanCellGroup,
-      VanField
+      [PasswordInput.name]: PasswordInput,
+      [NumberKeyboard.name]: NumberKeyboard,
+      [CellGroup.name]: CellGroup,
+      [Field.name]: Field,
+      [Col.name]: Col,
+      [Row.name]: Row
     },
     data () {
       return {
@@ -132,7 +154,12 @@
         mobile: '',
         code: '',
         password: '',
-        password2: ''
+        password2: '',
+        checkbox: false,
+        showKeyboard: true,
+        showKeyboard2: false,
+        disabled: true,
+        verifyPassword: true
       }
     },
     computed: {
@@ -145,31 +172,32 @@
       this.$store.commit('setNavigationBarTitle', {title: '忘记密码'})
     },
     methods: {
-      getSmsCode () {
+      getSmsCode (e, cb) {
         let that = this
         try {
           let mobile = this.$azm.util.trim(this.mobile),
             regMobile = this.$azm.util.RegExp.isMobile
           if (regMobile.test(mobile)) {
-            this.$store.dispatch('ApiService.checkMobile', {mobile}).then(
+            that.$store.dispatch('ApiService.getSmsCodeForResetPassword', {mobile}).then(
               (rsp) => {
-                if (rsp.code == 5006 && !rsp.returnStatus) {
-                  that.$store.dispatch('ApiService.getSmsCode', {mobile}).then(
-                    () => {
-                      that.show = true
-                      that.countdownTime = 60
-                    }
-                  )
-                } else {
-                  that.$toast(rsp.message)
+                if (2000 === rsp.code) {
+                  cb && cb()
                 }
+                that.show = true
+                that.countdownTime = 60
               }
             )
           } else {
-            that.$toast('手机号码不正确')
+            that.$toast({
+              message: '手机号码不正确',
+              position: 'top'
+            })
           }
         } catch (e) {
-          that.$toast('手机号码不正确')
+          that.$toast({
+            message: '手机号码不正确',
+            position: 'top'
+          })
         }
       },
       finish (index) {
@@ -181,14 +209,59 @@
         this.endCountdownTime = 0
         this.next()
       },
+      getVerifyPassword () {
+        let that = this,
+          password = that.password,
+          password2 = that.password2,
+          flag = false
+        if (!password) {
+          that.$toast({
+            message: '密码不能为空',
+            position: `top`
+          })
+        } else if (!password2) {
+          that.$toast({
+            message: '确认密码不能为空',
+            position: `top`
+          })
+        } else if (password2 !== password) {
+          that.$toast({
+            message: '两次密码不一致',
+            position: `top`
+          })
+        } else if (password.length < 6) {
+          that.$toast({
+            message: '密码至少6位数字',
+            position: `top`
+          })
+        } else {
+          flag = true
+        }
+        return flag
+      },
       next () {
         let that = this,
           mobile = this.$azm.util.trim(this.mobile),
           code = this.$azm.util.trim(this.code),
           password = this.$azm.util.trim(this.password),
-          password2 = this.$azm.util.trim(this.password2),
           regMobile = this.$azm.util.RegExp.isMobile
         if (this.step === 0) {
+          if (!mobile) {
+            that.$toast({
+              message: '手机号码不能为空',
+              position: `top`
+            })
+          } else if (!regMobile.test(mobile)) {
+            that.$toast({
+              message: '手机号码格式不正确',
+              position: `top`
+            })
+          } else {
+            that.getSmsCode(null, function () {
+              that.step++
+            })
+          }
+        } else if (this.step === 1) {
           if (!mobile) {
             that.$toast('手机号码不能为空')
           } else if (!regMobile.test(mobile)) {
@@ -198,18 +271,23 @@
           } else if (code.length !== 6) {
             that.$toast('验证码必须6位数字')
           } else {
-            that.step++
+            that.$store.dispatch('ApiService.checkSmsCodeByMobile', {
+              mobile, code, msgTemp: 'SMS_PASSWORD_CONTENT'
+            }).then(
+              (rsp) => {
+                if (rsp.code === 2000) {
+                  that.step++
+                } else {
+                  !rsp.status && that.$toast({
+                    message: '验证码输入错误',
+                    position: `top`
+                  })
+                }
+              }
+            )
           }
-        } else if (this.step === 1) {
-          if (!password) {
-            that.$toast('密码不能为空')
-          } else if (!password2) {
-            that.$toast('确认密码不能为空')
-          } else if (password2 !== password) {
-            that.$toast('两次密码不一致')
-          } else if (password.length < 6) {
-            that.$toast('密码至少6位数字')
-          } else {
+        } else if (this.step === 2) {
+          if (that.getVerifyPassword()) {
             let data = {
               mobile,
               code,
@@ -218,17 +296,59 @@
             }
             that.$store.dispatch('ApiService.resetPassword', data).then(
               (rsp) => {
-                if (rsp.code == 2000) {
+                if (rsp.code === 2000) {
                   that.endShow = true
                   that.endCountdownTime = 10
                   that.step++
                 }
-                that.$toast(rsp.message)
+                !rsp.status && that.$toast({
+                  message: rsp.message,
+                  position: `top`
+                })
               }
             )
           }
-        } else if (this.step === 2) {
+        } else if (this.step === 3) {
           that.$router.go(-1)
+        }
+      },
+      onInput (key) {
+        if (this.password.length >= 6) {
+          this.onKeyboardBlur(2)
+        }
+        if (this.showKeyboard) {
+          this.password = (this.password + key).slice(0, 6)
+        } else if (this.showKeyboard2) {
+          this.password2 = (this.password2 + key).slice(0, 6)
+        }
+        if (this.password2.length >= 6) {
+          this.verifyPassword = this.getVerifyPassword()
+          if (this.verifyPassword) {
+            this.disabled = false
+          }
+        }
+      },
+      onDelete () {
+        this.disabled = true
+        if (this.password2.length === 0) {
+          this.onKeyboardBlur(1)
+        }
+        if (!this.verifyPassword && this.showKeyboard2) {
+          this.password2 = ''
+          this.verifyPassword = true
+        } else if (this.showKeyboard2) {
+          this.password2 = this.password2.slice(0, this.password2.length - 1)
+        } else if (this.showKeyboard) {
+          this.password = this.password.slice(0, this.password.length - 1)
+        }
+      },
+      onKeyboardBlur (type) {
+        this.showKeyboard = false
+        this.showKeyboard2 = false
+        if (type === 1) {
+          this.showKeyboard = true
+        } else if (type === 2) {
+          this.showKeyboard2 = true
         }
       }
     }
@@ -243,9 +363,23 @@
 <style scoped lang='less'>
   .forget-pwd {
     background-color: #fff;
+    button.disabled {
+      background-color: #999999;
+    }
     .forget_pwd_form_box {
-      padding: 80px 20px;
+      padding: 90px 20px;
       box-sizing: border-box;
+      .mobile-text {
+        text-align: left;
+        line-height: 50px;
+        font-size: 13px;
+        color: #798292;
+      }
+      .password-text {
+        line-height: 50px;
+        font-size: 13px;
+        color: #798292;
+      }
       &:nth-child(1) {
         p {
           font-size: 13px;

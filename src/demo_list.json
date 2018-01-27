@@ -21,5 +21,10 @@
   "me/shopSuccess",
   "me/applicationsInfo",
   "me/expensesRecord",
-  "me/staffInfo"
+  "me/staffInfo",
+  "me/certificateInfo",
+  "userInfoPerfect",
+  "registerSuccess",
+  "bindShop",
+  "followUs"
 ]

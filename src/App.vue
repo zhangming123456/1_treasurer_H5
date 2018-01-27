@@ -107,6 +107,11 @@
   @import '~vux/src/styles/close.less';
   @import '~vant/lib/vant-css/index.css';
   @import '~vue-touch-ripple/component.css';
+  @import '~cropperjs/dist/cropper.css';
+
+  .cropper-bg {
+    background-image: none;
+  }
 
   body {
     position: relative;

@@ -1,74 +1,134 @@
 <template>
-  <div class="me_shop_info_page">
-    <h2>填写基本资料</h2>
-    <group class="me_shop_group">
-      <x-input class="azm-font-cell" label-width=".88rem" name="trueName" is-type="china-name"
-               v-model="trueName"
-               placeholder="请输入门店名称">
-        <div slot="label" class="label-width"><span class="color-red">*</span>门店名称</div>
-      </x-input>
-      <x-input title="门店电话" type="tel" class="azm-font-cell" label-width=".88rem" name="mobile"
-               mask="999999999999"
-               placeholder="输入电话&手机号码"
-               v-model="mobile" keyboard="number"
-               :max="12"
-               :is-type="chinaMobile">
-        <div slot="label" class="label-width"><span class="color-red">*</span>门店电话</div>
-      </x-input>
-      <!--<x-input title="  " type="tel" class="azm-font-cell" label-width=".88rem" name="mobile" mask="99999999999"-->
-      <!--placeholder="或手机"-->
-      <!--v-model="mobile" keyboard="number"-->
-      <!--:max="11"-->
-      <!--is-type="china-mobile"></x-input>-->
-    </group>
-    <group title="门店设置" class="me_shop_group">
-      <popup-picker class="azm-font-cell"
-                    :data="businessTypeList"
-                    :columns="1"
-                    v-model="businessType"
-                    :display-format="businessTypeFormat"
-                    @on-change="onChange"
-                    placeholder="请选择门店类型">
-        <div slot="title" class="label-width"><span class="color-red">*</span>门店类型</div>
-      </popup-picker>
-      <popup-picker class="azm-font-cell" :data="orderList" v-model="orderValue" :display-format="orderFormat"
-                    @click.native="openDishList"
-                    @on-change="onChange" placeholder="请选择业态">
-        <div slot="title" class="label-width"><span class="color-red">*</span>业态</div>
-      </popup-picker>
-      <cell is-link @click.native="doShowAddress(0)" :value="'ddd'">
-        <div slot="icon" class="label-width"><span class="color-red">*</span>门店地址</div>
-        <div v-if="addressDataTo">
-          <span v-for="(item,index) of addressDataTo" :key="index">{{ item.name }}&nbsp;&nbsp;</span>
-        </div>
-        <div v-else>
-          <span>省 - 市 - 区&县</span>
-        </div>
-      </cell>
-      <!--<x-address title="省份选择" :list="province_list" placeholder="省" @on-shadow-change="addressShadowChange"-->
-      <!--style="display:none;" :show.sync="onShowProvince_list"></x-address>-->
-      <x-textarea title="    " class="azm-font-cell" placeholder="请填写详细地址" v-model="addRess" name="addRess"
-                  autosize
-                  :rows="3"></x-textarea>
-    </group>
+  <div class="me_shop_info_page azm-fixed">
+    <div class="user-info-perfect_box">
+      <p class="title">填写门店基本信息</p>
+      <van-row class="user-info-perfect_row">
+        <van-col :span="5">
+          <div class="van-cell user-info-perfect_box__text">门店名称</div>
+        </van-col>
+        <van-col :span="19">
+          <van-cell-group class="form-group">
+            <van-field class="form-group__trueName form-group__item"
+                       v-model="trueName"
+                       type="text"
+                       icon="clear"
+                       placeholder="必填，请输入门店品牌名称"
+                       @click-icon="trueName = ''"
+            />
+          </van-cell-group>
+        </van-col>
+      </van-row>
+      <van-row class="user-info-perfect_row">
+        <van-col :span="5">
+          <div class="van-cell user-info-perfect_box__text"></div>
+        </van-col>
+        <van-col :span="19">
+          <van-cell-group class="form-group">
+            <van-field class="form-group__trueName form-group__item"
+                       v-model="trueName"
+                       type="text"
+                       icon="clear"
+                       placeholder="非必填，请输入分店名（如南山店）"
+                       @click-icon="trueName = ''"
+            />
+          </van-cell-group>
+        </van-col>
+      </van-row>
+      <van-row class="user-info-perfect_row">
+        <van-col :span="5">
+          <div class="van-cell user-info-perfect_box__text">门店类型</div>
+        </van-col>
+        <van-col :span="19">
+          <van-radio-group v-model="businessType">
+            <van-row>
+              <van-col :span="9">
+                <van-radio class="form-group-radio" name="0">单店</van-radio>
+              </van-col>
+              <van-col :span="9">
+                <van-radio class="form-group-radio" name="1">连锁</van-radio>
+              </van-col>
+            </van-row>
+          </van-radio-group>
+        </van-col>
+      </van-row>
+      <van-row class="user-info-perfect_row">
+        <van-col :span="5">
+          <div class="van-cell user-info-perfect_box__text">业态</div>
+        </van-col>
+        <van-col :span="19">
+          <x-button class="azm_popup_picker_btn" plain @click.native="openDishList" type="primary">
+            <span>{{orderValueText?orderValueText:'必填，请选择业态'}}</span>
+            <i class="iconfont icon-jiantou1 azm-icon"></i>
+          </x-button>
+          <popup-picker class="" :data="orderList" v-model="orderValue" :display-format="orderFormat"
+                        @click.native="openDishList"
+                        @on-change="onChange" placeholder="必填，请选择业态" style="display: none" :show.sync="showPopupPicker">
+          </popup-picker>
+        </van-col>
+      </van-row>
+      <van-row class="user-info-perfect_row">
+        <van-col :span="5">
+          <div class="van-cell user-info-perfect_box__text">门店电话</div>
+        </van-col>
+        <van-col :span="19">
+          <van-cell-group class="form-group">
+            <van-field class="form-group__trueName form-group__item"
+                       v-model="mobile"
+                       type="tel"
+                       icon="clear"
+                       placeholder="必填，填写多个以“，”分隔"
+                       @click-icon="mobile = ''"
+            />
+          </van-cell-group>
+        </van-col>
+      </van-row>
+      <van-row class="user-info-perfect_row">
+        <van-col :span="5">
+          <div class="van-cell user-info-perfect_box__text">门店地址</div>
+        </van-col>
+        <van-col :span="19">
+          <x-button class="azm_popup_picker_btn" plain @click.native="doShowAddress(0)" type="primary">
+            <span>{{addressDataToText?addressDataToText:'省 - 市 - 区/县'}}</span>
+            <i class="iconfont icon-jiantou1 azm-icon"></i>
+          </x-button>
+          <van-popup class="azm-address_popup" v-model="popupShow" position="bottom">
+            <van-tabs :active="addressActive" sticky @click="handleTabClick">
+              <van-tab v-for="(item, index) of addressValue" :title="item.name" :disabled="!item.status" :key="index">
+                <scroller lock-x scrollbar-y class="azm-popupShow-h">
+                  <group gutter="0">
+                    <cell class="azm-address-cell" v-for="(v,i) of addressData[item.addressType]" :title="v.name"
+                          :is-loading="v.isLoading" :key="i"
+                          is-link @click.native="doShowAddress(index+1,v)"></cell>
+                  </group>
+                </scroller>
+              </van-tab>
+            </van-tabs>
+          </van-popup>
+        </van-col>
+      </van-row>
+      <van-row class="user-info-perfect_row">
+        <van-col :span="5">
+          <div class="van-cell user-info-perfect_box__text"></div>
+        </van-col>
+        <van-col :span="19">
+          <van-cell-group class="form-group">
+            <van-field class="form-group__trueName form-group__item"
+                       v-model="addRess"
+                       type="textarea"
+                       icon="clear"
+                       autosize
+                       placeholder="必填，请输入详细地址"
+                       @click-icon="addRess = ''"
+            />
+          </van-cell-group>
+        </van-col>
+      </van-row>
+    </div>
     <footer>
       <x-button type="primary" class="azm-font-cell azm-btn-submit" action-type="submit" :show-loading="isSubmit"
-                @click.native="fromSubmit">保存
+                @click.native="fromSubmit">下一步
       </x-button>
     </footer>
-    <van-popup v-model="popupShow" position="bottom">
-      <van-tabs :active="addressActive" sticky @click="handleTabClick">
-        <van-tab v-for="(item, index) of addressValue" :title="item.name" :disabled="!item.status" :key="index">
-          <scroller lock-x scrollbar-y class="azm-popupShow-h">
-            <group gutter="0">
-              <cell class="azm-address-cell" v-for="(v,i) of addressData[item.addressType]" :title="v.name"
-                    :is-loading="v.isLoading" :key="i"
-                    is-link @click.native="doShowAddress(index+1,v)"></cell>
-            </group>
-          </scroller>
-        </van-tab>
-      </van-tabs>
-    </van-popup>
   </div>
 </template>
 
@@ -90,8 +150,8 @@
     TabItem,
     Scroller
   } from 'vux'
-  import { Popup } from 'vant/lib/index'
   import { mapState } from 'vuex'
+  import { Field, CellGroup, Row, Col, PasswordInput, NumberKeyboard, Radio, RadioGroup, Popup } from 'vant/lib/index'
   import VanTab from 'vant/packages/tab/index'
   import VanTabs from 'vant/packages/tabs/index'
 
@@ -116,7 +176,15 @@
       PopupPicker,
       Tab,
       TabItem,
-      Scroller
+      Scroller,
+      [PasswordInput.name]: PasswordInput,
+      [NumberKeyboard.name]: NumberKeyboard,
+      [CellGroup.name]: CellGroup,
+      [Field.name]: Field,
+      [Col.name]: Col,
+      [Row.name]: Row,
+      [Radio.name]: Radio,
+      [RadioGroup.name]: RadioGroup,
     },
     data () {
       return {
@@ -135,7 +203,7 @@
             value: 1
           }
         ],
-        businessType: [0],
+        businessType: '0',
         orderList: [],
         jobNumber: null,
         Character: [],
@@ -161,6 +229,7 @@
           }
         ],
         addressDataTo: null,
+        addressDataToText: null,
         addressActive: 0,
         provinceCity: [],
         trueName: '',
@@ -169,14 +238,16 @@
         addRess: '',
         areaList: {},
         orderValue: [], // 业态
+        orderValueText: '', // 业态
         searchResult: [],
         popupShow: false,
-        onShowProvince_list: false
+        onShowProvince_list: false,
+        showPopupPicker: false
       }
     },
     created () {
       this.$emit('transfer', this.transferObj)
-      this.$store.commit('setNavigationBarTitle', {title: '商家开店'})
+      this.$store.commit('setNavigationBarTitle', {title: '创建门店'})
       this.$store.dispatch('ApiService.getAllProvince')
     },
     computed: {
@@ -193,6 +264,9 @@
       },
       routerLink (path, params) {
         this.$router.push({path, query: params})
+      },
+      routerReplace (path, params) {
+        this.$router.replace({path, query: params})
       },
       businessTypeFormat (value, name) {
         let v = Number(value[0])
@@ -215,10 +289,12 @@
       orderFormat (value, name) {
         // let that = this
         // console.log(arguments, '++++++++')
+        this.orderValueText = name
         return name
         // return `${that.orderList[0][value[0]].name} - ${that.orderList[1][value[1]].name}`
       },
       openDishList () {
+        this.showPopupPicker = true
         let that = this,
           p1 = that.$store.dispatch('ApiService.getDicList'),
           p2 = that.$store.dispatch('ApiService.getDicList', {config: {type: 1}})
@@ -296,6 +372,7 @@
           Object.assign(that.addressValue[2], item)
           that.popupShow = !that.popupShow
           that.addressDataTo = that.addressValue
+          that.addressDataToText = `${that.addressDataTo[0].name} - ${that.addressDataTo[1].name} - ${that.addressDataTo[2].name}`
         }
       },
       handleTabClick (index) {
@@ -335,71 +412,121 @@
           this.$toast('门店名称不能为空')
         } else if (!this.$azm.util.trim(data.mobile)) {
           this.$toast('手机号码不能为空')
-        } else if (!this.$azm.util.RegExp.isPhone_Mobile.test(data.mobile)) {
-          this.$toast('手机格式不正确')
         } else if (!this.$azm.util.trim(data.typeOfOperation) || !this.$azm.util.trim(data.typeOfCooking)) {
           this.$toast('请选择业态')
         } else if (!this.$azm.util.trim(data.provinceCity)) {
           this.$toast('请选择门店地址')
+        } else if (!this.$azm.util.trim(data.addRess)) {
+          this.$toast('请填写门店详细地址')
         } else {
-          that.$store.dispatch('ApiService.createRestaurant', data).then(
-            (rsp) => {
-              if (2000 == rsp.code) {
-                that.$router.go(-2)
-              }
-            }
-          )
+          that.routerLink('/me/certificateInfo')
+          // that.$store.dispatch('ApiService.createRestaurant', data).then(
+          //   (rsp) => {
+          //     if (2000 == rsp.code) {
+          //
+          //     }
+          //   }
+          // )
         }
       }
     }
   }
 </script>
+
+<style lang="less">
+  .me_shop_info_page {
+
+  }
+</style>
 <style scoped lang='less'>
   .me_shop_info_page {
     box-sizing: border-box;
-    .azm-address-cell {
+    margin-top: 45px;
+    .form-group-radio {
+      height: 30px;
+      line-height: 30px;
+    }
+    .azm_popup_picker_btn {
+      border: 1px solid #afb4be;
+      position: relative;
+      color: #789292;
+      line-height: 34px;
       font-size: 12px;
-    }
-    .label-width {
-      width: 66px;
-    }
-    .azm-btn-submit {
-      border-radius: 99px;
-    }
-    .color-red {
-      color: #ff0000;
-    }
-    .azm-popupShow-h {
-      height: 250px !important;
-    }
-    h2 {
-      text-align: center;
-      padding: 10px 0 0;
-      font-size: 17px;
-      font-weight: 400;
-      color: #000;
-    }
-    .me_shop_group {
-      margin-top: -10px;
-      &:nth-of-type(2) {
-        margin-top: 10px;
+      text-align: left;
+      &::after {
+        border: none;
       }
-      div {
+      .azm-icon {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        right: 10px;
+        line-height: 1;
         font-size: 13px;
-        color: #000;
       }
-      .azm-cellBox {
-        padding-top: 0;
-        padding-bottom: 0;
+    }
+    .form-group {
+      &::after {
+        border: 1px solid #afb4be;
+        border-radius: 10px;
+      }
+    }
+    background-color: #fff;
+    button.disabled {
+      background-color: #999999;
+    }
+    p.title {
+      font-size: 12px;
+      color: #798292;
+      margin-bottom: 30px;
+    }
+    .user-info-perfect_box {
+      padding: 24px 20px 0;
+      box-sizing: border-box;
+      .user-info-perfect_row {
+        margin-bottom: 10px;
+        .form-group__item {
+          padding-top: 5px;
+          padding-bottom: 5px;
+        }
+        .btn-birthday {
+          background-color: transparent;
+          color: #798292;
+          padding-top: 10px;
+          padding-bottom: 10px;
+          &::after {
+            border-color: #afb4be;
+          }
+          p {
+            font-size: 12px;
+            color: #96A0B2;
+            line-height: 24px;
+          }
+        }
+      }
+      .user-info-perfect_box__text {
+        font-size: 13px;
+        color: #798292;
+        padding-top: 5px;
+        padding-bottom: 5px;
       }
     }
     footer {
-      .azm-font-cell {
+      padding: 0 25px;
+      .azm-btn-submit {
+        margin-top: 64px;
+        line-height: 45px;
         font-size: 15px;
-        font-weight: 400;
       }
-      box-sizing: border-box;
-      padding: 50px 80px;
+    }
+    .azm-address_popup {
+      .azm-popupShow-h {
+        height: 250px !important;
+        .azm-address-cell {
+          font-size: 15px;
+          color: #181818;
+        }
+      }
     }
   }
 </style>

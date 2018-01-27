@@ -54,6 +54,14 @@ const webpackConfig = {
       //   }
       // },
       {
+        test: /.scss$/,
+        loader: 'style-loader!css-loader!scss-loader'
+      },
+      {
+        test: /\.css$/,
+        loader: 'style-loader!css-loader!stylus-loader'
+      },
+      {
         // 对所有引入的tsx文件进行解析
         test: /\.tsx?$/,
         loader: 'ts-loader',
