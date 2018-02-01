@@ -4,8 +4,8 @@
  * 配置文件
  */
 // var host = 'http://192.168.134.254:8080/zhenler-server'
-var host = 'http://192.168.134.2:8082'
-// var host = 'http://192.168.134.108:8080/zhenler-server'
+// var host = 'http://192.168.134.2:8082'
+var host = 'http://192.168.134.108:8080/zhenler-server'
 // var host = 'https://vip.zhenler.com/api';// 发布环境
 // var host = 'http://vip.zhenler.com'// 开发环境
 var Hash = '1'
@@ -17,11 +17,7 @@ if (process.env.NODE_ENV === 'production') {
   host = 'https://vip.zhenler.com'
   Hash = +new Date()
 } else {
-  var arr = [
-    '/userinfo-perfect',
-    '/registerSuccess',
-    '/bindShop',
-  ]
+  var arr = []
   for (var i = 0; i < arr.length; i++) {
     isVerifyApi.push(arr[i])
   }
@@ -75,9 +71,11 @@ var config = {
   // jssdk授权
   wxScanQRcode: `${host}/api/wxScanQRcode/scan`,
   // 登入
-  toLogin: `${host}/api/user/toLogin`,
-  // 查询用户信息
+  userLogin: `${host}/api/user/userLogin`,
+  // 查询当前店铺用户信息列表
   findResUser: `${host}/api/resUser/findResUser`,
+  // 查询用户信息
+  getUserByShiroUserId: `${host}/api/user/getUserByShiroUserId`,
   // 更新用户信息
   updateShiroUser: `${host}/api/user/updateShiroUser`,
   // 查询是否绑定店铺
@@ -128,5 +126,11 @@ var config = {
   unBoundQRcode: `${host}/api/qrtable/unBoundQRcode`,
   // 绑定二维码-桌台或店铺
   bindQRcode: `${host}/api/qrtable/bindQRcode`,
+  // 查询商业模式列表
+  findBusinessModel: `${host}/api/restaurant/findBusinessModel`,
+  // 设置商业模式
+  setBusinessModel: `${host}/api/restaurant/setBusinessModel`,
+  // 检查门店设置和商品设置
+  checkRestaurantInfo: `${host}/api/restaurant/checkRestaurantInfo`,
 }
 module.exports = config

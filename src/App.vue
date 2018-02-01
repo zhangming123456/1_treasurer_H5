@@ -108,12 +108,36 @@
   @import '~vant/lib/vant-css/index.css';
   @import '~vue-touch-ripple/component.css';
   @import '~cropperjs/dist/cropper.css';
+  @import '~element-ui/lib/theme-chalk/index.css';
 
   .cropper-bg {
     background-image: none;
   }
 
+  .text-left {
+    text-align: left;
+  }
+
+  .text-center {
+    text-align: center;
+  }
+
+  .text-right {
+    text-align: right;
+  }
+
+  .weui-toast {
+    width: 110px;
+    padding-left: 5px;
+    padding-right: 5px;
+    .weui-toast__content {
+      font-size: 15px;
+    }
+  }
+
   body {
+    max-width: 500px;
+    margin: 0 auto;
     position: relative;
     > div {
       position: relative;

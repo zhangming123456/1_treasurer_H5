@@ -25,11 +25,11 @@
         <van-col :span="19">
           <van-cell-group class="form-group">
             <van-field class="form-group__trueName form-group__item"
-                       v-model="trueName"
+                       v-model="branchName"
                        type="text"
                        icon="clear"
                        placeholder="非必填，请输入分店名（如南山店）"
-                       @click-icon="trueName = ''"
+                       @click-icon="branchName = ''"
             />
           </van-cell-group>
         </van-col>
@@ -233,6 +233,7 @@
         addressActive: 0,
         provinceCity: [],
         trueName: '',
+        branchName: '',
         mobile: '',
         phone: '',
         addRess: '',
@@ -249,12 +250,15 @@
       this.$emit('transfer', this.transferObj)
       this.$store.commit('setNavigationBarTitle', {title: '创建门店'})
       this.$store.dispatch('ApiService.getAllProvince')
+      this.$store.dispatch('ApiService.checkRestaurantInfo', {resId: this.resId})
     },
     computed: {
       ...mapState({
         addressData: state => state.ApiService.ChinaAddressData,
+        resId: state => state.ApiService.resId,
         DicList: state => state.ApiService.DicList,
-        shiroUserId: state => state.ApiService.shiroUserId
+        shiroUserId: state => state.ApiService.shiroUserId,
+        checkRestaurantInfoData: state => state.ApiService.checkRestaurantInfoData
       })
     },
     methods: {
@@ -419,14 +423,18 @@
         } else if (!this.$azm.util.trim(data.addRess)) {
           this.$toast('请填写门店详细地址')
         } else {
-          that.routerLink('/me/certificateInfo')
-          // that.$store.dispatch('ApiService.createRestaurant', data).then(
-          //   (rsp) => {
-          //     if (2000 == rsp.code) {
-          //
-          //     }
-          //   }
-          // )
+          if (that.branchName) {
+            data.trueName = `${data.trueName}-${that.branchName}`
+          }
+          that.$store.dispatch('ApiService.createRestaurant', data).then(
+            (rsp) => {
+              if (2000 === rsp.code) {
+                that.routerReplace('/me/certificateInfo')
+              } else {
+                !rsp.status && that.$toast('提交表单出错')
+              }
+            }
+          )
         }
       }
     }

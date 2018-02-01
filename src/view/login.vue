@@ -122,7 +122,7 @@
               //   })
             }
             this.isSubmit = true
-            that.$store.dispatch('ApiService.toLogin', data).then(
+            that.$store.dispatch('ApiService.userLogin', data).then(
               (rsp) => {
                 if (2000 === rsp.code && that.$azm.util.isEmptyValue(rsp.value)) {
                   that.$router.push({path: '/'})

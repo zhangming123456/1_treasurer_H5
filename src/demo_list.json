@@ -23,6 +23,8 @@
   "me/expensesRecord",
   "me/staffInfo",
   "me/certificateInfo",
+  "me/businessModel",
+  "me/createShopSuccess",
   "userInfoPerfect",
   "registerSuccess",
   "bindShop",

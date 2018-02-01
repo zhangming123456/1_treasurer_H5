@@ -76,26 +76,6 @@
         @delete="onDelete"
         @blur="onKeyboardBlur(0)"
       />
-      <!--<van-cell-group class="register_form">-->
-      <!--<van-field class="register_form_username register_form_item"-->
-      <!--v-model="password"-->
-      <!--type="tel"-->
-      <!--icon="clear"-->
-      <!--maxLength="6"-->
-      <!--placeholder="请输入6位数字密码"-->
-      <!--@click-icon="password = ''"-->
-      <!--/>-->
-      <!--</van-cell-group>-->
-      <!--<van-cell-group class="register_form">-->
-      <!--<van-field class="register_form_password register_form_item"-->
-      <!--v-model="password2"-->
-      <!--type="tel"-->
-      <!--placeholder="请确认密码"-->
-      <!--icon="clear"-->
-      <!--maxLength="6"-->
-      <!--@click-icon="password2 = ''"-->
-      <!--/>-->
-      <!--</van-cell-group>-->
       <div class="register_form_footer">
         <x-button type="primary" class="azm-btn azm-btn-submit" :class="{'disabled':disabled}" action-type="submit"
                   @click.native="next">确定
@@ -124,12 +104,6 @@
   import { XButton, Countdown } from 'vux'
   import { Field, CellGroup, Row, Col, PasswordInput, NumberKeyboard } from 'vant/lib/index'
   import { mapState } from 'vuex'
-  // import VanField from 'vant/packages/field/index'
-  // import VanCellGroup from 'vant/packages/cell-group/index'
-  // import VanRow from 'vant/packages/row/index'
-  // import VanCol from 'vant/packages/col/index'
-  // import Countdown from '../../components/countdown/index'
-  // import XButton from '../../components/x-button/index'
 
   export default {
     components: {
@@ -290,8 +264,6 @@
             that.$store.dispatch('ApiService.userRegister', data).then(
               (rsp) => {
                 if (rsp.code == 2000) {
-                  // that.endShow = true
-                  // that.endCountdownTime = 10
                   that.$router.replace('/userinfo-perfect')
                 }
                 !rsp.status && that.$toast({

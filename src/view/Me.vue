@@ -6,7 +6,7 @@
           <img v-if="userInfo" :src="imagesUrl+userInfo.headPhoto" alt="" class="">
         </div>
         <div class="fl azm-me-link-item azm-me-name">
-          <h3>{{userInfo.nick_name}}</h3>
+          <h3>{{userInfo.nickName}}</h3>
         </div>
         <div class="fr azm-me-link-item azm-me-qr" @click="openImg($event,0)">
           <!--<img class="" src="../../assets/qr.png">-->
@@ -38,10 +38,6 @@
           <i slot="icon" class="iconfont icon-mima azm-icon azm-icon-ac92eb"></i>
         </cell>
         <cell is-link title="联系客服" class="azm-cell" link="/me/contactService">
-          <i slot="icon" class="iconfont icon-kefu azm-icon azm-icon-febf00"></i>
-        </cell>
-        <cell is-link title="微信登录" class="azm-cell"
-              link="https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx2a89c0f4efea410c&redirect_uri=http://weixin.aaronzm.xin/#/login?ip=56757653&response_type=code&scope=snsapi_base">
           <i slot="icon" class="iconfont icon-kefu azm-icon azm-icon-febf00"></i>
         </cell>
       </group>
@@ -88,12 +84,16 @@
         resId: state => state.ApiService.resId,
         shiroUserId: state => state.ApiService.shiroUserId,
         qrcodeImg: state => state.ApiService.qrcodeImg,
+        checkRestaurantInfoData: state => state.ApiService.checkRestaurantInfoData,
       })
     },
     created () {
       console.log(this.$route, '______________')
       this.$emit('transfer', this.transferObj)
       this.$store.commit('setNavigationBarTitle', {title: '个人中心'})
+      if (this.resId) {
+        this.$store.dispatch('ApiService.checkRestaurantInfo', {resId: this.resId})
+      }
       this.getUserInfo()
     },
     methods: {
@@ -116,30 +116,37 @@
       },
       getUserInfo (cb) {
         let that = this
-        this.$store.dispatch('ApiService.findResUser', {
-          resId: that.resId,
-          shiroUserId: that.shiroUserId
+        this.$store.dispatch('ApiService.getUserByShiroUserId', {
+          id: that.shiroUserId
         }).then(cb)
       },
       judg (path) {
-        let that = this
-        if (this.resId) {
-          this.routerLink(path)
-        } else {
+        let that = this,
+          checkRestaurantInfoData = that.checkRestaurantInfoData,
+          userInfo = that.userInfo
+        if (userInfo.type == 3) {
           this.$vux.confirm.show({
             title: '确认操作',
             content: '你暂时未开店，请先填写信息进行开店',
-            confirmText: '开店',
-            cancelText: '取消',
+            confirmText: '开店当老板',
+            cancelText: '去绑定店铺',
             onShow () {
             },
             onHide () {
             },
-            onCancel () {},
+            onCancel () {
+              that.routerLink('/bindShop')
+            },
             onConfirm () {
-              that.routerLink('/me-shop-info')
+              if (checkRestaurantInfoData.store == 1) {
+                that.routerLink('/me/certificateInfo')
+              } else {
+                that.routerLink('/me/shopInfo')
+              }
             }
           })
+        } else {
+          this.routerLink(path)
         }
       },
       judgmentShop () {

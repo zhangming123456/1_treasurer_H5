@@ -50,6 +50,10 @@ class RequestParams {
               Vue.$vux.toast.text(rsp.data.message, 'top')
               rsp.data.status = true
             }
+            let data = rsp.data.value
+            if (util.isJsonString(data)) {
+              rsp.data.value = JSON.parse(data)
+            }
             resolve(rsp.data)
           },
           (rsp) => {
@@ -90,12 +94,14 @@ const ApiService_data = {
   MobileMsgListData: [], // 短信记录列表
   findQRTableDtoListData: [], // 桌台列表
   isBindOrderQRCode: {},// 是否绑定店铺信息
+  findBusinessModelData: [],// 查询商业模式列表
+  checkRestaurantInfoData: [],// 检查门店设置和商品设置
 }
 
 let ApiService = {
   state: util.deepClone(ApiService_data),
   mutations: {
-    async ['ApiService.toLogin'] (state, payload) {
+    async ['ApiService.userLogin'] (state, payload) {
       // state.loginInfo = {
       //   'nike_name': '1号掌柜66',
       //   'resName': '1号掌柜有限公司',
@@ -220,6 +226,14 @@ let ApiService = {
       let arr = [], data = payload.data
       state.isBindOrderQRCode = data
     },
+    async ['ApiService.findBusinessModel'] (state, payload) {
+      let arr = [], data = payload.data
+      state.findBusinessModelData = data
+    },
+    async ['ApiService.checkRestaurantInfo'] (state, payload) {
+      let arr = [], data = payload.data
+      state.checkRestaurantInfoData = data
+    },
   },
   actions: {
     /**
@@ -231,8 +245,8 @@ let ApiService = {
      * @returns {Promise<*>}
      * @constructor
      */
-    async ['ApiService.toLogin'] ({commit, state, dispatch}, data = {}) {
-      const type = 'toLogin'
+    async ['ApiService.userLogin'] ({commit, state, dispatch}, data = {}) {
+      const type = 'userLogin'
       let expires = null
       if (data.config) {
         if (+data.config.expires > 0) {
@@ -244,7 +258,7 @@ let ApiService = {
       try {
         p.then(
           (rsp) => {
-            if (2000 == rsp.code && util.isEmptyValue(rsp.value)) {
+            if (2000 === rsp.code && util.isEmptyValue(rsp.value)) {
               console.log(rsp.value, type)
               commit({type: `ApiService.${type}`, data: rsp.value, expires})
             }
@@ -278,7 +292,7 @@ let ApiService = {
             cookie.get('secretKey')
           ]
           if (token && shiroUserId && mobile) {
-            commit({type: `ApiService.toLogin`, data: {token, shiroUserId, resId, mobile}})
+            commit({type: `ApiService.userLogin`, data: {token, shiroUserId, resId, mobile}})
             resolve()
           } else if (util.trim(secretKey) && false) {
             const _secretKey = querystring.parse(secretKey)
@@ -288,7 +302,7 @@ let ApiService = {
               newPwd: _secretKey[2]
             }
             if (data.mobile && data.password && data.newPwd) {
-              dispatch('ApiService.toLogin', data).then(
+              dispatch('ApiService.userLogin', data).then(
                 (rsp) => {
                   if (rsp.code == 2000) {
                     resolve()
@@ -351,7 +365,7 @@ let ApiService = {
       return p
     },
     /**
-     * 查询用户信息
+     * 查询店铺用户信息列表
      * @param commit
      * @param state
      * @param dispatch
@@ -394,6 +408,35 @@ let ApiService = {
               }
             } else {
               console.log(data, type)
+            }
+          },
+          (rsp) => {
+
+          }
+        )
+      } catch (e) {
+        console.warn(`调用${type}赋值失败`)
+      }
+      return p
+    },
+    /**
+     * 查询用户信息
+     * @param commit
+     * @param state
+     * @param dispatch
+     * @param data id:用户id
+     * @returns {Promise<*>}
+     * @constructor
+     */
+    async ['ApiService.getUserByShiroUserId'] ({commit, state, dispatch}, data = {}) {
+      let type = 'getUserByShiroUserId'
+      const p = new RequestParams(state, data).post(type)
+      try {
+        p.then(
+          (rsp) => {
+            if (2000 === rsp.code && util.isEmptyValue(rsp.value)) {
+              console.log(data, type + `_______获取${type}接口数据__________`)
+              commit({type: `ApiService.findResUser`, data: rsp.value})
             }
           },
           (rsp) => {
@@ -1069,7 +1112,7 @@ let ApiService = {
             }
             if (2000 == rsp.code && util.isEmptyValue(data)) {
               console.log(data, type + `_______获取${type}接口数据__________`)
-              commit({type: `ApiService.toLogin`, data: rsp.value})
+              commit({type: `ApiService.userLogin`, data: rsp.value})
             }
           },
           (rsp) => {
@@ -1102,7 +1145,7 @@ let ApiService = {
             }
             if (2000 == rsp.code && rsp.returnStatus) {
               console.log(data, type + `_______获取${type}接口数据__________`)
-              commit({type: `ApiService.toLogin`, data: {}})
+              commit({type: `ApiService.userLogin`, data: {}})
             }
           },
           (rsp) => {
@@ -1138,7 +1181,7 @@ let ApiService = {
             }
             if (2000 == rsp.code && rsp.returnStatus) {
               console.log(data, type + `_______获取${type}接口数据__________`)
-              commit({type: `ApiService.toLogin`, data: {}})
+              commit({type: `ApiService.userLogin`, data: {}})
             }
           },
           (rsp) => {
@@ -1291,6 +1334,90 @@ let ApiService = {
               } else {
                 dispatch('ApiService.findQRTableDtoList', {resId})
               }
+            }
+          },
+          (rsp) => {
+
+          }
+        )
+      } catch (e) {
+        console.warn(`调用${type}赋值失败`)
+      }
+      return p
+    },
+    /**
+     * 查询商业模式列表
+     * @param commit
+     * @param state
+     * @param dispatch
+     * @returns {Promise<*>}
+     * @constructor
+     */
+    async ['ApiService.findBusinessModel'] ({commit, state, dispatch}, data = {}) {
+      let type = 'findBusinessModel'
+      const p = new RequestParams(state, data).post(type)
+      try {
+        p.then(
+          (rsp) => {
+            if (2000 === rsp.code && util.isEmptyValue(rsp.value)) {
+              console.log(data, type + `_______获取${type}接口数据__________`)
+              commit({type: `ApiService.${type}`, data: rsp.value})
+            }
+          },
+          (rsp) => {
+
+          }
+        )
+      } catch (e) {
+        console.warn(`调用${type}赋值失败`)
+      }
+      return p
+    },
+    /**
+     * 设置商业模式
+     * @param commit
+     * @param state
+     * @param dispatch
+     * @returns {Promise<*>}
+     * @constructor
+     */
+    async ['ApiService.setBusinessModel'] ({commit, state, dispatch}, data = {}) {
+      let type = 'setBusinessModel'
+      const p = new RequestParams(state, data).post(type)
+      try {
+        p.then(
+          (rsp) => {
+            if (2000 === rsp.code && util.isEmptyValue(rsp.value)) {
+              console.log(data, type + `_______获取${type}接口数据__________`)
+            }
+          },
+          (rsp) => {
+
+          }
+        )
+      } catch (e) {
+        console.warn(`调用${type}赋值失败`)
+      }
+      return p
+    },
+    /**
+     * 检查门店设置和商品设置
+     * @param commit
+     * @param state
+     * @param data {resId}
+     * @param dispatch
+     * @returns {Promise<*>}
+     * @constructor
+     */
+    async ['ApiService.checkRestaurantInfo'] ({commit, state, dispatch}, data = {}) {
+      let type = 'checkRestaurantInfo'
+      const p = new RequestParams(state, data).post(type)
+      try {
+        p.then(
+          (rsp) => {
+            if (2000 === rsp.code && util.isEmptyValue(rsp.value)) {
+              console.log(data, type + `_______获取${type}接口数据__________`)
+              commit({type: `ApiService.${type}`, data: rsp.value})
             }
           },
           (rsp) => {

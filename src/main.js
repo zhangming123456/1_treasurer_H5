@@ -31,10 +31,15 @@ import {
 import cookie from 'js-cookie'
 
 (function (document) {
+  let maxW = 500
+
   /* 长宽占位 rem算法, 根据root的rem来计算各元素相对rem, 默认html 375/5 = 75px */
   function placeholderPic () {
     let w = document.documentElement.offsetWidth
     let h = document.documentElement.offsetHeight
+    if (w > maxW) {
+      w = maxW
+    }
     var app = document.querySelector('body')
     app.style.minHeight = h + 'px'
     document.documentElement.style.fontSize = w / 5 + 'px'
@@ -68,6 +73,10 @@ import { ImagePreview } from 'vant/lib/index'
 // 过滤器
 
 Vue.filter('dateFormat', dateFormat)
+Vue.filter('strSplit_filter', (input, str = ',') => {
+  debugger
+  return input.split(str)
+})
 
 Vue.prototype.$vant = {
   ImagePreview

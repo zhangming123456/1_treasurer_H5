@@ -148,7 +148,34 @@
         })
       },
       submitUserInfo () {
-        this.$router.replace('/registerSuccess')
+        let that = this,
+          shiroUserId = this.shiroUserId,
+          nickName = this.nike_name,
+          sex = this.sex,
+          birthday = this.birthday
+        if (!nickName) {
+          that.$toast('请填写昵称')
+        } else if (!sex) {
+          that.$toast('请选择性别')
+        } else if (!birthday) {
+          that.$toast('请填写生日')
+        } else
+          this.$store.dispatch('ApiService.updateShiroUser',
+            {
+              id: shiroUserId,
+              nickName,
+              userBirthday: +new Date(birthday),
+              sex
+            }
+          ).then(
+            rsp => {
+              if (rsp.code === 2000) {
+                this.$router.replace('/registerSuccess')
+              } else {
+                !rsp.status && that.$toast('提交信息出错')
+              }
+            }
+          )
       }
     }
   }
